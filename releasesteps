@@ -1,0 +1,35 @@
+###################### Testing ################
+cd tests
+pytest
+cd ../devtests
+bash devtests.sh
+
+###################### Update version #########
+update version in: setup.py, setup.cfg
+
+###################### Write docs #############
+######### (from root ltempy directory)
+pdoc --html --force -o docs ltempy
+mv docs/ltempy/* docs/
+rm -r docs/ltempy
+
+
+##################### VCS #####################
+git add .
+git commit -m 'commit message'
+git tag {version number}
+git push --tags
+git push origin
+
+##################### Build the Dist and upload to PyPi
+rm -rf build dist *.egg-info
+pip install --upgrade build twine
+python -m build
+python -m twine upload (--repository testpypi) dist/*
+
+################### Check the install from PyPi #######
+python -m venv ivenv
+source ivenv/bin/activate
+pip install (--extra-index-url https://test.pypi.org/simple/) ltempy
+
+Parentheses for deployment to test.pypi.org rather than pypi.org
