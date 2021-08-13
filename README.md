@@ -1,5 +1,5 @@
 # ltempy
-ltempy contains utilities for Lorentz TEM data analysis and presentation.
+ltempy contains utilities for Lorentz TEM data analysis and simulation.
 
 Features:
 
@@ -8,8 +8,7 @@ Features:
 * basic image processing - high_pass, low_pass, clipping
 * a matplotlib.pyplot wrapper tailored to presenting induction maps and Lorentz data
 * an implementation of the CIELAB colorspace
-* a scipy.constants (CODATA values) wrapper that allows unit scaling (i.e., using nanometers
-instead of meters)
+* unit scaling (i.e., working in nm rather than m)
 
 ## Installation
 

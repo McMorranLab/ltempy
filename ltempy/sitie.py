@@ -47,7 +47,6 @@ from . import image_processing as ip
 from .pyplotwrapper import subplots
 from . import constants as _
 np.seterr(divide='ignore', invalid='ignore')
-import json
 
 __all__ = [
 		'Lorentz',
@@ -309,6 +308,8 @@ def ind_from_img(img, defocus = 0, dx = 1, dy = 1, thickness = 60e-9, wavelength
 
 def ind_from_phase(phase, thickness = 60e-9):
 	"""Calculate the magnetic induction given the Aharonov-Bohm phase shift.
+
+	$$f(x) = \int_0^{\infty}dx$$
 
 	This is an implementation of Eq (11) from J. Chess et al., 2017, _Streamlined approach to mapping the magnetic induction of skyrmionic materials_.
 
