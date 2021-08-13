@@ -1,4 +1,4 @@
-# ltempy is LTEM data analysis and simulation tools developed by WSP as a grad student in the McMorran Lab.
+# ltempy is a set of LTEM analysis and simulation tools developed by WSP as a member of the McMorran Lab
 # Copyright (C) 2021  William S. Parker
 #
 # This program is free software: you can redistribute it and/or modify

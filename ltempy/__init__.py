@@ -1,4 +1,4 @@
-# ltempy is LTEM data analysis and simulation tools developed by WSP as a grad student in the McMorran Lab.
+# ltempy is a set of LTEM analysis and simulation tools developed by WSP as a member of the McMorran Lab
 # Copyright (C) 2021  William S. Parker
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,16 +15,16 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 """
-ltempy contains utilities for Lorentz TEM data analysis and presentation.
+ltempy contains tools for Lorentz TEM data analysis, simulation, and presentation.
 
 Features:
 
 * Single Image Transport of Intensity Equation (SITIE) reconstruction
-* Lorentz simulations - calculations of phase, B, A, output image
+* simulations - calculations of phase, B, A, image
 * basic image processing - high_pass, low_pass, clipping
 * a matplotlib.pyplot wrapper tailored to presenting induction maps and Lorentz data
 * an implementation of the CIELAB colorspace
-* unit scaling (i.e., working in nm rather than m)
+* module-wide unit scaling (i.e., working in nm rather than m)
 """
 
 import numpy as np

@@ -1,4 +1,4 @@
-# ltempy is LTEM data analysis and simulation tools developed by WSP as a grad student in the McMorran Lab.
+# ltempy is a set of LTEM analysis and simulation tools developed by WSP as a member of the McMorran Lab
 # Copyright (C) 2021  William S. Parker
 #
 # This program is free software: you can redistribute it and/or modify
@@ -308,8 +308,6 @@ def ind_from_img(img, defocus = 0, dx = 1, dy = 1, thickness = 60e-9, wavelength
 
 def ind_from_phase(phase, thickness = 60e-9):
 	"""Calculate the magnetic induction given the Aharonov-Bohm phase shift.
-
-	$$f(x) = \int_0^{\infty}dx$$
 
 	This is an implementation of Eq (11) from J. Chess et al., 2017, _Streamlined approach to mapping the magnetic induction of skyrmionic materials_.
 
