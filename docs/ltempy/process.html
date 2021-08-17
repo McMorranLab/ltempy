@@ -3,15 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.2" />
-<title>ltempy.image_processing API documentation</title>
-<meta name="description" content="" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>ltempy.process API documentation</title>
+<meta name="description" content="Image processing tools like high- and low-pass filters." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
 <style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
 <style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML" integrity="sha256-kZafAc6mZvK3W3v1pHOcUix30OHQN6pU/NO2oFkqZVw=" crossorigin></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
 <script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
 </head>
@@ -19,9 +20,10 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>ltempy.image_processing</code></h1>
+<h1 class="title">Module <code>ltempy.process</code></h1>
 </header>
 <section id="section-intro">
+<p>Image processing tools like high- and low-pass filters.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -42,6 +44,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
 
+
+&#34;&#34;&#34;Image processing tools like high- and low-pass filters.
+&#34;&#34;&#34;
+
 import os
 from pathlib import Path
 import numpy as np
@@ -49,20 +55,26 @@ import numpy as np
 __all__ = [&#39;high_pass&#39;,&#39;low_pass&#39;,&#39;clip_data&#39;,&#39;shift_pos&#39;,&#39;outpath&#39;,&#39;ndap&#39;]
 
 # %%
-def high_pass(data, sigma = 7, tophat = False):
-        &#34;&#34;&#34;Apply a high pass filter to a 2d-array.
+def high_pass(data, cutoff = 7, gaussian = False):
+        r&#34;&#34;&#34;Apply a high-pass filter to a 2d-array.
+
+        \[
+        f(\mathbf{x}) = \mathcal{F}^{-1} \left[ \mathcal{F} \left[ f(\mathbf{x}) \right] \Theta(|q_{\perp}| - q_c) \right]
+        \]
+
+        where \(\Theta\) is the Heaviside step function and \(q_c\) is the cutoff.
 
         **Parameters**
 
         * **data** : _complex ndarray_ &lt;br /&gt;
 
-        * **sigma** : _number, optional_ &lt;br /&gt;
-        Standard deviation of the gaussian filter, or radius of the tophat filter, measured in pixels. &lt;br /&gt;
-        Default is `sigma = 7`.
+        * **cutoff** : _number, optional_ &lt;br /&gt;
+        Cutoff frequency or standard deviation of the gaussian filter, measured in inverse pixels. &lt;br /&gt;
+        Default is `cutoff = 7`.
 
-        * **tophat** : _boolean, optional_ &lt;br /&gt;
-        If `True`, a tophat high pass is used instead of a gaussian. &lt;br /&gt;
-        Default is `tophat = False`.
+        * **gaussian** : _boolean, optional_ &lt;br /&gt;
+        If true, a gaussian filter is used instead of a tophat. &lt;br /&gt;
+        Default is `gaussian = False`.
 
         **Returns**
 
@@ -72,29 +84,29 @@ def high_pass(data, sigma = 7, tophat = False):
         Y = np.fft.fftfreq(data.shape[0], 1/data.shape[0])
         x, y = np.meshgrid(X, Y)
 
-        g = 1 - np.exp(-(x**2+y**2)/2/sigma**2)
-        if tophat:
-                g[x**2 + y**2 &gt; sigma**2] = 1
-                g[x**2 + y**2 &lt;= sigma**2] = 0
+        g = 1 - np.exp(-(x**2+y**2)/2/cutoff**2)
+        if not gaussian:
+                g[x**2 + y**2 &gt; cutoff**2] = 1
+                g[x**2 + y**2 &lt;= cutoff**2] = 0
 
         Fdata = np.fft.fft2(data)
         FFdata = np.fft.ifft2(g * Fdata)
         return(FFdata)
 
-def low_pass(data, sigma = 10, tophat = False):
-        &#34;&#34;&#34;Apply a low pass filter to a 2d-array.
+def low_pass(data, cutoff = 10, gaussian = False):
+        &#34;&#34;&#34;Apply a gaussian low-pass filter to a 2d-array.
 
         **Parameters**
 
         * **data** : _complex ndarray_ &lt;br /&gt;
 
-        * **sigma** : _number, optional_ &lt;br /&gt;
-        Standard deviation of the gaussian filter, or radius of the tophat filter, measured in pixels. &lt;br /&gt;
-        Default is `sigma = 10`.
+        * **cutoff** : _number, optional_ &lt;br /&gt;
+        Cutoff frequency or standard deviation of the gaussian filter, measured in inverse pixels. &lt;br /&gt;
+        Default is `cutoff = 7`.
 
-        * **tophat** : _boolean, optional_ &lt;br /&gt;
-        If `True`, a tophat low pass is used instead of a gaussian. &lt;br /&gt;
-        Default is `tophat = False`.
+        * **gaussian** : _boolean, optional_ &lt;br /&gt;
+        If true, a gaussian filter is used instead of a tophat. &lt;br /&gt;
+        Default is `gaussian = False`.
 
         **Returns**
 
@@ -104,10 +116,10 @@ def low_pass(data, sigma = 10, tophat = False):
         Y = np.fft.fftfreq(data.shape[0], 1/data.shape[0])
         x, y = np.meshgrid(X, Y)
 
-        g = np.exp(-(x**2+y**2)/2/sigma**2)
-        if tophat:
-                g[x**2 + y**2 &lt; sigma**2] = 1
-                g[x**2 + y**2 &gt;= sigma**2] = 0
+        g = np.exp(-(x**2+y**2)/2/cutoff**2)
+        if not gaussian:
+                g[x**2 + y**2 &lt; cutoff**2] = 1
+                g[x**2 + y**2 &gt;= cutoff**2] = 0
 
         Fdata = np.fft.fft2(data)
         FFdata = np.fft.ifft2(g * Fdata)
@@ -115,6 +127,8 @@ def low_pass(data, sigma = 10, tophat = False):
 
 def clip_data(data, sigma = 5):
         &#34;&#34;&#34;Clip data to a certain number of standard deviations from average.
+
+        **Parameters**
 
         * **data** : _complex ndarray_ &lt;br /&gt;
 
@@ -130,12 +144,13 @@ def clip_data(data, sigma = 5):
         stdev = np.std(data)
         vmin = avg - sigma*stdev
         vmax = avg + sigma*stdev
-        data[data &lt; vmin] = vmin
-        data[data &gt; vmax] = vmax
-        return(data)
+        out = data.copy()
+        out[out &lt; vmin] = vmin
+        out[out &gt; vmax] = vmax
+        return(out)
 
 def shift_pos(data):
-        &#34;&#34;&#34;Shift data to be all greater than zero.
+        &#34;&#34;&#34;Shift data to be positive.
 
         **Parameters**
 
@@ -147,7 +162,7 @@ def shift_pos(data):
         &#34;&#34;&#34;
         return(data - np.min(data))
 
-def outpath(datadir, outdir, fname):
+def outpath(datadir, outdir, fname, create = False):
         &#34;&#34;&#34;A util to get the output filename.
 
         An example is easiest to explain:
@@ -158,7 +173,7 @@ def outpath(datadir, outdir, fname):
 
         outdir: `/where/i/want/to/write/data`
 
-        This util will create the folder (if not exists):
+        This util can create the folder (if it doesn&#39;t exist):
 
         `/where/i/want/to/write/data/plus/some/structure`
 
@@ -169,33 +184,37 @@ def outpath(datadir, outdir, fname):
         **Parameters**
 
         * **datadir** : _string_ &lt;br /&gt;
-        The directory for the experiment&#39;s data. (abspath)
+        The directory for the experiment&#39;s data.
 
         * **outdir** : _string_ &lt;br /&gt;
-        The main directory where you want outputs to go. (abspath)
+        The main directory where you want outputs to go.
 
         * **fname** : _string_ &lt;br /&gt;
-        The name of the file in datadir. (abspath)
+        The name of the file in datadir.
+
+        * **create** : _boolean, optional_ &lt;br /&gt;
+        Whether to create the output directory. &lt;br /&gt;
+        Default is `create = False`.
 
         **Returns**
 
-        * **outname** : _string_ &lt;br /&gt;
-        The name of the file to save. (abspath)
+        * **outname** : _Path_ &lt;br /&gt;
+        The name of the file to save (without a suffix).
         &#34;&#34;&#34;
-        if not os.path.exists(outdir):
-                os.makedirs(outdir)
         fname = os.path.splitext(fname)[0]
         subpath = os.path.relpath(os.path.dirname(fname), datadir)
         finoutdir = os.path.join(outdir, subpath)
-        if not os.path.exists(finoutdir):
-                os.makedirs(finoutdir)
+        if create:
+                if not os.path.exists(finoutdir):
+                        os.makedirs(finoutdir)
         return(Path(os.path.join(finoutdir, os.path.basename(fname))))
 
 # %%
 class ndap(np.ndarray):
-        &#34;&#34;&#34;A class that adds all the image processing methods to np.ndarray.
+        &#34;&#34;&#34;A class that adds all the image processing methods to `np.ndarray`.
 
-        The purpose of this class is just so you can write `myarray.high_pass().low_pass()` instead of `myarray = high_pass(low_pass(myarray))`.
+        The purpose of this class is just so you can write `myarray.high_pass().low_pass()`
+        instead of `myarray = high_pass(low_pass(myarray))`.
 
         **Parameters**
 
@@ -209,46 +228,56 @@ class ndap(np.ndarray):
         def __init__(self, data):
                 self.isComplex = np.iscomplexobj(data)
 
-        def high_pass(self, sigma = 7, tophat = False):
-                &#34;&#34;&#34;Apply a high pass filter to a 2d-array.
+        def high_pass(self, cutoff = 7, gaussian = False):
+                &#34;&#34;&#34;Apply a gaussian high-pass filter to a 2d-array.
 
                 **Parameters**
 
-                * **sigma** : _number, optional_ &lt;br /&gt;
-                Standard deviation of the gaussian filter, measured in pixels. &lt;br /&gt;
-                Default is `sigma = 7`.
+                * **cutoff** : _number, optional_ &lt;br /&gt;
+                Cutoff frequency or standard deviation of the gaussian filter, measured in inverse pixels. &lt;br /&gt;
+                Default is `cutoff = 7`.
+
+                * **gaussian** : _boolean, optional_ &lt;br /&gt;
+                If true, a gaussian filter is used instead of a tophat. &lt;br /&gt;
+                Default is `gaussian = False`.
 
                 **Returns**
 
-                * **FFdata** : _ndap_ &lt;br /&gt;
+                * **self** : _ndap_ &lt;br /&gt;
                 &#34;&#34;&#34;
                 if self.isComplex:
-                        self[:,:] = high_pass(self, sigma, tophat)
+                        self[:,:] = high_pass(self, cutoff, gaussian)
                 else:
-                        self[:,:] = np.real(high_pass(self, sigma, tophat))
+                        self[:,:] = np.real(high_pass(self, cutoff, gaussian))
                 return(self)
 
-        def low_pass(self, sigma = 100, tophat = False):
-                &#34;&#34;&#34;Apply a low pass filter to a 2d-array.
+        def low_pass(self, cutoff = 100, gaussian = False):
+                &#34;&#34;&#34;Apply a gaussian low-pass filter to a 2d-array.
 
                 **Parameters**
 
-                * **sigma** : _number, optional_ &lt;br /&gt;
-                Standard deviation of the gaussian filter, measured in pixels. &lt;br /&gt;
-                Default is `sigma = 100`.
+                * **cutoff** : _number, optional_ &lt;br /&gt;
+                Cutoff frequency or standard deviation of the gaussian filter, measured in inverse pixels. &lt;br /&gt;
+                Default is `cutoff = 7`.
+
+                * **gaussian** : _boolean, optional_ &lt;br /&gt;
+                If true, a gaussian filter is used instead of a tophat. &lt;br /&gt;
+                Default is `gaussian = False`.
 
                 **Returns**
 
-                * **FFdata** : _ndap_ &lt;br /&gt;
+                * **self** : _ndap_ &lt;br /&gt;
                 &#34;&#34;&#34;
                 if self.isComplex:
-                        self[:,:] = low_pass(self, sigma, tophat)
+                        self[:,:] = low_pass(self, cutoff, gaussian)
                 else:
-                        self[:,:] = np.real(low_pass(self, sigma, tophat))
+                        self[:,:] = np.real(low_pass(self, cutoff, gaussian))
                 return(self)
 
         def clip_data(self, sigma = 5):
                 &#34;&#34;&#34;Clip data to a certain number of standard deviations from average.
+
+                **Parameters**
 
                 * **sigma** : _number, optional_ &lt;br /&gt;
                 Number of standard deviations from average to clip to. &lt;br /&gt;
@@ -256,17 +285,17 @@ class ndap(np.ndarray):
 
                 **Returns**
 
-                * **data** : _ndap_ &lt;br /&gt;
+                * **self** : _ndap_ &lt;br /&gt;
                 &#34;&#34;&#34;
                 self[:,:] = clip_data(self, sigma)
                 return(self)
 
         def shift_pos(self):
-                &#34;&#34;&#34;Shift data to be all greater than zero.
+                &#34;&#34;&#34;Shift data to be positive.
 
                 **Returns**
 
-                * **data** : _ndap_
+                * **self** : _ndap_ &lt;br /&gt;
                 &#34;&#34;&#34;
                 self[:,:] = shift_pos(self)
                 return(self)</code></pre>
@@ -279,11 +308,12 @@ class ndap(np.ndarray):
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="ltempy.image_processing.clip_data"><code class="name flex">
+<dt id="ltempy.process.clip_data"><code class="name flex">
 <span>def <span class="ident">clip_data</span></span>(<span>data, sigma=5)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Clip data to a certain number of standard deviations from average.</p>
+<p><strong>Parameters</strong></p>
 <ul>
 <li>
 <p><strong>data</strong> : <em>complex ndarray</em> <br /></p>
@@ -305,6 +335,8 @@ Default is <code>sigma = 5</code>.</p>
 <pre><code class="python">def clip_data(data, sigma = 5):
         &#34;&#34;&#34;Clip data to a certain number of standard deviations from average.
 
+        **Parameters**
+
         * **data** : _complex ndarray_ &lt;br /&gt;
 
         * **sigma** : _number, optional_ &lt;br /&gt;
@@ -319,30 +351,37 @@ Default is <code>sigma = 5</code>.</p>
         stdev = np.std(data)
         vmin = avg - sigma*stdev
         vmax = avg + sigma*stdev
-        data[data &lt; vmin] = vmin
-        data[data &gt; vmax] = vmax
-        return(data)</code></pre>
+        out = data.copy()
+        out[out &lt; vmin] = vmin
+        out[out &gt; vmax] = vmax
+        return(out)</code></pre>
 </details>
 </dd>
-<dt id="ltempy.image_processing.high_pass"><code class="name flex">
-<span>def <span class="ident">high_pass</span></span>(<span>data, sigma=7, tophat=False)</span>
+<dt id="ltempy.process.high_pass"><code class="name flex">
+<span>def <span class="ident">high_pass</span></span>(<span>data, cutoff=7, gaussian=False)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Apply a high pass filter to a 2d-array.</p>
+<div class="desc"><p>Apply a high-pass filter to a 2d-array.</p>
+<p><span><span class="MathJax_Preview">
+f(\mathbf{x}) = \mathcal{F}^{-1} \left[ \mathcal{F} \left[ f(\mathbf{x}) \right] \Theta(|q_{\perp}| - q_c) \right]
+</span><script type="math/tex; mode=display">
+f(\mathbf{x}) = \mathcal{F}^{-1} \left[ \mathcal{F} \left[ f(\mathbf{x}) \right] \Theta(|q_{\perp}| - q_c) \right]
+</script></span></p>
+<p>where <span><span class="MathJax_Preview">\Theta</span><script type="math/tex">\Theta</script></span> is the Heaviside step function and <span><span class="MathJax_Preview">q_c</span><script type="math/tex">q_c</script></span> is the cutoff.</p>
 <p><strong>Parameters</strong></p>
 <ul>
 <li>
 <p><strong>data</strong> : <em>complex ndarray</em> <br /></p>
 </li>
 <li>
-<p><strong>sigma</strong> : <em>number, optional</em> <br />
-Standard deviation of the gaussian filter, or radius of the tophat filter, measured in pixels. <br />
-Default is <code>sigma = 7</code>.</p>
+<p><strong>cutoff</strong> : <em>number, optional</em> <br />
+Cutoff frequency or standard deviation of the gaussian filter, measured in inverse pixels. <br />
+Default is <code>cutoff = 7</code>.</p>
 </li>
 <li>
-<p><strong>tophat</strong> : <em>boolean, optional</em> <br />
-If <code>True</code>, a tophat high pass is used instead of a gaussian. <br />
-Default is <code>tophat = False</code>.</p>
+<p><strong>gaussian</strong> : <em>boolean, optional</em> <br />
+If true, a gaussian filter is used instead of a tophat. <br />
+Default is <code>gaussian = False</code>.</p>
 </li>
 </ul>
 <p><strong>Returns</strong></p>
@@ -353,20 +392,26 @@ Default is <code>tophat = False</code>.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def high_pass(data, sigma = 7, tophat = False):
-        &#34;&#34;&#34;Apply a high pass filter to a 2d-array.
+<pre><code class="python">def high_pass(data, cutoff = 7, gaussian = False):
+        r&#34;&#34;&#34;Apply a high-pass filter to a 2d-array.
+
+        \[
+        f(\mathbf{x}) = \mathcal{F}^{-1} \left[ \mathcal{F} \left[ f(\mathbf{x}) \right] \Theta(|q_{\perp}| - q_c) \right]
+        \]
+
+        where \(\Theta\) is the Heaviside step function and \(q_c\) is the cutoff.
 
         **Parameters**
 
         * **data** : _complex ndarray_ &lt;br /&gt;
 
-        * **sigma** : _number, optional_ &lt;br /&gt;
-        Standard deviation of the gaussian filter, or radius of the tophat filter, measured in pixels. &lt;br /&gt;
-        Default is `sigma = 7`.
+        * **cutoff** : _number, optional_ &lt;br /&gt;
+        Cutoff frequency or standard deviation of the gaussian filter, measured in inverse pixels. &lt;br /&gt;
+        Default is `cutoff = 7`.
 
-        * **tophat** : _boolean, optional_ &lt;br /&gt;
-        If `True`, a tophat high pass is used instead of a gaussian. &lt;br /&gt;
-        Default is `tophat = False`.
+        * **gaussian** : _boolean, optional_ &lt;br /&gt;
+        If true, a gaussian filter is used instead of a tophat. &lt;br /&gt;
+        Default is `gaussian = False`.
 
         **Returns**
 
@@ -376,35 +421,35 @@ Default is <code>tophat = False</code>.</p>
         Y = np.fft.fftfreq(data.shape[0], 1/data.shape[0])
         x, y = np.meshgrid(X, Y)
 
-        g = 1 - np.exp(-(x**2+y**2)/2/sigma**2)
-        if tophat:
-                g[x**2 + y**2 &gt; sigma**2] = 1
-                g[x**2 + y**2 &lt;= sigma**2] = 0
+        g = 1 - np.exp(-(x**2+y**2)/2/cutoff**2)
+        if not gaussian:
+                g[x**2 + y**2 &gt; cutoff**2] = 1
+                g[x**2 + y**2 &lt;= cutoff**2] = 0
 
         Fdata = np.fft.fft2(data)
         FFdata = np.fft.ifft2(g * Fdata)
         return(FFdata)</code></pre>
 </details>
 </dd>
-<dt id="ltempy.image_processing.low_pass"><code class="name flex">
-<span>def <span class="ident">low_pass</span></span>(<span>data, sigma=10, tophat=False)</span>
+<dt id="ltempy.process.low_pass"><code class="name flex">
+<span>def <span class="ident">low_pass</span></span>(<span>data, cutoff=10, gaussian=False)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Apply a low pass filter to a 2d-array.</p>
+<div class="desc"><p>Apply a gaussian low-pass filter to a 2d-array.</p>
 <p><strong>Parameters</strong></p>
 <ul>
 <li>
 <p><strong>data</strong> : <em>complex ndarray</em> <br /></p>
 </li>
 <li>
-<p><strong>sigma</strong> : <em>number, optional</em> <br />
-Standard deviation of the gaussian filter, or radius of the tophat filter, measured in pixels. <br />
-Default is <code>sigma = 10</code>.</p>
+<p><strong>cutoff</strong> : <em>number, optional</em> <br />
+Cutoff frequency or standard deviation of the gaussian filter, measured in inverse pixels. <br />
+Default is <code>cutoff = 7</code>.</p>
 </li>
 <li>
-<p><strong>tophat</strong> : <em>boolean, optional</em> <br />
-If <code>True</code>, a tophat low pass is used instead of a gaussian. <br />
-Default is <code>tophat = False</code>.</p>
+<p><strong>gaussian</strong> : <em>boolean, optional</em> <br />
+If true, a gaussian filter is used instead of a tophat. <br />
+Default is <code>gaussian = False</code>.</p>
 </li>
 </ul>
 <p><strong>Returns</strong></p>
@@ -415,20 +460,20 @@ Default is <code>tophat = False</code>.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def low_pass(data, sigma = 10, tophat = False):
-        &#34;&#34;&#34;Apply a low pass filter to a 2d-array.
+<pre><code class="python">def low_pass(data, cutoff = 10, gaussian = False):
+        &#34;&#34;&#34;Apply a gaussian low-pass filter to a 2d-array.
 
         **Parameters**
 
         * **data** : _complex ndarray_ &lt;br /&gt;
 
-        * **sigma** : _number, optional_ &lt;br /&gt;
-        Standard deviation of the gaussian filter, or radius of the tophat filter, measured in pixels. &lt;br /&gt;
-        Default is `sigma = 10`.
+        * **cutoff** : _number, optional_ &lt;br /&gt;
+        Cutoff frequency or standard deviation of the gaussian filter, measured in inverse pixels. &lt;br /&gt;
+        Default is `cutoff = 7`.
 
-        * **tophat** : _boolean, optional_ &lt;br /&gt;
-        If `True`, a tophat low pass is used instead of a gaussian. &lt;br /&gt;
-        Default is `tophat = False`.
+        * **gaussian** : _boolean, optional_ &lt;br /&gt;
+        If true, a gaussian filter is used instead of a tophat. &lt;br /&gt;
+        Default is `gaussian = False`.
 
         **Returns**
 
@@ -438,18 +483,18 @@ Default is <code>tophat = False</code>.</p>
         Y = np.fft.fftfreq(data.shape[0], 1/data.shape[0])
         x, y = np.meshgrid(X, Y)
 
-        g = np.exp(-(x**2+y**2)/2/sigma**2)
-        if tophat:
-                g[x**2 + y**2 &lt; sigma**2] = 1
-                g[x**2 + y**2 &gt;= sigma**2] = 0
+        g = np.exp(-(x**2+y**2)/2/cutoff**2)
+        if not gaussian:
+                g[x**2 + y**2 &lt; cutoff**2] = 1
+                g[x**2 + y**2 &gt;= cutoff**2] = 0
 
         Fdata = np.fft.fft2(data)
         FFdata = np.fft.ifft2(g * Fdata)
         return(FFdata)</code></pre>
 </details>
 </dd>
-<dt id="ltempy.image_processing.outpath"><code class="name flex">
-<span>def <span class="ident">outpath</span></span>(<span>datadir, outdir, fname)</span>
+<dt id="ltempy.process.outpath"><code class="name flex">
+<span>def <span class="ident">outpath</span></span>(<span>datadir, outdir, fname, create=False)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>A util to get the output filename.</p>
@@ -457,7 +502,7 @@ Default is <code>tophat = False</code>.</p>
 <p>datadir: <code>/abs/path/to/data</code></p>
 <p>fname: <code>/abs/path/to/data/plus/some/structure/too.dm3</code></p>
 <p>outdir: <code>/where/i/want/to/write/data</code></p>
-<p>This util will create the folder (if not exists):</p>
+<p>This util can create the folder (if it doesn't exist):</p>
 <p><code>/where/i/want/to/write/data/plus/some/structure</code></p>
 <p>and return the filename:</p>
 <p><code>/where/i/want/to/write/data/plus/some/structure/too</code>.</p>
@@ -465,27 +510,32 @@ Default is <code>tophat = False</code>.</p>
 <ul>
 <li>
 <p><strong>datadir</strong> : <em>string</em> <br />
-The directory for the experiment's data. (abspath)</p>
+The directory for the experiment's data.</p>
 </li>
 <li>
 <p><strong>outdir</strong> : <em>string</em> <br />
-The main directory where you want outputs to go. (abspath)</p>
+The main directory where you want outputs to go.</p>
 </li>
 <li>
 <p><strong>fname</strong> : <em>string</em> <br />
-The name of the file in datadir. (abspath)</p>
+The name of the file in datadir.</p>
+</li>
+<li>
+<p><strong>create</strong> : <em>boolean, optional</em> <br />
+Whether to create the output directory. <br />
+Default is <code>create = False</code>.</p>
 </li>
 </ul>
 <p><strong>Returns</strong></p>
 <ul>
-<li><strong>outname</strong> : <em>string</em> <br />
-The name of the file to save. (abspath)</li>
+<li><strong>outname</strong> : <em>Path</em> <br />
+The name of the file to save (without a suffix).</li>
 </ul></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def outpath(datadir, outdir, fname):
+<pre><code class="python">def outpath(datadir, outdir, fname, create = False):
         &#34;&#34;&#34;A util to get the output filename.
 
         An example is easiest to explain:
@@ -496,7 +546,7 @@ The name of the file to save. (abspath)</li>
 
         outdir: `/where/i/want/to/write/data`
 
-        This util will create the folder (if not exists):
+        This util can create the folder (if it doesn&#39;t exist):
 
         `/where/i/want/to/write/data/plus/some/structure`
 
@@ -507,34 +557,37 @@ The name of the file to save. (abspath)</li>
         **Parameters**
 
         * **datadir** : _string_ &lt;br /&gt;
-        The directory for the experiment&#39;s data. (abspath)
+        The directory for the experiment&#39;s data.
 
         * **outdir** : _string_ &lt;br /&gt;
-        The main directory where you want outputs to go. (abspath)
+        The main directory where you want outputs to go.
 
         * **fname** : _string_ &lt;br /&gt;
-        The name of the file in datadir. (abspath)
+        The name of the file in datadir.
+
+        * **create** : _boolean, optional_ &lt;br /&gt;
+        Whether to create the output directory. &lt;br /&gt;
+        Default is `create = False`.
 
         **Returns**
 
-        * **outname** : _string_ &lt;br /&gt;
-        The name of the file to save. (abspath)
+        * **outname** : _Path_ &lt;br /&gt;
+        The name of the file to save (without a suffix).
         &#34;&#34;&#34;
-        if not os.path.exists(outdir):
-                os.makedirs(outdir)
         fname = os.path.splitext(fname)[0]
         subpath = os.path.relpath(os.path.dirname(fname), datadir)
         finoutdir = os.path.join(outdir, subpath)
-        if not os.path.exists(finoutdir):
-                os.makedirs(finoutdir)
+        if create:
+                if not os.path.exists(finoutdir):
+                        os.makedirs(finoutdir)
         return(Path(os.path.join(finoutdir, os.path.basename(fname))))</code></pre>
 </details>
 </dd>
-<dt id="ltempy.image_processing.shift_pos"><code class="name flex">
+<dt id="ltempy.process.shift_pos"><code class="name flex">
 <span>def <span class="ident">shift_pos</span></span>(<span>data)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Shift data to be all greater than zero.</p>
+<div class="desc"><p>Shift data to be positive.</p>
 <p><strong>Parameters</strong></p>
 <ul>
 <li><strong>data</strong> : <em>complex ndarray</em> <br /></li>
@@ -548,7 +601,7 @@ The name of the file to save. (abspath)</li>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def shift_pos(data):
-        &#34;&#34;&#34;Shift data to be all greater than zero.
+        &#34;&#34;&#34;Shift data to be positive.
 
         **Parameters**
 
@@ -566,13 +619,14 @@ The name of the file to save. (abspath)</li>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="ltempy.image_processing.ndap"><code class="flex name class">
+<dt id="ltempy.process.ndap"><code class="flex name class">
 <span>class <span class="ident">ndap</span></span>
 <span>(</span><span>data)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>A class that adds all the image processing methods to np.ndarray.</p>
-<p>The purpose of this class is just so you can write <code>myarray.high_pass().<a title="ltempy.image_processing.low_pass" href="#ltempy.image_processing.low_pass">low_pass()</a></code> instead of <code>myarray = high_pass(low_pass(myarray))</code>.</p>
+<div class="desc"><p>A class that adds all the image processing methods to <code>np.ndarray</code>.</p>
+<p>The purpose of this class is just so you can write <code>myarray.high_pass().<a title="ltempy.process.low_pass" href="#ltempy.process.low_pass">low_pass()</a></code>
+instead of <code>myarray = high_pass(low_pass(myarray))</code>.</p>
 <p><strong>Parameters</strong></p>
 <ul>
 <li><strong>data</strong> : <em>complex ndarray</em> <br />
@@ -583,9 +637,10 @@ Any type of ndarray - the methods are defined with a 2d array in mind.</li>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ndap(np.ndarray):
-        &#34;&#34;&#34;A class that adds all the image processing methods to np.ndarray.
+        &#34;&#34;&#34;A class that adds all the image processing methods to `np.ndarray`.
 
-        The purpose of this class is just so you can write `myarray.high_pass().low_pass()` instead of `myarray = high_pass(low_pass(myarray))`.
+        The purpose of this class is just so you can write `myarray.high_pass().low_pass()`
+        instead of `myarray = high_pass(low_pass(myarray))`.
 
         **Parameters**
 
@@ -599,46 +654,56 @@ Any type of ndarray - the methods are defined with a 2d array in mind.</li>
         def __init__(self, data):
                 self.isComplex = np.iscomplexobj(data)
 
-        def high_pass(self, sigma = 7, tophat = False):
-                &#34;&#34;&#34;Apply a high pass filter to a 2d-array.
+        def high_pass(self, cutoff = 7, gaussian = False):
+                &#34;&#34;&#34;Apply a gaussian high-pass filter to a 2d-array.
 
                 **Parameters**
 
-                * **sigma** : _number, optional_ &lt;br /&gt;
-                Standard deviation of the gaussian filter, measured in pixels. &lt;br /&gt;
-                Default is `sigma = 7`.
+                * **cutoff** : _number, optional_ &lt;br /&gt;
+                Cutoff frequency or standard deviation of the gaussian filter, measured in inverse pixels. &lt;br /&gt;
+                Default is `cutoff = 7`.
+
+                * **gaussian** : _boolean, optional_ &lt;br /&gt;
+                If true, a gaussian filter is used instead of a tophat. &lt;br /&gt;
+                Default is `gaussian = False`.
 
                 **Returns**
 
-                * **FFdata** : _ndap_ &lt;br /&gt;
+                * **self** : _ndap_ &lt;br /&gt;
                 &#34;&#34;&#34;
                 if self.isComplex:
-                        self[:,:] = high_pass(self, sigma, tophat)
+                        self[:,:] = high_pass(self, cutoff, gaussian)
                 else:
-                        self[:,:] = np.real(high_pass(self, sigma, tophat))
+                        self[:,:] = np.real(high_pass(self, cutoff, gaussian))
                 return(self)
 
-        def low_pass(self, sigma = 100, tophat = False):
-                &#34;&#34;&#34;Apply a low pass filter to a 2d-array.
+        def low_pass(self, cutoff = 100, gaussian = False):
+                &#34;&#34;&#34;Apply a gaussian low-pass filter to a 2d-array.
 
                 **Parameters**
 
-                * **sigma** : _number, optional_ &lt;br /&gt;
-                Standard deviation of the gaussian filter, measured in pixels. &lt;br /&gt;
-                Default is `sigma = 100`.
+                * **cutoff** : _number, optional_ &lt;br /&gt;
+                Cutoff frequency or standard deviation of the gaussian filter, measured in inverse pixels. &lt;br /&gt;
+                Default is `cutoff = 7`.
+
+                * **gaussian** : _boolean, optional_ &lt;br /&gt;
+                If true, a gaussian filter is used instead of a tophat. &lt;br /&gt;
+                Default is `gaussian = False`.
 
                 **Returns**
 
-                * **FFdata** : _ndap_ &lt;br /&gt;
+                * **self** : _ndap_ &lt;br /&gt;
                 &#34;&#34;&#34;
                 if self.isComplex:
-                        self[:,:] = low_pass(self, sigma, tophat)
+                        self[:,:] = low_pass(self, cutoff, gaussian)
                 else:
-                        self[:,:] = np.real(low_pass(self, sigma, tophat))
+                        self[:,:] = np.real(low_pass(self, cutoff, gaussian))
                 return(self)
 
         def clip_data(self, sigma = 5):
                 &#34;&#34;&#34;Clip data to a certain number of standard deviations from average.
+
+                **Parameters**
 
                 * **sigma** : _number, optional_ &lt;br /&gt;
                 Number of standard deviations from average to clip to. &lt;br /&gt;
@@ -646,17 +711,17 @@ Any type of ndarray - the methods are defined with a 2d array in mind.</li>
 
                 **Returns**
 
-                * **data** : _ndap_ &lt;br /&gt;
+                * **self** : _ndap_ &lt;br /&gt;
                 &#34;&#34;&#34;
                 self[:,:] = clip_data(self, sigma)
                 return(self)
 
         def shift_pos(self):
-                &#34;&#34;&#34;Shift data to be all greater than zero.
+                &#34;&#34;&#34;Shift data to be positive.
 
                 **Returns**
 
-                * **data** : _ndap_
+                * **self** : _ndap_ &lt;br /&gt;
                 &#34;&#34;&#34;
                 self[:,:] = shift_pos(self)
                 return(self)</code></pre>
@@ -667,11 +732,12 @@ Any type of ndarray - the methods are defined with a 2d array in mind.</li>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="ltempy.image_processing.ndap.clip_data"><code class="name flex">
+<dt id="ltempy.process.ndap.clip_data"><code class="name flex">
 <span>def <span class="ident">clip_data</span></span>(<span>self, sigma=5)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Clip data to a certain number of standard deviations from average.</p>
+<p><strong>Parameters</strong></p>
 <ul>
 <li><strong>sigma</strong> : <em>number, optional</em> <br />
 Number of standard deviations from average to clip to. <br />
@@ -679,7 +745,7 @@ Default is <code>sigma = 5</code>.</li>
 </ul>
 <p><strong>Returns</strong></p>
 <ul>
-<li><strong>data</strong> : <em>ndap</em> <br /></li>
+<li><strong>self</strong> : <em>ndap</em> <br /></li>
 </ul></div>
 <details class="source">
 <summary>
@@ -688,115 +754,139 @@ Default is <code>sigma = 5</code>.</li>
 <pre><code class="python">def clip_data(self, sigma = 5):
         &#34;&#34;&#34;Clip data to a certain number of standard deviations from average.
 
+        **Parameters**
+
         * **sigma** : _number, optional_ &lt;br /&gt;
         Number of standard deviations from average to clip to. &lt;br /&gt;
         Default is `sigma = 5`.
 
         **Returns**
 
-        * **data** : _ndap_ &lt;br /&gt;
+        * **self** : _ndap_ &lt;br /&gt;
         &#34;&#34;&#34;
         self[:,:] = clip_data(self, sigma)
         return(self)</code></pre>
 </details>
 </dd>
-<dt id="ltempy.image_processing.ndap.high_pass"><code class="name flex">
-<span>def <span class="ident">high_pass</span></span>(<span>self, sigma=7, tophat=False)</span>
+<dt id="ltempy.process.ndap.high_pass"><code class="name flex">
+<span>def <span class="ident">high_pass</span></span>(<span>self, cutoff=7, gaussian=False)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Apply a high pass filter to a 2d-array.</p>
+<div class="desc"><p>Apply a gaussian high-pass filter to a 2d-array.</p>
 <p><strong>Parameters</strong></p>
 <ul>
-<li><strong>sigma</strong> : <em>number, optional</em> <br />
-Standard deviation of the gaussian filter, measured in pixels. <br />
-Default is <code>sigma = 7</code>.</li>
+<li>
+<p><strong>cutoff</strong> : <em>number, optional</em> <br />
+Cutoff frequency or standard deviation of the gaussian filter, measured in inverse pixels. <br />
+Default is <code>cutoff = 7</code>.</p>
+</li>
+<li>
+<p><strong>gaussian</strong> : <em>boolean, optional</em> <br />
+If true, a gaussian filter is used instead of a tophat. <br />
+Default is <code>gaussian = False</code>.</p>
+</li>
 </ul>
 <p><strong>Returns</strong></p>
 <ul>
-<li><strong>FFdata</strong> : <em>ndap</em> <br /></li>
+<li><strong>self</strong> : <em>ndap</em> <br /></li>
 </ul></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def high_pass(self, sigma = 7, tophat = False):
-        &#34;&#34;&#34;Apply a high pass filter to a 2d-array.
+<pre><code class="python">def high_pass(self, cutoff = 7, gaussian = False):
+        &#34;&#34;&#34;Apply a gaussian high-pass filter to a 2d-array.
 
         **Parameters**
 
-        * **sigma** : _number, optional_ &lt;br /&gt;
-        Standard deviation of the gaussian filter, measured in pixels. &lt;br /&gt;
-        Default is `sigma = 7`.
+        * **cutoff** : _number, optional_ &lt;br /&gt;
+        Cutoff frequency or standard deviation of the gaussian filter, measured in inverse pixels. &lt;br /&gt;
+        Default is `cutoff = 7`.
+
+        * **gaussian** : _boolean, optional_ &lt;br /&gt;
+        If true, a gaussian filter is used instead of a tophat. &lt;br /&gt;
+        Default is `gaussian = False`.
 
         **Returns**
 
-        * **FFdata** : _ndap_ &lt;br /&gt;
+        * **self** : _ndap_ &lt;br /&gt;
         &#34;&#34;&#34;
         if self.isComplex:
-                self[:,:] = high_pass(self, sigma, tophat)
+                self[:,:] = high_pass(self, cutoff, gaussian)
         else:
-                self[:,:] = np.real(high_pass(self, sigma, tophat))
+                self[:,:] = np.real(high_pass(self, cutoff, gaussian))
         return(self)</code></pre>
 </details>
 </dd>
-<dt id="ltempy.image_processing.ndap.low_pass"><code class="name flex">
-<span>def <span class="ident">low_pass</span></span>(<span>self, sigma=100, tophat=False)</span>
+<dt id="ltempy.process.ndap.low_pass"><code class="name flex">
+<span>def <span class="ident">low_pass</span></span>(<span>self, cutoff=100, gaussian=False)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Apply a low pass filter to a 2d-array.</p>
+<div class="desc"><p>Apply a gaussian low-pass filter to a 2d-array.</p>
 <p><strong>Parameters</strong></p>
 <ul>
-<li><strong>sigma</strong> : <em>number, optional</em> <br />
-Standard deviation of the gaussian filter, measured in pixels. <br />
-Default is <code>sigma = 100</code>.</li>
+<li>
+<p><strong>cutoff</strong> : <em>number, optional</em> <br />
+Cutoff frequency or standard deviation of the gaussian filter, measured in inverse pixels. <br />
+Default is <code>cutoff = 7</code>.</p>
+</li>
+<li>
+<p><strong>gaussian</strong> : <em>boolean, optional</em> <br />
+If true, a gaussian filter is used instead of a tophat. <br />
+Default is <code>gaussian = False</code>.</p>
+</li>
 </ul>
 <p><strong>Returns</strong></p>
 <ul>
-<li><strong>FFdata</strong> : <em>ndap</em> <br /></li>
+<li><strong>self</strong> : <em>ndap</em> <br /></li>
 </ul></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def low_pass(self, sigma = 100, tophat = False):
-        &#34;&#34;&#34;Apply a low pass filter to a 2d-array.
+<pre><code class="python">def low_pass(self, cutoff = 100, gaussian = False):
+        &#34;&#34;&#34;Apply a gaussian low-pass filter to a 2d-array.
 
         **Parameters**
 
-        * **sigma** : _number, optional_ &lt;br /&gt;
-        Standard deviation of the gaussian filter, measured in pixels. &lt;br /&gt;
-        Default is `sigma = 100`.
+        * **cutoff** : _number, optional_ &lt;br /&gt;
+        Cutoff frequency or standard deviation of the gaussian filter, measured in inverse pixels. &lt;br /&gt;
+        Default is `cutoff = 7`.
+
+        * **gaussian** : _boolean, optional_ &lt;br /&gt;
+        If true, a gaussian filter is used instead of a tophat. &lt;br /&gt;
+        Default is `gaussian = False`.
 
         **Returns**
 
-        * **FFdata** : _ndap_ &lt;br /&gt;
+        * **self** : _ndap_ &lt;br /&gt;
         &#34;&#34;&#34;
         if self.isComplex:
-                self[:,:] = low_pass(self, sigma, tophat)
+                self[:,:] = low_pass(self, cutoff, gaussian)
         else:
-                self[:,:] = np.real(low_pass(self, sigma, tophat))
+                self[:,:] = np.real(low_pass(self, cutoff, gaussian))
         return(self)</code></pre>
 </details>
 </dd>
-<dt id="ltempy.image_processing.ndap.shift_pos"><code class="name flex">
+<dt id="ltempy.process.ndap.shift_pos"><code class="name flex">
 <span>def <span class="ident">shift_pos</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Shift data to be all greater than zero.</p>
+<div class="desc"><p>Shift data to be positive.</p>
 <p><strong>Returns</strong></p>
 <ul>
-<li><strong>data</strong> : <em>ndap</em></li>
+<li><strong>self</strong> : <em>ndap</em> <br /></li>
 </ul></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def shift_pos(self):
-        &#34;&#34;&#34;Shift data to be all greater than zero.
+        &#34;&#34;&#34;Shift data to be positive.
 
         **Returns**
 
-        * **data** : _ndap_
+        * **self** : _ndap_ &lt;br /&gt;
         &#34;&#34;&#34;
         self[:,:] = shift_pos(self)
         return(self)</code></pre>
@@ -813,29 +903,24 @@ Default is <code>sigma = 100</code>.</li>
 <ul></ul>
 </div>
 <ul id="index">
-<li><h3>Super-module</h3>
-<ul>
-<li><code><a title="ltempy" href="index.html">ltempy</a></code></li>
-</ul>
-</li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="ltempy.image_processing.clip_data" href="#ltempy.image_processing.clip_data">clip_data</a></code></li>
-<li><code><a title="ltempy.image_processing.high_pass" href="#ltempy.image_processing.high_pass">high_pass</a></code></li>
-<li><code><a title="ltempy.image_processing.low_pass" href="#ltempy.image_processing.low_pass">low_pass</a></code></li>
-<li><code><a title="ltempy.image_processing.outpath" href="#ltempy.image_processing.outpath">outpath</a></code></li>
-<li><code><a title="ltempy.image_processing.shift_pos" href="#ltempy.image_processing.shift_pos">shift_pos</a></code></li>
+<li><code><a title="ltempy.process.clip_data" href="#ltempy.process.clip_data">clip_data</a></code></li>
+<li><code><a title="ltempy.process.high_pass" href="#ltempy.process.high_pass">high_pass</a></code></li>
+<li><code><a title="ltempy.process.low_pass" href="#ltempy.process.low_pass">low_pass</a></code></li>
+<li><code><a title="ltempy.process.outpath" href="#ltempy.process.outpath">outpath</a></code></li>
+<li><code><a title="ltempy.process.shift_pos" href="#ltempy.process.shift_pos">shift_pos</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="ltempy.image_processing.ndap" href="#ltempy.image_processing.ndap">ndap</a></code></h4>
+<h4><code><a title="ltempy.process.ndap" href="#ltempy.process.ndap">ndap</a></code></h4>
 <ul class="">
-<li><code><a title="ltempy.image_processing.ndap.clip_data" href="#ltempy.image_processing.ndap.clip_data">clip_data</a></code></li>
-<li><code><a title="ltempy.image_processing.ndap.high_pass" href="#ltempy.image_processing.ndap.high_pass">high_pass</a></code></li>
-<li><code><a title="ltempy.image_processing.ndap.low_pass" href="#ltempy.image_processing.ndap.low_pass">low_pass</a></code></li>
-<li><code><a title="ltempy.image_processing.ndap.shift_pos" href="#ltempy.image_processing.ndap.shift_pos">shift_pos</a></code></li>
+<li><code><a title="ltempy.process.ndap.clip_data" href="#ltempy.process.ndap.clip_data">clip_data</a></code></li>
+<li><code><a title="ltempy.process.ndap.high_pass" href="#ltempy.process.ndap.high_pass">high_pass</a></code></li>
+<li><code><a title="ltempy.process.ndap.low_pass" href="#ltempy.process.ndap.low_pass">low_pass</a></code></li>
+<li><code><a title="ltempy.process.ndap.shift_pos" href="#ltempy.process.ndap.shift_pos">shift_pos</a></code></li>
 </ul>
 </li>
 </ul>
@@ -844,7 +929,7 @@ Default is <code>sigma = 100</code>.</li>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
 </footer>
 </body>
 </html>

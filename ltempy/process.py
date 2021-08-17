@@ -14,27 +14,30 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+
+"""Image processing tools like high- and low-pass filters.
+"""
+
 import os
 from pathlib import Path
 import numpy as np
 
 __all__ = ['high_pass','low_pass','clip_data','shift_pos','outpath','ndap']
 
-# %%
-def high_pass(data, sigma = 7, tophat = False):
-	"""Apply a high pass filter to a 2d-array.
+def high_pass(data, cutoff = 7, gaussian = False):
+	"""Apply a high-pass filter to a 2d-array.
 
 	**Parameters**
 
 	* **data** : _complex ndarray_ <br />
 
-	* **sigma** : _number, optional_ <br />
-	Standard deviation of the gaussian filter, or radius of the tophat filter, measured in pixels. <br />
-	Default is `sigma = 7`.
+	* **cutoff** : _number, optional_ <br />
+	Cutoff frequency or standard deviation of the gaussian filter, measured in inverse pixels. <br />
+	Default is `cutoff = 7`.
 
-	* **tophat** : _boolean, optional_ <br />
-	If `True`, a tophat high pass is used instead of a gaussian. <br />
-	Default is `tophat = False`.
+	* **gaussian** : _boolean, optional_ <br />
+	If true, a gaussian filter is used instead of a tophat. <br />
+	Default is `gaussian = False`.
 
 	**Returns**
 
@@ -44,29 +47,29 @@ def high_pass(data, sigma = 7, tophat = False):
 	Y = np.fft.fftfreq(data.shape[0], 1/data.shape[0])
 	x, y = np.meshgrid(X, Y)
 
-	g = 1 - np.exp(-(x**2+y**2)/2/sigma**2)
-	if tophat:
-		g[x**2 + y**2 > sigma**2] = 1
-		g[x**2 + y**2 <= sigma**2] = 0
+	g = 1 - np.exp(-(x**2+y**2)/2/cutoff**2)
+	if not gaussian:
+		g[x**2 + y**2 > cutoff**2] = 1
+		g[x**2 + y**2 <= cutoff**2] = 0
 
 	Fdata = np.fft.fft2(data)
 	FFdata = np.fft.ifft2(g * Fdata)
 	return(FFdata)
 
-def low_pass(data, sigma = 10, tophat = False):
-	"""Apply a low pass filter to a 2d-array.
+def low_pass(data, cutoff = 10, gaussian = False):
+	"""Apply a gaussian low-pass filter to a 2d-array.
 
 	**Parameters**
 
 	* **data** : _complex ndarray_ <br />
 
-	* **sigma** : _number, optional_ <br />
-	Standard deviation of the gaussian filter, or radius of the tophat filter, measured in pixels. <br />
-	Default is `sigma = 10`.
+	* **cutoff** : _number, optional_ <br />
+	Cutoff frequency or standard deviation of the gaussian filter, measured in inverse pixels. <br />
+	Default is `cutoff = 7`.
 
-	* **tophat** : _boolean, optional_ <br />
-	If `True`, a tophat low pass is used instead of a gaussian. <br />
-	Default is `tophat = False`.
+	* **gaussian** : _boolean, optional_ <br />
+	If true, a gaussian filter is used instead of a tophat. <br />
+	Default is `gaussian = False`.
 
 	**Returns**
 
@@ -76,10 +79,10 @@ def low_pass(data, sigma = 10, tophat = False):
 	Y = np.fft.fftfreq(data.shape[0], 1/data.shape[0])
 	x, y = np.meshgrid(X, Y)
 
-	g = np.exp(-(x**2+y**2)/2/sigma**2)
-	if tophat:
-		g[x**2 + y**2 < sigma**2] = 1
-		g[x**2 + y**2 >= sigma**2] = 0
+	g = np.exp(-(x**2+y**2)/2/cutoff**2)
+	if not gaussian:
+		g[x**2 + y**2 < cutoff**2] = 1
+		g[x**2 + y**2 >= cutoff**2] = 0
 
 	Fdata = np.fft.fft2(data)
 	FFdata = np.fft.ifft2(g * Fdata)
@@ -87,6 +90,8 @@ def low_pass(data, sigma = 10, tophat = False):
 
 def clip_data(data, sigma = 5):
 	"""Clip data to a certain number of standard deviations from average.
+
+	**Parameters**
 
 	* **data** : _complex ndarray_ <br />
 
@@ -102,12 +107,13 @@ def clip_data(data, sigma = 5):
 	stdev = np.std(data)
 	vmin = avg - sigma*stdev
 	vmax = avg + sigma*stdev
-	data[data < vmin] = vmin
-	data[data > vmax] = vmax
-	return(data)
+	out = data.copy()
+	out[out < vmin] = vmin
+	out[out > vmax] = vmax
+	return(out)
 
 def shift_pos(data):
-	"""Shift data to be all greater than zero.
+	"""Shift data to be positive.
 
 	**Parameters**
 
@@ -119,7 +125,7 @@ def shift_pos(data):
 	"""
 	return(data - np.min(data))
 
-def outpath(datadir, outdir, fname):
+def outpath(datadir, outdir, fname, create = False):
 	"""A util to get the output filename.
 
 	An example is easiest to explain:
@@ -130,7 +136,7 @@ def outpath(datadir, outdir, fname):
 
 	outdir: `/where/i/want/to/write/data`
 
-	This util will create the folder (if not exists):
+	This util can create the folder (if it doesn't exist):
 
 	`/where/i/want/to/write/data/plus/some/structure`
 
@@ -141,33 +147,37 @@ def outpath(datadir, outdir, fname):
 	**Parameters**
 
 	* **datadir** : _string_ <br />
-	The directory for the experiment's data. (abspath)
+	The directory for the experiment's data.
 
 	* **outdir** : _string_ <br />
-	The main directory where you want outputs to go. (abspath)
+	The main directory where you want outputs to go.
 
 	* **fname** : _string_ <br />
-	The name of the file in datadir. (abspath)
+	The name of the file in datadir.
+
+	* **create** : _boolean, optional_ <br />
+	Whether to create the output directory. <br />
+	Default is `create = False`.
 
 	**Returns**
 
-	* **outname** : _string_ <br />
-	The name of the file to save. (abspath)
+	* **outname** : _Path_ <br />
+	The name of the file to save (without a suffix).
 	"""
-	if not os.path.exists(outdir):
-		os.makedirs(outdir)
 	fname = os.path.splitext(fname)[0]
 	subpath = os.path.relpath(os.path.dirname(fname), datadir)
 	finoutdir = os.path.join(outdir, subpath)
-	if not os.path.exists(finoutdir):
-		os.makedirs(finoutdir)
+	if create:
+		if not os.path.exists(finoutdir):
+			os.makedirs(finoutdir)
 	return(Path(os.path.join(finoutdir, os.path.basename(fname))))
 
 # %%
 class ndap(np.ndarray):
-	"""A class that adds all the image processing methods to np.ndarray.
+	"""A class that adds all the image processing methods to `np.ndarray`.
 
-	The purpose of this class is just so you can write `myarray.high_pass().low_pass()` instead of `myarray = high_pass(low_pass(myarray))`.
+	The purpose of this class is just so you can write `myarray.high_pass().low_pass()`
+	instead of `myarray = high_pass(low_pass(myarray))`.
 
 	**Parameters**
 
@@ -181,46 +191,56 @@ class ndap(np.ndarray):
 	def __init__(self, data):
 		self.isComplex = np.iscomplexobj(data)
 
-	def high_pass(self, sigma = 7, tophat = False):
-		"""Apply a high pass filter to a 2d-array.
+	def high_pass(self, cutoff = 7, gaussian = False):
+		"""Apply a gaussian high-pass filter to a 2d-array.
 
 		**Parameters**
 
-		* **sigma** : _number, optional_ <br />
-		Standard deviation of the gaussian filter, measured in pixels. <br />
-		Default is `sigma = 7`.
+		* **cutoff** : _number, optional_ <br />
+		Cutoff frequency or standard deviation of the gaussian filter, measured in inverse pixels. <br />
+		Default is `cutoff = 7`.
+
+		* **gaussian** : _boolean, optional_ <br />
+		If true, a gaussian filter is used instead of a tophat. <br />
+		Default is `gaussian = False`.
 
 		**Returns**
 
-		* **FFdata** : _ndap_ <br />
+		* **self** : _ndap_ <br />
 		"""
 		if self.isComplex:
-			self[:,:] = high_pass(self, sigma, tophat)
+			self[:,:] = high_pass(self, cutoff, gaussian)
 		else:
-			self[:,:] = np.real(high_pass(self, sigma, tophat))
+			self[:,:] = np.real(high_pass(self, cutoff, gaussian))
 		return(self)
 
-	def low_pass(self, sigma = 100, tophat = False):
-		"""Apply a low pass filter to a 2d-array.
+	def low_pass(self, cutoff = 100, gaussian = False):
+		"""Apply a gaussian low-pass filter to a 2d-array.
 
 		**Parameters**
 
-		* **sigma** : _number, optional_ <br />
-		Standard deviation of the gaussian filter, measured in pixels. <br />
-		Default is `sigma = 100`.
+		* **cutoff** : _number, optional_ <br />
+		Cutoff frequency or standard deviation of the gaussian filter, measured in inverse pixels. <br />
+		Default is `cutoff = 7`.
+
+		* **gaussian** : _boolean, optional_ <br />
+		If true, a gaussian filter is used instead of a tophat. <br />
+		Default is `gaussian = False`.
 
 		**Returns**
 
-		* **FFdata** : _ndap_ <br />
+		* **self** : _ndap_ <br />
 		"""
 		if self.isComplex:
-			self[:,:] = low_pass(self, sigma, tophat)
+			self[:,:] = low_pass(self, cutoff, gaussian)
 		else:
-			self[:,:] = np.real(low_pass(self, sigma, tophat))
+			self[:,:] = np.real(low_pass(self, cutoff, gaussian))
 		return(self)
 
 	def clip_data(self, sigma = 5):
 		"""Clip data to a certain number of standard deviations from average.
+
+		**Parameters**
 
 		* **sigma** : _number, optional_ <br />
 		Number of standard deviations from average to clip to. <br />
@@ -228,17 +248,17 @@ class ndap(np.ndarray):
 
 		**Returns**
 
-		* **data** : _ndap_ <br />
+		* **self** : _ndap_ <br />
 		"""
 		self[:,:] = clip_data(self, sigma)
 		return(self)
 
 	def shift_pos(self):
-		"""Shift data to be all greater than zero.
+		"""Shift data to be positive.
 
 		**Returns**
 
-		* **data** : _ndap_
+		* **self** : _ndap_ <br />
 		"""
 		self[:,:] = shift_pos(self)
 		return(self)

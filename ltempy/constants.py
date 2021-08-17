@@ -22,7 +22,7 @@ To operate in different base units:
 import ltempy as lp
 lp.set_units(meter = 1e-3) # set km as base unit for length
 
-print(lp.constants.c) # outputs 299792.458
+print(lp.constants.c) # yields 299792.458
 ```
 
 Note that all other modules update automatically as well.
@@ -33,7 +33,7 @@ __all__ = ['s','m','kg','A','K','mol','cd','c','hbar','e','pi','set_units']
 def set_units(second=1, meter=1, kilogram=1, Ampere=1, Kelvin=1, mole=1, candela=1):
 	"""Sets the units across the ltempy module.
 
-	i.e. set_units(meter = 1000) sets the millimeter as the base unit for length.
+	For example, `set_units(meter = 1e3)` sets the millimeter as the base unit for length.
 
 	**Parameters**
 
@@ -78,9 +78,9 @@ def set_consts(s, m, kg, A, K, mol, cd):
 	W = kg * m**2 / s**3
 	eV = 1.602176634e-19 * J
 
-	c       = 299792458.0   * m / s
-	hbar    = 1.0545718176461565e-34       * J * s
-	e       = 1.602176634e-19        * C
+	c       = 299792458.0   			* m / s
+	hbar    = 1.0545718176461565e-34	* J * s
+	e       = -1.602176634e-19			* C
 	pi      = 3.141592653589793
 
 set_units()

@@ -1,14 +1,14 @@
 # ltempy
-ltempy contains utilities for Lorentz TEM data analysis and simulation.
+ltempy is a set of tools for Lorentz TEM data analysis, simulation, and presentation.
 
-Features:
+# Features
 
 * Single Image Transport of Intensity Equation (SITIE) reconstruction
-* Lorentz simulations - calculations of phase, B, A, output image
+* simulations - calculations of phase, B, A, image
 * basic image processing - high_pass, low_pass, clipping
 * a matplotlib.pyplot wrapper tailored to presenting induction maps and Lorentz data
 * an implementation of the CIELAB colorspace
-* unit scaling (i.e., working in nm rather than m)
+* module-wide unit scaling (i.e., working in nm rather than m)
 
 ## Installation
 

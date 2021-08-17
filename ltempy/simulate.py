@@ -16,8 +16,9 @@
 
 from . import constants as _
 import numpy as np
-from .image_processing import shift_pos
+from .process import shift_pos
 from .sitie import ind_from_phase
+from ._utils import T, sims_shared, G, A_mn_components
 
 __all__ = [
 			'ab_phase',
@@ -30,9 +31,10 @@ __all__ = [
 			'propagate']
 
 def ind_from_mag(mx, my, mz, dx=1, dy=1, thickness=60e-9, p = np.array([0,0,1])):
-	"""Calculate the magnetic induction imparted on a fast electron by a magnetized sample.
+	"""Calculate the integrated magnetic field of a magnetized sample.
 
-	This is shorthand for `ind_from_phase(ab_phase(*args))`.
+	This is shorthand for `ind_from_phase(ab_phase(*args))`. This method is used rather than `B_from_mag`
+	because the integral over z can be done analytically (see Ref (2)).
 
 	**Parameters**
 
@@ -114,7 +116,7 @@ def ab_phase(mx, my, mz, dx=1, dy=1, thickness=60e-9, p = np.array([0,0,1])):
 	* **phase** : _ndarray_ <br />
 	The Aharonov-Bohm phase imparted on the electron by the magnetization. Shape will be the same as mx, my, mz.
 	"""
-	M, s, s_mag, sig, z_hat = common_stuff(mx, my, mz, dx, dy)
+	M, s, s_mag, sig, z_hat = sims_shared(mx, my, mz, dx, dy)
 	Gp = G(p, sig, z_hat, thickness * s_mag)
 	sig_x_z = np.cross(sig, z_hat, axisa=0, axisb=0, axisc=0)
 	p_x_p_M = np.cross(p, np.cross(p, M, axisa=0, axisb=0, axisc=0), axis=0, axisb=0, axisc=0)
@@ -123,7 +125,7 @@ def ab_phase(mx, my, mz, dx=1, dy=1, thickness=60e-9, p = np.array([0,0,1])):
 	phase = weights.shape[1] * weights.shape[2] * np.fft.ifft2(weights, axes=(1,2))
 	return(np.squeeze(phase.real))
 
-def B_from_mag(mx, my, mz, z = 0, dx = 1, dy = 1, thickness = 60e-9):
+def B_from_mag(mx, my, mz, dx = 1, dy = 1, z = 0, thickness = 60e-9):
 	"""Calculate the magnetic field of a specified 2-d magnetic configuration.
 
 	This is an adaptation of the algorithm described in Mansuripur et. al, _Computation of electron diffraction patterns in Lorentz TEM_, Eq (13) specifically.
@@ -141,10 +143,6 @@ def B_from_mag(mx, my, mz, z = 0, dx = 1, dy = 1, thickness = 60e-9):
 	* **mz** : _ndarray_ <br />
 	The z-component of magnetization. Must be a 2-d array.
 
-	* **z** : _number, optional_, ndarray_ <br />
-	The z-coordinates at which to calculate the B-field. Can be a number, or a 1d-array. <br />
-	Default is `z = 0`.
-
 	* **dx** : _number, optional_ <br />
 	The spacing between pixels/samples in mx, my, mz, in the x-direction. <br />
 	Default is `dx = 1`.
@@ -152,6 +150,10 @@ def B_from_mag(mx, my, mz, z = 0, dx = 1, dy = 1, thickness = 60e-9):
 	* **dy** : _number, optional_ <br />
 	The spacing between pixels/samples in mx, my, mz, in the y-direction. <br />
 	Default is `dy = 1`.
+
+	* **z** : _number, optional_, ndarray_ <br />
+	The z-coordinates at which to calculate the B-field. Can be a number, or a 1d-array. <br />
+	Default is `z = 0`.
 
 	* **thickness** : _number, optional_ <br />
 	The thickness of the sample. <br />
@@ -168,7 +170,7 @@ def B_from_mag(mx, my, mz, z = 0, dx = 1, dy = 1, thickness = 60e-9):
 	selz_p = z > thickness / 2
 	z = z[np.newaxis,np.newaxis,np.newaxis,...]
 
-	M, s, s_mag, sig, z_hat = common_stuff(mx, my, mz, dx, dy)
+	M, s, s_mag, sig, z_hat = sims_shared(mx, my, mz, dx, dy)
 	sigp = sig + 1j * z_hat
 	sigm = sig - 1j * z_hat
 
@@ -195,7 +197,7 @@ def B_from_mag(mx, my, mz, z = 0, dx = 1, dy = 1, thickness = 60e-9):
 	B = B_mn.shape[1] * B_mn.shape[2] * np.fft.ifft2(B_mn, axes=(1,2))
 	return(np.squeeze(B.real))
 
-def A_from_mag(mx, my, mz, z = 0, dx = 1, dy = 1, thickness = 60e-9):
+def A_from_mag(mx, my, mz, dx = 1, dy = 1, z = 0, thickness = 60e-9):
 	"""Calculate the magnetic vector potential of a specified 2-d magnetic configuration.
 
 	This is an adaptation of the algorithm described in Mansuripur et. al, _Computation of electron diffraction patterns in Lorentz TEM_, Eq (13) specifically.
@@ -213,10 +215,6 @@ def A_from_mag(mx, my, mz, z = 0, dx = 1, dy = 1, thickness = 60e-9):
 	* **mz** : _ndarray_ <br />
 	The z-component of magnetization. Must be a 2-d array.
 
-	* **z** : _number, optional_, ndarray_ <br />
-	The z-coordinates at which to calculate the B-field. Can be a number_, or a 1d-array. <br />
-	Default is `z = 0`.
-
 	* **dx** : _number, optional_ <br />
 	The spacing between pixels/samples in mx, my, mz, in the x-direction. <br />
 	Default is `dx = 1`.
@@ -224,6 +222,10 @@ def A_from_mag(mx, my, mz, z = 0, dx = 1, dy = 1, thickness = 60e-9):
 	* **dy** : _number, optional_ <br />
 	The spacing between pixels/samples in mx, my, mz, in the y-direction. <br />
 	Default is `dy = 1`.
+
+	* **z** : _number, optional_, ndarray_ <br />
+	The z-coordinates at which to calculate the B-field. Can be a number_, or a 1d-array. <br />
+	Default is `z = 0`.
 
 	* **thickness** : _number, optional_ <br />
 	The thickness of the sample. <br />
@@ -240,7 +242,7 @@ def A_from_mag(mx, my, mz, z = 0, dx = 1, dy = 1, thickness = 60e-9):
 	selz_p = z > thickness/2
 	z = z[np.newaxis,np.newaxis,np.newaxis,...]
 
-	M, s, s_mag, sig, z_hat = common_stuff(mx, my, mz, dx, dy)
+	M, s, s_mag, sig, z_hat = sims_shared(mx, my, mz, dx, dy)
 	sigp = sig + 1j * z_hat
 	sigm = sig - 1j * z_hat
 
@@ -287,7 +289,7 @@ def img_from_mag(mx, my, mz, dx = 1, dy = 1, defocus = 0, thickness = 60e-9, wav
 	* **img** : _ndarray_ <br />
 	The intensity of the image plane.
 	"""
-	M, s, s_mag, sig, z_hat = common_stuff(mx, my, mz, dx, dy)
+	M, s, s_mag, sig, z_hat = sims_shared(mx, my, mz, dx, dy)
 	Gp = G(p, sig, z_hat, thickness * s_mag)
 	sig_x_z = np.cross(sig, z_hat, axisa=0, axisb=0, axisc=0)
 	p_x_p_M = np.cross(p, np.cross(p, M, axisa=0, axisb=0, axisc=0), axis=0, axisb=0, axisc=0)
@@ -405,14 +407,10 @@ def jchessmodel(x, y, z=0, **kwargs):
 	mz = np.cos(Theta_rz)
 	return(np.array([mx, my, mz]))
 
-def T(qx, qy, defocus = 1e-3, wavelength = 1.97e-12):
-	"""Utility function for propagate(). Microscope transfer function.
-	"""
-	out = aperture(qx, qy) * np.exp(-1j * chi(qx, qy, defocus, wavelength))
-	return(out)
+def propagate(mode, dx = 1, dy = 1, T=T, **kwargs):
+	r"""Calculates the Lorentz image given the exit wave \(\psi_0\) and microscope transfer function \(T(\mathbf{q}_{\perp})\).
 
-def propagate(mode, dx = 1, dy = 1, T=T, **targs):
-	"""Calculates the Lorentz image given the exit wave, defocus, and microscope transfer function.
+	\[\psi_f = \mathcal{F}^{-1}\left[\mathcal{F}\left[\psi_0\right] T(\mathbf{q}_{\perp}) \right]\]
 
 	**Parameters**
 
@@ -430,95 +428,35 @@ def propagate(mode, dx = 1, dy = 1, T=T, **targs):
 	* **T**: _function, optional_ <br />
 	The microscope transfer function. Takes **qx** and **qy** (the spatial frequencies)
 	as the first two positional arguments. <br />
-	Default takes into account defocus and an aperture.
+	The default is a common transfer function described in Ref (1), Eqns (4-6), that takes the following kwargs: <br />
+		<ul>
+			<li> **defocus** : _number, optional_ <br />
+			Default is `defocus = 1e-3`.
+			</li>
+			<li> **wavelength** : _number, optional_ <br />
+			Default is `wavelength = 1.97e-12` (for 300keV electrons).
+			</li>
+			<li> **C_s** : _number, optional_ <br />
+			The spherical aberration coefficient of the microscope. <br />
+			Default is `C_s = 2.7e-3`.
+			</li>
+			<li> **divangle** : _number, optional_ <br />
+			The divergence angle. <br />
+			Default is `divangle = 1e-5`.
+		</ul>
 
-	* ****targs**: _optional_ <br />
+	* ****kwargs**: _optional_ <br />
 	Extra arguments to be passed to the transfer function.
 
 	**Returns**
 
 	* **psi_out** : _complex ndarray_ <br />
 	The transverse complex amplitude in the image plane. Output has the same
-	shape as x, y, and cphase.
+	shape as x, y, and mode.
 	"""
-	U = np.fft.fftfreq(cphase.shape[1], dx)
-	V = np.fft.fftfreq(cphase.shape[0], dy)
+	U = np.fft.fftfreq(mode.shape[1], dx)
+	V = np.fft.fftfreq(mode.shape[0], dy)
 	qx, qy = np.meshgrid(U, V)
 	psi_q = np.fft.fft2(mode)
-	psi_out = np.fft.ifft2(psi_q * T(qx, qy, **targs))
+	psi_out = np.fft.ifft2(psi_q * T(qx, qy, **kwargs))
 	return(psi_out)
-
-
-def chi(qx, qy, defocus, wavelength):
-	"""Utility function for propagate(). Phase transfer function.
-	"""
-	return(_.pi * wavelength * defocus * (qx**2 + qy**2))
-
-def aperture(qx, qy):
-	"""Utility function for propagate(). Circular aperture.
-	"""
-	out = np.zeros_like(qx)
-	out[np.sqrt(qx**2 + qy**2) < np.max(np.sqrt(qx**2 + qy**2))] = 1
-	return(out)
-
-
-######## Helper functions
-
-def G(p, sig, z_hat, ts_mag):
-	sum1 = np.einsum('i,i...->...', p, sig)
-	sum2 = np.einsum('i,i...->...', p, z_hat)
-	out = 1 / (sum1**2 + sum2**2)[np.newaxis,...]
-	out *= np.sinc(ts_mag * sum1 / sum2)
-	return(out)
-
-def common_stuff(mx, my, mz, dx, dy):
-	#### Used for everything in LTEM sims
-	#### All outputs have shape (3, y-dim, x-dim, z-dim)
-	#### They just need these four dimensions so that they're broadcastable
-	#### mx, my, mz either 2 or 3 dim
-
-	mx = np.atleast_3d(mx) ### (y-dim, x-dim, z-dim)
-	my = np.atleast_3d(my)
-	mz = np.atleast_3d(mz)
-	Mx = mx.shape[0] * mx.shape[1] * np.fft.fft2(mx, axes=(0,1))
-	My = my.shape[0] * my.shape[1] * np.fft.fft2(my, axes=(0,1))
-	Mz = mz.shape[0] * mz.shape[1] * np.fft.fft2(mz, axes=(0,1))
-	M = np.array([Mx, My, Mz]) ### (vec, y-dim, x-dim, z-dim)
-
-	Sx = np.fft.fftfreq(mx.shape[1], dx)
-	Sy = np.fft.fftfreq(mx.shape[0], dy)
-	sx, sy = np.meshgrid(Sx, Sy) ### (y-dim, x-dim)
-
-	s = np.array([sx, sy, 0*sy])[...,np.newaxis] ### (vec, y-dim, x-dim, z-dim)
-	s_mag = np.sqrt(np.einsum('i...,i...->...',s,s))[np.newaxis,...] ### (vec, y-dim, x-dim, z-dim)
-	sig = s/s_mag
-
-	z_hat = np.array([np.zeros_like(mx), np.zeros_like(mx), np.ones_like(mx)]) ### (vec, y-dim, x-dim, z-dim)
-	return(M, s, s_mag, sig, z_hat)
-
-def A_mn_components(
-		xshape, yshape, zshape, selz_m, selz_z,
-		selz_p, s_mag, z, sigm, sigp, sig, M, thickness, z_hat):
-	### set everything to be broadcastable so we can write the A_mn equations
-	### shape is: (3 vector components, y-axis, x-axis, z-axis) (thank meshgrid for switching x and y)
-
-	A_mn = np.zeros((3, xshape, yshape, zshape), dtype=complex)
-	A_mn[...,selz_m] = (2 * 1j / s_mag
-						* np.exp(2 * _.pi * s_mag * z[...,selz_m])
-						* np.sinh(_.pi * thickness * s_mag)
-						* np.cross(sigm, M, axisa=0, axisb=0, axisc=0))
-	A_mn[...,selz_z] = (2 * 1j / s_mag * np.cross((
-						sig
-						- 0.5 * np.exp(2 * _.pi * s_mag * (z[...,selz_z] - thickness / 2)) * sigm
-						- 0.5 * np.exp(-2 * _.pi * s_mag * (z[...,selz_z] + thickness / 2)) * sigp
-						), M, axisa=0, axisb=0, axisc=0))
-	A_mn[...,selz_p] = (2 * 1j / s_mag
-						* np.exp(-2 * _.pi * s_mag * z[...,selz_p])
-						* np.sinh(_.pi * thickness * s_mag)
-						* np.cross(sigp, M, axisa=0, axisb=0, axisc=0)
-						)
-	zero_comp = np.cross(z_hat[:,0,0,:], M[:,0,0,:], axisa=0, axisb=0, axisc=0)
-	A_mn[:,0,0,selz_z] = -4 * _.pi * z[:,0,0,selz_z] * zero_comp
-	A_mn[:,0,0,selz_m] = 2 * _.pi * thickness * zero_comp
-	A_mn[:,0,0,selz_p] = -2 * _.pi * thickness * zero_comp
-	return(A_mn)

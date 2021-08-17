@@ -1,56 +1,58 @@
-# ltempy is a set of LTEM analysis and simulation tools developed by WSP as a member of the McMorran Lab
-# Copyright (C) 2021  William S. Parker
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+import numpy as np
+from .cielab import cielab_rgba
+from . import constants as _
 
-"""A wrapper for matplotlib.pyplot containing common plotting routines.
+import matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap
 
-Example
+"""Contains wrappers for `matplotlib.pyplot`, tailored to the presentation of magnetic data.
+
+The primary feature is the `singleAx` object, which extends the `maplotlib.axes.Axes` object,
+adding methods for windowing data, quiver plots, CIELAB plots, and creating square insets and a colorwheel.
+
+In addition, `cielab_cmap` and `rgba` provide utilities for general plotting.
+
+The typical use case is to use `ltempy.subplots` to generate a figure and axes:
 
 ```python
-import numpy as np
-import ltempy as lp
+# Generate data
+X = numpy.linspace(-1, 1, 128)
+x, y = numpy.meshgrid(X, X)
+z = x + 1j*y
+f = numpy.sin(z)
 
-X = np.linspace(-10,10,100)
-Y = np.linspace(-10,10,100)
-x, y = np.meshgrid(X, Y)
-data = x + 1j*y
-window = (-4, 4, -6, 6)
+# Plot data
+window = (.3, .7, .3, .7)
+fig, [[ax1, ax2]] = ltempy.subplots(12)
+ax1.set_axes(X, X)
+ax1.inset(window)
+ax1.imshow(numpy.abs(f)**2)
+ax2.set_axes(ax1.x, ax1.y)
+ax2.set_window(window)
+ax2.rgba(f)
+ax2.quiver(f, step=4)
+plt.show()
+```
 
-fig, ax = lp.subplots(12)
-ax1, ax2 = ax[0,0], ax[0,1]
-ax1.setAxes(X, Y)
-ax1.imshow(np.abs(data))
-ax1.inset(window=window)
-ax2.setAxes(X, Y, window=window)
-ax2.rgba(data)
-lp.plt.show()
+**Note**:
+
+This module is only loaded when `matplotlib` is available in the environment.
+`matplotlib` is installed as a dependency when `ltempy` is installed with the `plot` extra:
+
+```bash
+pip install ltempy[plot]
 ```
 """
 
-import matplotlib.pyplot as plt
-import numpy as np
-from .cielab import rgba, cielab_cmap
-
-__all__ = ['singleAx','subplots']
+__all__ = ['singleAx', 'subplots', 'cielab_cmap', 'rgba']
 
 class singleAx():
 	"""An extension of the `matplotlib.axes.Axes` class.
 
-	This class adds macros for 2d plotting that I commonly use. In particular,
+	This class adds macros for 2d plotting. In particular,
 	it's easy to select only a window of your data to show, to add x-y axes,
-	to add an inset, and to show the rgba version of a complex 2d array.
+	to add an inset, to show the rgba version of a complex 2d array, and to
+	show a quiver plot of a complex 2d array.
 
 	Typical usage:
 
@@ -63,17 +65,22 @@ class singleAx():
 
 	fig, ax = plt.subplots()
 	myax = ltempy.singleAx(ax)
-	ax.set_axes(x, y, window)
-	ax.set_xytitle('x','y','title')
-	ax.rgba(data)
+	myax.set_axes(x, y)
+	myax.set_window(window)
+	myax.set_xytitle('x','y','title')
+	myax.rgba(data)
 	plt.show()
 	```
 
-	More commonly, this class is returned by ```ltempy.pyplotwrapper.subplots```.
+	More commonly, this class is returned by `ltempy.pyplotwrapper.subplots`.
 
 	**Parameters**
 
 	* **ax** : _matplotlib.axes.Axes_ <br />
+
+	**Returns**
+
+	* **singleAx** : _ltempy.plot.singleAx_ <br />
 	"""
 	def __init__(self, ax):
 		self.ax = ax
@@ -90,8 +97,9 @@ class singleAx():
 
 		**Parameters**
 
-		* **title** : _string_ <br />
-		The plot title.
+		* **title** : _string, optional_ <br />
+		The plot title. <br />
+		Default is `title = ""`.
 
 		* ****kwargs** <br />
 		All other kwargs are passed on to `matplotlib.axes.Axes.set_title`.
@@ -108,8 +116,9 @@ class singleAx():
 
 		**Parameters*
 
-		* **xlabel** : _string_ <br />
-		The xlabel.
+		* **xlabel** : _string, optional_ <br />
+		The xlabel. <br />
+		Default is `xlabel = ""`.
 
 		* ****kwargs** <br />
 		All other kwargs are passed on to `matplotlib.axes.Axes.set_xlabel`.
@@ -126,8 +135,9 @@ class singleAx():
 
 		**Parameters**
 
-		* **ylabel** : _string_ <br />
-		The ylabel.
+		* **ylabel** : _string, optional_ <br />
+		The ylabel. <br />
+		Default is `ylabel = ""`.
 
 		* ****kwargs** <br />
 		All other kwargs are passed on to `matplotlib.axes.Axes.set_ylabel`.
@@ -149,14 +159,17 @@ class singleAx():
 
 		**Parameters**
 
-		* **ylabel** : _string_ <br />
-		The ylabel.
+		* **ylabel** : _string, optional_ <br />
+		The ylabel. <br />
+		Default is `ylabel = ""`.
 
-		* **xlabel** : _string_ <br />
-		The xlabel.
+		* **xlabel** : _string, optional_ <br />
+		The xlabel. <br />
+		Default is `xlabel = ""`.
 
-		* **title** : _string_ <br />
-		The plot title.
+		* **title** : _string, optional_ <br />
+		The plot title. <br />
+		Default is `title = ""`.
 
 		* ****kwargs** <br />
 		All other kwargs are passed on
@@ -175,7 +188,7 @@ class singleAx():
 	def set_axes(self, x, y):
 		"""Sets the x and y axes of the singleAx object, and can apply a window.
 
-		Note that this can be used before or after `set_window()`, as long as the two are in the same units.
+		Note that this can be used before or after `set_window()`, but make sure the two are in the same units.
 
 		**Parameters**
 
@@ -196,11 +209,11 @@ class singleAx():
 	def set_window(self, window):
 		"""Applies a window to the singleAx object.
 
-		Note that this can be used before or after `set_axes()`, as long as the two are in the same units.
+		Note that this can be used before or after `set_axes()`, but make sure the two are in the same units.
 
 		**Parameters**
 
-		* **window** : _array-like, optional_ <br />
+		* **window** : _array-like_ <br />
 		Format: `window = [xmin, xmax, ymin, ymax]`. Note that these are the x
 		and y values, rather than their indices.
 
@@ -214,15 +227,16 @@ class singleAx():
 		self.ymax = window[3]
 		return(self)
 
-	def pre_plot(self, data, step=1, origin=None):
+	def pre_plot(self, data, step=1):
 		"""Utility function that applies the axes and window before plotting.
 
 		If you want to use a plotting function from matplotlib, you can use this
-		function to get the windowed data:
+		function to get the windowed axes and data:
 
 		```python
 		fig, axis = plt.subplots()
 		ax = singleAx(axis)
+		ax.set_axes(x, y)
 		ax.set_window(window)
 		x_windowed, y_windowed, data_windowed = ax.pre_plot(data)
 		ax.ax.SomeOtherMatplotlibPlottingRoutine(x_windowed, y_windowed, data_windowed)
@@ -234,14 +248,10 @@ class singleAx():
 		* **data** : _complex ndarray_ <br />
 		The data to plot. Must be 2-dimensional.
 
-		* **step** : _int_ <br />
+		* **step** : _int, optional_ <br />
 		data will be returned as `data[::step,::step]` - particularly useful for
 		quiver plots. <br />
 		Default is `step = 1`.
-
-		* **origin** : _string_ <br />
-		Either 'upper' or 'lower'. If not entered, default is `self.origin`, whose initial value is 'lower'. <br />
-
 
 		**Returns**
 
@@ -252,8 +262,7 @@ class singleAx():
 		A 1darray with the windowed y coordinates.
 
 		* **dout** : _ndarray_ <br />
-		A 2darray with the data to be plotted. If you have set a window using
-		`set_window()`, the data will be windowed.
+		A 2darray with the windowed data.
 		"""
 		if self.x is None:
 			self.x = np.linspace(0, 100, data.shape[1])
@@ -286,8 +295,7 @@ class singleAx():
 		applied automatically, if you have set one.
 
 		* **step** : _int_ <br />
-		data will be returned as `data[::step,::step]` - particularly useful for
-		quiver plots. <br />
+		data will be shown as `data[::step,::step]`. <br />
 		Default is `step = 1`.
 
 		* ****kwargs** <br />
@@ -299,7 +307,7 @@ class singleAx():
 		"""
 		imshowargs = {'origin': self.origin}
 		imshowargs.update(kwargs)
-		x, y, d = self.pre_plot(data, step, imshowargs['origin'])
+		x, y, d = self.pre_plot(data, step)
 		if imshowargs['origin'] == 'lower':
 			extent = [x[0], x[-1], y[0], y[-1]]
 		elif imshowargs['origin'] == 'upper':
@@ -316,17 +324,15 @@ class singleAx():
 
 		* **data** : _ndarray, complex_ <br />
 		The data to be shown. Real part is x-component, imaginary is y-component.
-		Use the un-windowed data - the window will be
-		applied automatically, if you set one.
+		Use the un-windowed data - the window will be applied automatically, if you set one.
 
 		* **step** : _int_ <br />
-		data will be returned as `data[::step,::step]` - particularly useful for
-		quiver plots. <br />
+		data will be shown as `data[::step,::step]`. <br />
 		Default is `step = 1`.
 
 		* **origin** : _string_ <br />
 		Either 'upper' or 'lower'. <br />
-		Default is `self.origin`, which is 'lower'.
+		Default is `self.origin`, whose default is 'lower'.
 
 		* ****kwargs** <br />
 		All other kwargs are passed on to `matplotlib.axes.Axes.quiver`.
@@ -337,7 +343,7 @@ class singleAx():
 		"""
 		if origin is None:
 			origin = self.origin
-		x, y, d = self.pre_plot(data, step, origin)
+		x, y, d = self.pre_plot(data, step)
 		d = d.astype(complex)
 		if origin == 'upper':
 			d.imag *= -1
@@ -345,7 +351,7 @@ class singleAx():
 		return(self)
 
 	def rgba(self, data, step=1, cmap=None, brightness='intensity', alpha='uniform', **kwargs):
-		"""Shows an rgba interpretation of complex data.
+		"""Show an rgba interpretation of complex data.
 
 		**Parameters**
 
@@ -354,8 +360,7 @@ class singleAx():
 		the color will be uniform, and values will be represented by brightness.
 
 		* **step** : _int_ <br />
-		data will be returned as `data[::step,::step]` - particularly useful for
-		quiver plots. <br />
+		data will be shown as `data[::step,::step]`. <br />
 		Default is `step = 1`.
 
 		* **cmap** : _string, optional_ <br />
@@ -381,7 +386,7 @@ class singleAx():
 		"""
 		imshowargs = {'origin': self.origin}
 		imshowargs.update(kwargs)
-		x, y, d = self.pre_plot(data, step, imshowargs['origin'])
+		x, y, d = self.pre_plot(data, step)
 		d = d.astype(complex)
 		if imshowargs['origin'] == 'lower':
 			extent = [x[0], x[-1], y[0], y[-1]]
@@ -474,12 +479,12 @@ class singleAx():
 		self.ax.set_xlim(xlims)
 		self.ax.set_ylim(ylims)
 		self.ax.set_aspect('equal')
-		if imshowargs['origin'] == 'lower':
+		if self.origin == 'lower':
 			extent = [xlims[1] - scale * (xlims[1] - xlims[0]),
 						xlims[1],
 						ylims[0],
 						ylims[0] + scale * (xlims[1] - xlims[0])]
-		elif imshowargs['origin'] == 'upper':
+		elif self.origin == 'upper':
 			extent = [xlims[1] - scale * (xlims[1] - xlims[0]),
 						xlims[1],
 						ylims[0] + scale * (xlims[0] - xlims[1]),
@@ -489,7 +494,7 @@ class singleAx():
 		return(self)
 
 def subplots(rc=11, **kwargs):
-		"""Creates a fig, ax instance but replaces ax with singleAx.
+		"""Creates a (fig, [[ax]]) instance but replaces ax with singleAx.
 
 		Behaves almost identically to matplotlib.pyplot.subplots(), but replaces each
 		`matplotlib.axes.Axes` object with a `wsp_tools.pyplotwrapper.singleAx`
@@ -498,15 +503,13 @@ def subplots(rc=11, **kwargs):
 		Each `wsp_tools.pyplotwrapper.singleAx` object in turn behaves just like a
 		normal `Axes` object, but with added methods.
 
+		Note: two default kwargs are set. `'tight_layout': True` and `'squeeze': False`.
+
 		**Parameters**
 
 		* **rc** : _int_ <br />
 		First digit - nrows. Second digit - ncols. <br />
 		Default is `rc = 11`.
-
-		* **squeeze** : _bool_ <br />
-		If true, extra dimensions are squeezed out from the returned array of Axes. <br />
-		Default is `squeeze = False`.
 
 		* ****kwargs** <br />
 		All other kwargs are passed on to `matplotlib.axes.Axes.subplots`.
@@ -524,3 +527,72 @@ def subplots(rc=11, **kwargs):
 			for j in range(ax.shape[1]):
 				ax[i][j] = singleAx(ax[i][j])
 		return(fig, np.array(ax))
+
+def cielab_cmap(samples=256):
+	"""Creates a `matplotlib.colors.ListedColormap` of the CIELAB color space.
+
+	**Parameters**
+
+	* **samples** : _number, optional_ <br />
+	The number of samples. Any additional values will be nearest-neighbor interpolated, per matplotlib. <br />
+	Default is `samples = 256`.
+
+	**Returns**
+
+	* **cmap** : _ListedColormap_ <br />
+	A colormap, that can be used normally: `plt.imshow(data, cmap=cmap)`.
+	"""
+	angles = np.linspace(0,2*_.pi,samples)
+	cvals = np.exp(1j*angles).reshape(1, samples)
+	rgbavals = cielab_rgba(cvals).squeeze()/255
+	cmap = ListedColormap(rgbavals)
+	return(cmap)
+
+def rgba(mode, cmap = None, brightness = 'intensity', alpha = 'uniform'):
+	"""Converts a 2d complex array to rgba data.
+
+	**Parameters**
+
+	* **mode** : _complex ndarray_ <br />
+	An array with the data to represent. Dtype may be complex or real - if real,
+	the color will be uniform, and values will be represented by brightness.
+
+	* **cmap** : _string, optional_ <br />
+	If `None`, the CIELAB color space will be used. Otherwise, any
+	pyplot ScalarMappable may be used. <br />
+	Default is `cmap = None`.
+
+	* **brightness** : _string, optional_ <br />
+	Allowed values: `'intensity'`, `'amplitude'`, `'uniform'`. <br />
+	Default is `brightness = 'intensity'`.
+
+	* **alpha** : _string, optional_ <br />
+	Allowed values: `'intensity'`, `'amplitude'`, `'uniform'`. Determines the alpha
+	component of the rgba value. <br />
+	Default is `alpha = 'uniform'`.
+
+	**Returns**
+
+	* **rgba_image_components** : _ndarray_ <br />
+	The rgba components calculated from scalar values. If the input array has
+	shape NxN, the output array will have shape NxNx4.
+	"""
+	mode /= np.max(np.abs(mode))
+	if cmap is None:
+		out = cielab_rgba(mode, brightness, alpha)
+		return(out)
+	colormap = plt.cm.ScalarMappable(cmap=cmap)
+	out = colormap.to_rgba(np.angle(mode))
+	if alpha == 'intensity':
+		out[...,-1] = np.abs(mode)**2
+	elif alpha == 'amplitude':
+		out[...,-1] = np.abs(mode)
+	if brightness == 'intensity':
+		out[...,0] *= np.abs(mode)**2
+		out[...,1] *= np.abs(mode)**2
+		out[...,2] *= np.abs(mode)**2
+	elif brightness == 'amplitude':
+		out[...,0] *= np.abs(mode)
+		out[...,1] *= np.abs(mode)
+		out[...,2] *= np.abs(mode)
+	return(out)

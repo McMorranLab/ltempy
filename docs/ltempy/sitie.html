@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.10.0" />
+<meta name="generator" content="pdoc 0.9.2" />
 <title>ltempy.sitie API documentation</title>
 <meta name="description" content="Contains utilities for reconstructing phase and magnetization from Lorentz images …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -12,7 +12,6 @@
 <style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
 <style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
-<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML" integrity="sha256-kZafAc6mZvK3W3v1pHOcUix30OHQN6pU/NO2oFkqZVw=" crossorigin></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
 <script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
 </head>
@@ -45,7 +44,7 @@ img.By.clip_data(sigma=5).high_pass().low_pass()
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python"># ltempy is LTEM data analysis and simulation tools developed by WSP as a grad student in the McMorran Lab.
+<pre><code class="python"># ltempy is a set of LTEM analysis and simulation tools developed by WSP as a member of the McMorran Lab
 # Copyright (C) 2021  William S. Parker
 #
 # This program is free software: you can redistribute it and/or modify
@@ -87,11 +86,9 @@ img.By.clip_data(sigma=5).high_pass().low_pass()
 
 # %%
 import numpy as np
-import matplotlib.pyplot as plt
 import os
 
 from . import image_processing as ip
-from .pyplotwrapper import subplots
 from . import constants as _
 np.seterr(divide=&#39;ignore&#39;, invalid=&#39;ignore&#39;)
 
@@ -146,33 +143,26 @@ class Lorentz:
 
         **Parameters**
 
-        * **dm3file** : _dictionary-like_ &lt;br /&gt;
-        a dm3-like file with the following keys: &lt;br /&gt;
+        * **datafile** : _dictionary_ &lt;br /&gt;
+        a dictionary with the following keys: &lt;br /&gt;
                 &lt;ul&gt;
                 &lt;li&gt; **data** : _ndarray_ &lt;br /&gt;
-                An array carrying the electron counts. &lt;/li&gt;
+                A 2d array of the electron counts. &lt;/li&gt;
                 &lt;li&gt; **pixelSize** : _tuple_ &lt;br /&gt;
                 (_number_, _number_) - the x and y pixel sizes. &lt;/li&gt;
                 &lt;li&gt; **pixelUnit** : _tuple_ &lt;br /&gt;
-                (_string_, _string_) - the x and y pixel units. &lt;/li&gt;
-                &lt;li&gt; **filename** : _string_ &lt;br /&gt;&lt;/li&gt;
+                (_string_, _string_) - the x and y pixel units. &lt;br /&gt;
+                Allowed values are `None`, `&#34;nm&#34;`, `&#34;µm&#34;`, `&#34;mm&#34;`, and `&#34;m&#34;`.&lt;/li&gt;
                 &lt;/ul&gt;
         &#34;&#34;&#34;
-        def __init__(self, dm3file):
-                self.data = ip.ndap(dm3file[&#39;data&#39;])
-                self.dx = dm3file[&#39;pixelSize&#39;][0]
-                self.dy = dm3file[&#39;pixelSize&#39;][1]
-                self.xUnit = dm3file[&#39;pixelUnit&#39;][0]
-                self.yUnit = dm3file[&#39;pixelUnit&#39;][1]
+        def __init__(self, datafile):
+                self.data = ip.ndap(datafile.get(&#39;data&#39;))
+                self.dx = datafile.get(&#39;pixelSize&#39;)[0]
+                self.dy = datafile.get(&#39;pixelSize&#39;)[1]
+                self.xUnit = datafile.get(&#39;pixelUnit&#39;)[0]
+                self.yUnit = datafile.get(&#39;pixelUnit&#39;)[1]
                 self.x = np.arange(0,self.data.shape[1]) * self.dx
                 self.y = np.arange(0,self.data.shape[0]) * self.dy
-                self.metadata = {
-                                                        &#39;dx&#39;:float(dm3file[&#39;pixelSize&#39;][0]),
-                                                        &#39;dy&#39;:float(dm3file[&#39;pixelSize&#39;][1]),
-                                                        &#39;xUnit&#39;:dm3file[&#39;pixelUnit&#39;][0],
-                                                        &#39;yUnit&#39;:dm3file[&#39;pixelUnit&#39;][1],
-                                                        &#39;filename&#39;:dm3file[&#39;filename&#39;]
-                                                }
                 self.phase = None
                 self.Bx, self.By = None, None
                 self.fix_units()
@@ -217,12 +207,6 @@ class Lorentz:
                 self.yUnit = &#39;m&#39;
                 self.x *= xunit
                 self.y *= yunit
-                self.metadata.update({
-                        &#39;dx&#39;: float(self.dx),
-                        &#39;dy&#39;: float(self.dy),
-                        &#39;xUnit&#39;: self.xUnit,
-                        &#39;yUnit&#39;: self.yUnit
-                })
                 return(None)
 
         def sitie(self, df = 1, thickness = 60e-9, wavelength=1.97e-12):
@@ -246,31 +230,9 @@ class Lorentz:
 
                 * **self** : _lorentz_
                 &#34;&#34;&#34;
-                self.metadata.update({&#39;defocus&#39;: df, &#39;wavelength&#39;: wavelength, &#39;thickness&#39;: thickness})
                 self.phase = ip.ndap(phase_from_img(self.data, df, self.dx, self.dy, wavelength))
                 self.Bx, self.By = [ip.ndap(arr) for arr in ind_from_phase(self.phase, thickness)]
                 return(None)
-
-        def preview(self, window=None):
-                &#34;&#34;&#34;Preview the image.
-
-                Note that unlike `pyplotwrapper`, window is in units of pixels.
-
-                **Parameters**
-
-                * **window** : _array-like, optional_ &lt;br /&gt;
-                Format is `window = (xmin, xmax, ymin, ymax)`. &lt;br /&gt;
-                Default is `window = (0, -1, 0, -1)`
-                &#34;&#34;&#34;
-                fig, ax = subplots(11)
-                if not window is None:
-                        ax[0,0].setWindow(window)
-                data = ip.clip_data(self.data, sigma=10)
-                ax[0,0].setAxes(self.x, self.y)
-                ax[0,0].set_xlabel(&#34;x ({:})&#34;.format(self.dx))
-                ax[0,0].set_ylabel(&#34;y ({:})&#34;.format(self.dy))
-                ax[0,0].imshow(data)
-                plt.show()
 
 def phase_from_img(img, defocus = 0, dx = 1, dy = 1, wavelength = 1.97e-12):
         &#34;&#34;&#34;Reconstruct the Aharonov-Bohm phase from a defocussed image.
@@ -702,22 +664,22 @@ A 2d array containing the reconstructed Aharonov-Bohm phase shift.</li>
 <dl>
 <dt id="ltempy.sitie.Lorentz"><code class="flex name class">
 <span>class <span class="ident">Lorentz</span></span>
-<span>(</span><span>dm3file)</span>
+<span>(</span><span>datafile)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Class that contains sitie information about a lorentz image.</p>
 <p><strong>Parameters</strong></p>
 <ul>
-<li><strong>dm3file</strong> : <em>dictionary-like</em> <br />
-a dm3-like file with the following keys: <br />
+<li><strong>datafile</strong> : <em>dictionary</em> <br />
+a dictionary with the following keys: <br />
 <ul>
 <li> <strong>data</strong> : <em>ndarray</em> <br />
-An array carrying the electron counts. </li>
+A 2d array of the electron counts. </li>
 <li> <strong>pixelSize</strong> : <em>tuple</em> <br />
 (<em>number</em>, <em>number</em>) - the x and y pixel sizes. </li>
 <li> <strong>pixelUnit</strong> : <em>tuple</em> <br />
-(<em>string</em>, <em>string</em>) - the x and y pixel units. </li>
-<li> <strong>filename</strong> : <em>string</em> <br /></li>
+(<em>string</em>, <em>string</em>) - the x and y pixel units. <br />
+Allowed values are <code>None</code>, <code>"nm"</code>, <code>"µm"</code>, <code>"mm"</code>, and <code>"m"</code>.</li>
 </ul></li>
 </ul></div>
 <details class="source">
@@ -729,33 +691,26 @@ An array carrying the electron counts. </li>
 
         **Parameters**
 
-        * **dm3file** : _dictionary-like_ &lt;br /&gt;
-        a dm3-like file with the following keys: &lt;br /&gt;
+        * **datafile** : _dictionary_ &lt;br /&gt;
+        a dictionary with the following keys: &lt;br /&gt;
                 &lt;ul&gt;
                 &lt;li&gt; **data** : _ndarray_ &lt;br /&gt;
-                An array carrying the electron counts. &lt;/li&gt;
+                A 2d array of the electron counts. &lt;/li&gt;
                 &lt;li&gt; **pixelSize** : _tuple_ &lt;br /&gt;
                 (_number_, _number_) - the x and y pixel sizes. &lt;/li&gt;
                 &lt;li&gt; **pixelUnit** : _tuple_ &lt;br /&gt;
-                (_string_, _string_) - the x and y pixel units. &lt;/li&gt;
-                &lt;li&gt; **filename** : _string_ &lt;br /&gt;&lt;/li&gt;
+                (_string_, _string_) - the x and y pixel units. &lt;br /&gt;
+                Allowed values are `None`, `&#34;nm&#34;`, `&#34;µm&#34;`, `&#34;mm&#34;`, and `&#34;m&#34;`.&lt;/li&gt;
                 &lt;/ul&gt;
         &#34;&#34;&#34;
-        def __init__(self, dm3file):
-                self.data = ip.ndap(dm3file[&#39;data&#39;])
-                self.dx = dm3file[&#39;pixelSize&#39;][0]
-                self.dy = dm3file[&#39;pixelSize&#39;][1]
-                self.xUnit = dm3file[&#39;pixelUnit&#39;][0]
-                self.yUnit = dm3file[&#39;pixelUnit&#39;][1]
+        def __init__(self, datafile):
+                self.data = ip.ndap(datafile.get(&#39;data&#39;))
+                self.dx = datafile.get(&#39;pixelSize&#39;)[0]
+                self.dy = datafile.get(&#39;pixelSize&#39;)[1]
+                self.xUnit = datafile.get(&#39;pixelUnit&#39;)[0]
+                self.yUnit = datafile.get(&#39;pixelUnit&#39;)[1]
                 self.x = np.arange(0,self.data.shape[1]) * self.dx
                 self.y = np.arange(0,self.data.shape[0]) * self.dy
-                self.metadata = {
-                                                        &#39;dx&#39;:float(dm3file[&#39;pixelSize&#39;][0]),
-                                                        &#39;dy&#39;:float(dm3file[&#39;pixelSize&#39;][1]),
-                                                        &#39;xUnit&#39;:dm3file[&#39;pixelUnit&#39;][0],
-                                                        &#39;yUnit&#39;:dm3file[&#39;pixelUnit&#39;][1],
-                                                        &#39;filename&#39;:dm3file[&#39;filename&#39;]
-                                                }
                 self.phase = None
                 self.Bx, self.By = None, None
                 self.fix_units()
@@ -800,12 +755,6 @@ An array carrying the electron counts. </li>
                 self.yUnit = &#39;m&#39;
                 self.x *= xunit
                 self.y *= yunit
-                self.metadata.update({
-                        &#39;dx&#39;: float(self.dx),
-                        &#39;dy&#39;: float(self.dy),
-                        &#39;xUnit&#39;: self.xUnit,
-                        &#39;yUnit&#39;: self.yUnit
-                })
                 return(None)
 
         def sitie(self, df = 1, thickness = 60e-9, wavelength=1.97e-12):
@@ -829,31 +778,9 @@ An array carrying the electron counts. </li>
 
                 * **self** : _lorentz_
                 &#34;&#34;&#34;
-                self.metadata.update({&#39;defocus&#39;: df, &#39;wavelength&#39;: wavelength, &#39;thickness&#39;: thickness})
                 self.phase = ip.ndap(phase_from_img(self.data, df, self.dx, self.dy, wavelength))
                 self.Bx, self.By = [ip.ndap(arr) for arr in ind_from_phase(self.phase, thickness)]
-                return(None)
-
-        def preview(self, window=None):
-                &#34;&#34;&#34;Preview the image.
-
-                Note that unlike `pyplotwrapper`, window is in units of pixels.
-
-                **Parameters**
-
-                * **window** : _array-like, optional_ &lt;br /&gt;
-                Format is `window = (xmin, xmax, ymin, ymax)`. &lt;br /&gt;
-                Default is `window = (0, -1, 0, -1)`
-                &#34;&#34;&#34;
-                fig, ax = subplots(11)
-                if not window is None:
-                        ax[0,0].setWindow(window)
-                data = ip.clip_data(self.data, sigma=10)
-                ax[0,0].setAxes(self.x, self.y)
-                ax[0,0].set_xlabel(&#34;x ({:})&#34;.format(self.dx))
-                ax[0,0].set_ylabel(&#34;y ({:})&#34;.format(self.dy))
-                ax[0,0].imshow(data)
-                plt.show()</code></pre>
+                return(None)</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -915,51 +842,7 @@ The scale to multiply values by (i.e., going from 'µm' to 'm', you would use <c
         self.yUnit = &#39;m&#39;
         self.x *= xunit
         self.y *= yunit
-        self.metadata.update({
-                &#39;dx&#39;: float(self.dx),
-                &#39;dy&#39;: float(self.dy),
-                &#39;xUnit&#39;: self.xUnit,
-                &#39;yUnit&#39;: self.yUnit
-        })
         return(None)</code></pre>
-</details>
-</dd>
-<dt id="ltempy.sitie.Lorentz.preview"><code class="name flex">
-<span>def <span class="ident">preview</span></span>(<span>self, window=None)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Preview the image.</p>
-<p>Note that unlike <code>pyplotwrapper</code>, window is in units of pixels.</p>
-<p><strong>Parameters</strong></p>
-<ul>
-<li><strong>window</strong> : <em>array-like, optional</em> <br />
-Format is <code>window = (xmin, xmax, ymin, ymax)</code>. <br />
-Default is <code>window = (0, -1, 0, -1)</code></li>
-</ul></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def preview(self, window=None):
-        &#34;&#34;&#34;Preview the image.
-
-        Note that unlike `pyplotwrapper`, window is in units of pixels.
-
-        **Parameters**
-
-        * **window** : _array-like, optional_ &lt;br /&gt;
-        Format is `window = (xmin, xmax, ymin, ymax)`. &lt;br /&gt;
-        Default is `window = (0, -1, 0, -1)`
-        &#34;&#34;&#34;
-        fig, ax = subplots(11)
-        if not window is None:
-                ax[0,0].setWindow(window)
-        data = ip.clip_data(self.data, sigma=10)
-        ax[0,0].setAxes(self.x, self.y)
-        ax[0,0].set_xlabel(&#34;x ({:})&#34;.format(self.dx))
-        ax[0,0].set_ylabel(&#34;y ({:})&#34;.format(self.dy))
-        ax[0,0].imshow(data)
-        plt.show()</code></pre>
 </details>
 </dd>
 <dt id="ltempy.sitie.Lorentz.sitie"><code class="name flex">
@@ -1011,7 +894,6 @@ Default is <code>wavelength = 1.96e-12</code> (relativistic wavelength of a 300k
 
         * **self** : _lorentz_
         &#34;&#34;&#34;
-        self.metadata.update({&#39;defocus&#39;: df, &#39;wavelength&#39;: wavelength, &#39;thickness&#39;: thickness})
         self.phase = ip.ndap(phase_from_img(self.data, df, self.dx, self.dy, wavelength))
         self.Bx, self.By = [ip.ndap(arr) for arr in ind_from_phase(self.phase, thickness)]
         return(None)</code></pre>
@@ -1047,7 +929,6 @@ Default is <code>wavelength = 1.96e-12</code> (relativistic wavelength of a 300k
 <h4><code><a title="ltempy.sitie.Lorentz" href="#ltempy.sitie.Lorentz">Lorentz</a></code></h4>
 <ul class="">
 <li><code><a title="ltempy.sitie.Lorentz.fix_units" href="#ltempy.sitie.Lorentz.fix_units">fix_units</a></code></li>
-<li><code><a title="ltempy.sitie.Lorentz.preview" href="#ltempy.sitie.Lorentz.preview">preview</a></code></li>
 <li><code><a title="ltempy.sitie.Lorentz.sitie" href="#ltempy.sitie.Lorentz.sitie">sitie</a></code></li>
 </ul>
 </li>
@@ -1057,7 +938,7 @@ Default is <code>wavelength = 1.96e-12</code> (relativistic wavelength of a 300k
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
 </footer>
 </body>
 </html>

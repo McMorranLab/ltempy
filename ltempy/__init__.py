@@ -28,13 +28,17 @@ Features:
 """
 
 import numpy as np
-import matplotlib.pyplot as plt
 import os
 from pathlib import Path
 
 from .cielab import *
 from .constants import set_units
-from .image_processing import *
-from .pyplotwrapper import *
+from .process import *
+from .simulate import *
 from .sitie import *
-from .simulation import *
+
+try:
+	import matplotlib
+	from .plot import *
+except:
+	pass
