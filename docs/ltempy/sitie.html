@@ -12,6 +12,7 @@
 <style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
 <style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML" integrity="sha256-kZafAc6mZvK3W3v1pHOcUix30OHQN6pU/NO2oFkqZVw=" crossorigin></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
 <script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
 </head>
@@ -23,7 +24,7 @@
 </header>
 <section id="section-intro">
 <p>Contains utilities for reconstructing phase and magnetization from Lorentz images.</p>
-<p>The most common use case is to generate a Lorentz object from a <code>.dm3</code> or <code>.ser</code>file.
+<p>The most common use case is to generate a Lorentz object from a <code>.dm3</code> or <code>.ser</code> file.
 Then you can analyze using high_pass(), sitie(), clip_data(), etc.</p>
 <p>Example:</p>
 <pre><code class="language-python">import ncempy.io.dm as dm
@@ -62,7 +63,7 @@ img.By.clip_data(sigma=5).high_pass().low_pass()
 
 &#34;&#34;&#34;Contains utilities for reconstructing phase and magnetization from Lorentz images.
 
-The most common use case is to generate a Lorentz object from a `.dm3` or `.ser`file.
+The most common use case is to generate a Lorentz object from a `.dm3` or `.ser` file.
 Then you can analyze using high_pass(), sitie(), clip_data(), etc.
 
 Example:
@@ -88,58 +89,59 @@ img.By.clip_data(sigma=5).high_pass().low_pass()
 import numpy as np
 import os
 
-from . import image_processing as ip
+from . import process
 from . import constants as _
+from ._utils import damping
 np.seterr(divide=&#39;ignore&#39;, invalid=&#39;ignore&#39;)
 
 __all__ = [
-                &#39;Lorentz&#39;,
-                &#39;lorentz&#39;,
+                &#39;SITIEImage&#39;,
+                &#39;sitie_image&#39;,
                 &#39;ind_from_phase&#39;,
                 &#39;ind_from_img&#39;,
                 &#39;phase_from_img&#39;]
 
-def lorentz(file):
-        &#34;&#34;&#34;Creates a `Lorentz` class instance for each image in a `.dm3` sequence.
+def sitie_image(datafile):
+        &#34;&#34;&#34;Creates a `Lorentz` class instance for each image in a sequence.
 
         This function acts as a wrapper for the `Lorentz` class, adding an extra handler
-        for `.dm3` image sequences. When the `.dm3` file contains a sequence of images, it is split into
-        individual `Lorentz` instances.
+        for image sequences. When the dictionary contains a sequence of images, it is split into
+        individual `Lorentz` class instances.
 
         **Parameters**
 
-        * **dm3file** : _dictionary-like_ &lt;br /&gt;
-        a dm3-like file with the following keys: &lt;br /&gt;
+        * **datafile** : _dictionary_ &lt;br /&gt;
+        a dictionary with the following keys: &lt;br /&gt;
                 &lt;ul&gt;
                 &lt;li&gt; **data** : _ndarray_ &lt;br /&gt;
-                An array carrying the electron counts. &lt;/li&gt;
+                A 2d array of the electron counts, or an array of 2d arrays of the electron counts. &lt;/li&gt;
                 &lt;li&gt; **pixelSize** : _tuple_ &lt;br /&gt;
-                (_number_, _number_) - the x and y pixel sizes. &lt;/li&gt;
+                (_number_, _number_) - the x and y pixel sizes.
+                For compatibility with `.dm3` files, the last 2 elements of the tuple are used. &lt;/li&gt;
                 &lt;li&gt; **pixelUnit** : _tuple_ &lt;br /&gt;
-                (_string_, _string_) - the x and y pixel units. &lt;/li&gt;
-                &lt;li&gt; **filename** : _string_ &lt;br /&gt;&lt;/li&gt;
+                (_string_, _string_) - the x and y pixel units.
+                For compatibility with `.dm3` files, the last 2 elements of the tuple are used. &lt;/li&gt;
                 &lt;/ul&gt;
 
         **Returns**
         * **out** : _list, Lorentz_ &lt;br /&gt;
-        a list of `wsp-tools.sitie.Lorentz` instances, if the `.dm3` file is an image sequence.
+        A list of `wsp-tools.sitie.Lorentz` instances, if the dictionary is an image sequence.
         Otherwise, a single `wsp-tools.sitie.Lorentz` instance.
         &#34;&#34;&#34;
-        if len(file[&#39;data&#39;].shape) &lt;= 2:
-                return Lorentz(file)
+        if len(datafile[&#39;data&#39;].shape) == 2:
+                return(SITIEImage(datafile))
         else:
-                f1 = file.copy()
+                f1 = datafile.copy()
                 out = []
-                for dataset in file[&#39;data&#39;]:
+                for dataset in datafile[&#39;data&#39;]:
                         f1[&#39;data&#39;] = dataset
-                        f1[&#39;pixelSize&#39;] = [file[&#39;pixelSize&#39;][-2], file[&#39;pixelSize&#39;][-1]]
-                        f1[&#39;pixelUnit&#39;] = [file[&#39;pixelUnit&#39;][-2], file[&#39;pixelUnit&#39;][-1]]
-                        f1[&#39;coords&#39;] = [file[&#39;coords&#39;][-2], file[&#39;coords&#39;][-1]]
-                        out.append(Lorentz(f1))
+                        f1[&#39;pixelSize&#39;] = [datafile[&#39;pixelSize&#39;][-2], datafile[&#39;pixelSize&#39;][-1]]
+                        f1[&#39;pixelUnit&#39;] = [datafile[&#39;pixelUnit&#39;][-2], datafile[&#39;pixelUnit&#39;][-1]]
+                        out.append(SITIEImage(f1))
                 return(out)
 
-class Lorentz:
-        &#34;&#34;&#34;Class that contains sitie information about a lorentz image.
+class SITIEImage:
+        &#34;&#34;&#34;A LorentzImage object represents an image containing only magnetic contrast.
 
         **Parameters**
 
@@ -152,75 +154,99 @@ class Lorentz:
                 (_number_, _number_) - the x and y pixel sizes. &lt;/li&gt;
                 &lt;li&gt; **pixelUnit** : _tuple_ &lt;br /&gt;
                 (_string_, _string_) - the x and y pixel units. &lt;br /&gt;
-                Allowed values are `None`, `&#34;nm&#34;`, `&#34;µm&#34;`, `&#34;mm&#34;`, and `&#34;m&#34;`.&lt;/li&gt;
+                Allowed values are `&#34;pm&#34;`, `&#34;nm&#34;`, `&#34;µm&#34;`, `&#34;um&#34;`, `&#34;mm&#34;`, and `&#34;m&#34;`.&lt;/li&gt;
                 &lt;/ul&gt;
         &#34;&#34;&#34;
         def __init__(self, datafile):
-                self.data = ip.ndap(datafile.get(&#39;data&#39;))
+                self.data = process.ndap(datafile.get(&#39;data&#39;))
                 self.dx = datafile.get(&#39;pixelSize&#39;)[0]
                 self.dy = datafile.get(&#39;pixelSize&#39;)[1]
-                self.xUnit = datafile.get(&#39;pixelUnit&#39;)[0]
-                self.yUnit = datafile.get(&#39;pixelUnit&#39;)[1]
+                self.x_unit = datafile.get(&#39;pixelUnit&#39;)[0]
+                self.y_unit = datafile.get(&#39;pixelUnit&#39;)[1]
                 self.x = np.arange(0,self.data.shape[1]) * self.dx
                 self.y = np.arange(0,self.data.shape[0]) * self.dy
                 self.phase = None
                 self.Bx, self.By = None, None
                 self.fix_units()
 
-        def fix_units(self, xunit=None, yunit=None):
-                &#34;&#34;&#34;Change the pixel units to meters.
+        def fix_units(self):
+                &#34;&#34;&#34;Try to set the units to meters.&#34;&#34;&#34;
+                if self.x_unit == &#39;m&#39;:
+                        xr = 1
+                elif self.x_unit == &#39;mm&#39;:
+                        xr = 1e-3
+                elif self.x_unit == &#39;µm&#39; or self.x_unit == &#39;um&#39;:
+                        xr = 1e-6
+                elif self.x_unit == &#39;nm&#39;:
+                        xr = 1e-9
+                elif self.x_unit == &#39;pm&#39;:
+                        xr = 1e-12
+                else:
+                        print(&#34;Failed to set units to meters - pixelUnit was not recognized.&#34;)
+                        return(self)
+                if self.y_unit == &#39;m&#39;:
+                        yr = 1
+                elif self.y_unit == &#39;mm&#39;:
+                        yr = 1e-3
+                elif self.y_unit == &#39;µm&#39; or self.y_unit == &#39;um&#39;:
+                        yr = 1e-6
+                elif self.y_unit == &#39;nm&#39;:
+                        yr = 1e-9
+                elif self.y_unit == &#39;pm&#39;:
+                        yr = 1e-12
+                else:
+                        print(&#34;Failed to set units to meters - pixelUnit was not recognized.&#34;)
+                        return(self)
+                return(self.set_units(xr, &#34;m&#34;, yr, &#34;m&#34;))
+
+        def set_units(self, xr=1, x_unit=&#34;&#34;, yr=None, y_unit=None):
+                &#34;&#34;&#34;Change the pixel units.
 
                 **Parameters**
 
-                * **unit** : _number, optional_ &lt;br /&gt;
-                The scale to multiply values by (i.e., going from &#39;µm&#39; to &#39;m&#39;, you would use `unit = 1e-6`). If none is given, `fix_units` will try to convert from `self.pixelUnit` to meters.
+                * **xr** : _number, optional_ &lt;br /&gt;
+                New x-units per old x-units. (For example, 1e3 to convert from meters to mm). &lt;br /&gt;
+                Default is `xr = 1`.
+
+                * **x_unit** : _string, optional_ &lt;br /&gt;
+                The new x-units (e.g., &#34;nm&#34; or &#34;µm&#34;). &lt;br /&gt;
+                Default is `x_unit = &#34;&#34;`.
+
+                * **yr** : _number, optional_ &lt;br /&gt;
+                New y-units per old y-units. (For example, 1e3 to convert from meters to mm).
+                If left empty, defaults to `xr`&lt;br /&gt;
+                Default is `yr = None`.
+
+                * **y_unit** : _string, optional_ &lt;br /&gt;
+                The new y-units (e.g., &#34;nm&#34; or &#34;µm&#34;). If left empty, defaults to `x_unit`. &lt;br /&gt;
+                Default is `y_unit = None`.
 
                 **Returns**
 
                 * **self** : _lorentz_
                 &#34;&#34;&#34;
-                if xunit is None:
-                        if self.xUnit == &#39;nm&#39;:
-                                xunit = 1e-9
-                        elif self.xUnit == &#39;mm&#39;:
-                                xunit = 1e-3
-                        elif self.xUnit == &#39;µm&#39;:
-                                xunit = 1e-6
-                        elif self.xUnit == &#39;m&#39;:
-                                xunit = 1
-                        else:
-                                xunit = 1
-                if yunit is None:
-                        if self.yUnit == &#39;nm&#39;:
-                                yunit = 1e-9
-                        elif self.yUnit == &#39;mm&#39;:
-                                yunit = 1e-3
-                        elif self.yUnit == &#39;µm&#39;:
-                                yunit = 1e-6
-                        elif self.yUnit == &#39;m&#39;:
-                                yunit = 1
-                        else:
-                                yunit = 1
-                self.dx *= xunit
-                self.dy *= yunit
-                self.xUnit = &#39;m&#39;
-                self.yUnit = &#39;m&#39;
-                self.x *= xunit
-                self.y *= yunit
-                return(None)
+                if yr is None:
+                        yr = xr
+                if y_unit is None:
+                        y_unit = x_unit
+                self.x_unit = x_unit
+                self.y_unit = y_unit
+                self.dx *= xr
+                self.dy *= yr
+                self.x *= xr
+                self.y *= yr
+                return(self)
 
-        def sitie(self, df = 1, thickness = 60e-9, wavelength=1.97e-12):
+        def reconstruct(self, df = 1e-3, thickness = 60e-9, wavelength=1.97e-12):
                 &#34;&#34;&#34;Carries out phase and B-field reconstruction.
 
-                Assigns phase, Bx, and By attributes.
-
-                Updates metadata with the defocus and wavelength.
+                Assigns `self.phase`, `self.Bx`, and `self.By` attributes.
 
                 **Parameters**
 
                 * **df** : _number, optional_ &lt;br /&gt;
                 The defocus at which the images were taken. &lt;br /&gt;
-                Default is `df = 1`.
+                Default is `df = 1e-3`.
 
                 * **wavelength** : _number, optional_ &lt;br /&gt;
                 The electron wavelength. &lt;br /&gt;
@@ -230,9 +256,63 @@ class Lorentz:
 
                 * **self** : _lorentz_
                 &#34;&#34;&#34;
-                self.phase = ip.ndap(phase_from_img(self.data, df, self.dx, self.dy, wavelength))
-                self.Bx, self.By = [ip.ndap(arr) for arr in ind_from_phase(self.phase, thickness)]
-                return(None)
+                self.phase = process.ndap(phase_from_img(self.data, df, self.dx, self.dy, wavelength))
+                self.Bx, self.By = [process.ndap(arr) for arr in ind_from_phase(self.phase, thickness)]
+                return(self)
+
+        def validate(self, dx, threshold = 0.9, damping = damping, **kwargs):
+                r&#34;&#34;&#34;Estimate the validity of the SITIE approximation for the given parameters.
+
+                SITIE expands on the approximations of TIE by assuming coherent illumination (that is,
+                low divergence angle relative to the defocus and the spatial frequencies to be resolved).
+                Another way to say this is that the damping envelope \(g(q_{\perp})\) of Ref (1), Eqn (4) is negligible.
+                Therefore, this function checks for \(q_{\perp}\) such that \(e^{-g(q_{\perp})} &gt; t\) where \(t\) is
+                a user-input threshold.
+
+                **Parameters**
+
+                * **dx** : _number_ &lt;br /&gt;
+                The pixel size in meters. &lt;br /&gt;
+
+                * **threshold** : _number, optional_ &lt;br /&gt;
+                The minimum allowed value of \(e^{-g(q_{\perp})}\). Should be between 0 and 1. &lt;br /&gt;
+                Default is `threshold = 0.9`.
+
+                * **damping** : _function, optional_ &lt;br /&gt;
+                The damping function \(g(q_{\perp})\). Defaults to Ref (1), Eqn (4). &lt;br /&gt;
+                The default damping function takes the following kwargs:
+                        &lt;ul&gt;
+                                &lt;li&gt;
+                                **defocus** : _number, optional_ &lt;br /&gt;
+                                Default is `defocus = 1e-3`.
+                                &lt;/li&gt;
+                                &lt;li&gt;
+                                **wavelength** : _number, optional_ &lt;br /&gt;
+                                Default is `wavelength = 1.97e-12`.
+                                &lt;/li&gt;
+                                &lt;li&gt;
+                                **C_s** : _number, optional_ &lt;br /&gt;
+                                The spherical aberration coefficient. &lt;br /&gt;
+                                Default is `C_s = 2.7e-3`.
+                                &lt;/li&gt;
+                                &lt;li&gt;
+                                **divangle** : _number, optional_ &lt;br /&gt;
+                                The divergence angle. &lt;br /&gt;
+                                Default is `divangle = 1e-5`.
+                                &lt;/li&gt;
+                        &lt;/ul&gt;
+
+                * ****kwargs** &lt;br /&gt;
+                Any arguments to be passed to the damping function.
+                &#34;&#34;&#34;
+                QX = np.fft.fftfreq(len(self.x), dx)
+                QY = np.fft.fftfreq(len(self.y), dx)
+                qx, qy = np.meshgrid(QX, QY)
+                test = np.exp(-damping(qx, qy, **kwargs))
+                if not np.any(test &gt; threshold):
+                        return(&#34;For these parameters, SITIE is valid only for features larger than your image size. &#34;)
+                min_feature_size = 1 / np.max(np.sqrt(qx**2 + qy**2)[test &gt; threshold])
+                return(&#34;For these parameters, SITIE is valid for feature sizes larger than {}m&#34;.format(min_feature_size))
 
 def phase_from_img(img, defocus = 0, dx = 1, dy = 1, wavelength = 1.97e-12):
         &#34;&#34;&#34;Reconstruct the Aharonov-Bohm phase from a defocussed image.
@@ -268,7 +348,7 @@ def phase_from_img(img, defocus = 0, dx = 1, dy = 1, wavelength = 1.97e-12):
         Sy = np.fft.fftfreq(img.shape[0], dy)
         sx, sy = np.meshgrid(Sx, Sy)
         rhs = np.nan_to_num(2 * _.pi / wavelength / defocus * (1 - img / np.mean(img)), posinf = 0, neginf = 0)
-        rhs = ip.shift_pos(rhs)
+        rhs = process.shift_pos(rhs)
         rhs = np.fft.fft2(rhs) / -4 / _.pi**2 / (sx**2 + sy**2)
         rhs = np.nan_to_num(rhs, posinf = 0, neginf = 0)
         phase = np.fft.ifft2(rhs)
@@ -505,76 +585,6 @@ The y-component of the magnetic induction.</p>
         return(np.array([Bx.real, By.real]))</code></pre>
 </details>
 </dd>
-<dt id="ltempy.sitie.lorentz"><code class="name flex">
-<span>def <span class="ident">lorentz</span></span>(<span>file)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Creates a <code><a title="ltempy.sitie.Lorentz" href="#ltempy.sitie.Lorentz">Lorentz</a></code> class instance for each image in a <code>.dm3</code> sequence.</p>
-<p>This function acts as a wrapper for the <code><a title="ltempy.sitie.Lorentz" href="#ltempy.sitie.Lorentz">Lorentz</a></code> class, adding an extra handler
-for <code>.dm3</code> image sequences. When the <code>.dm3</code> file contains a sequence of images, it is split into
-individual <code><a title="ltempy.sitie.Lorentz" href="#ltempy.sitie.Lorentz">Lorentz</a></code> instances.</p>
-<p><strong>Parameters</strong></p>
-<ul>
-<li><strong>dm3file</strong> : <em>dictionary-like</em> <br />
-a dm3-like file with the following keys: <br />
-<ul>
-<li> <strong>data</strong> : <em>ndarray</em> <br />
-An array carrying the electron counts. </li>
-<li> <strong>pixelSize</strong> : <em>tuple</em> <br />
-(<em>number</em>, <em>number</em>) - the x and y pixel sizes. </li>
-<li> <strong>pixelUnit</strong> : <em>tuple</em> <br />
-(<em>string</em>, <em>string</em>) - the x and y pixel units. </li>
-<li> <strong>filename</strong> : <em>string</em> <br /></li>
-</ul></li>
-</ul>
-<p><strong>Returns</strong>
-* <strong>out</strong> : <em>list, Lorentz</em> <br />
-a list of <code>wsp-tools.sitie.Lorentz</code> instances, if the <code>.dm3</code> file is an image sequence.
-Otherwise, a single <code>wsp-tools.sitie.Lorentz</code> instance.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def lorentz(file):
-        &#34;&#34;&#34;Creates a `Lorentz` class instance for each image in a `.dm3` sequence.
-
-        This function acts as a wrapper for the `Lorentz` class, adding an extra handler
-        for `.dm3` image sequences. When the `.dm3` file contains a sequence of images, it is split into
-        individual `Lorentz` instances.
-
-        **Parameters**
-
-        * **dm3file** : _dictionary-like_ &lt;br /&gt;
-        a dm3-like file with the following keys: &lt;br /&gt;
-                &lt;ul&gt;
-                &lt;li&gt; **data** : _ndarray_ &lt;br /&gt;
-                An array carrying the electron counts. &lt;/li&gt;
-                &lt;li&gt; **pixelSize** : _tuple_ &lt;br /&gt;
-                (_number_, _number_) - the x and y pixel sizes. &lt;/li&gt;
-                &lt;li&gt; **pixelUnit** : _tuple_ &lt;br /&gt;
-                (_string_, _string_) - the x and y pixel units. &lt;/li&gt;
-                &lt;li&gt; **filename** : _string_ &lt;br /&gt;&lt;/li&gt;
-                &lt;/ul&gt;
-
-        **Returns**
-        * **out** : _list, Lorentz_ &lt;br /&gt;
-        a list of `wsp-tools.sitie.Lorentz` instances, if the `.dm3` file is an image sequence.
-        Otherwise, a single `wsp-tools.sitie.Lorentz` instance.
-        &#34;&#34;&#34;
-        if len(file[&#39;data&#39;].shape) &lt;= 2:
-                return Lorentz(file)
-        else:
-                f1 = file.copy()
-                out = []
-                for dataset in file[&#39;data&#39;]:
-                        f1[&#39;data&#39;] = dataset
-                        f1[&#39;pixelSize&#39;] = [file[&#39;pixelSize&#39;][-2], file[&#39;pixelSize&#39;][-1]]
-                        f1[&#39;pixelUnit&#39;] = [file[&#39;pixelUnit&#39;][-2], file[&#39;pixelUnit&#39;][-1]]
-                        f1[&#39;coords&#39;] = [file[&#39;coords&#39;][-2], file[&#39;coords&#39;][-1]]
-                        out.append(Lorentz(f1))
-                return(out)</code></pre>
-</details>
-</dd>
 <dt id="ltempy.sitie.phase_from_img"><code class="name flex">
 <span>def <span class="ident">phase_from_img</span></span>(<span>img, defocus=0, dx=1, dy=1, wavelength=1.97e-12)</span>
 </code></dt>
@@ -650,11 +660,82 @@ A 2d array containing the reconstructed Aharonov-Bohm phase shift.</li>
         Sy = np.fft.fftfreq(img.shape[0], dy)
         sx, sy = np.meshgrid(Sx, Sy)
         rhs = np.nan_to_num(2 * _.pi / wavelength / defocus * (1 - img / np.mean(img)), posinf = 0, neginf = 0)
-        rhs = ip.shift_pos(rhs)
+        rhs = process.shift_pos(rhs)
         rhs = np.fft.fft2(rhs) / -4 / _.pi**2 / (sx**2 + sy**2)
         rhs = np.nan_to_num(rhs, posinf = 0, neginf = 0)
         phase = np.fft.ifft2(rhs)
         return(phase.real)</code></pre>
+</details>
+</dd>
+<dt id="ltempy.sitie.sitie_image"><code class="name flex">
+<span>def <span class="ident">sitie_image</span></span>(<span>datafile)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Creates a <code>Lorentz</code> class instance for each image in a sequence.</p>
+<p>This function acts as a wrapper for the <code>Lorentz</code> class, adding an extra handler
+for image sequences. When the dictionary contains a sequence of images, it is split into
+individual <code>Lorentz</code> class instances.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>datafile</strong> : <em>dictionary</em> <br />
+a dictionary with the following keys: <br />
+<ul>
+<li> <strong>data</strong> : <em>ndarray</em> <br />
+A 2d array of the electron counts, or an array of 2d arrays of the electron counts. </li>
+<li> <strong>pixelSize</strong> : <em>tuple</em> <br />
+(<em>number</em>, <em>number</em>) - the x and y pixel sizes.
+For compatibility with <code>.dm3</code> files, the last 2 elements of the tuple are used. </li>
+<li> <strong>pixelUnit</strong> : <em>tuple</em> <br />
+(<em>string</em>, <em>string</em>) - the x and y pixel units.
+For compatibility with <code>.dm3</code> files, the last 2 elements of the tuple are used. </li>
+</ul></li>
+</ul>
+<p><strong>Returns</strong>
+* <strong>out</strong> : <em>list, Lorentz</em> <br />
+A list of <code>wsp-tools.sitie.Lorentz</code> instances, if the dictionary is an image sequence.
+Otherwise, a single <code>wsp-tools.sitie.Lorentz</code> instance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sitie_image(datafile):
+        &#34;&#34;&#34;Creates a `Lorentz` class instance for each image in a sequence.
+
+        This function acts as a wrapper for the `Lorentz` class, adding an extra handler
+        for image sequences. When the dictionary contains a sequence of images, it is split into
+        individual `Lorentz` class instances.
+
+        **Parameters**
+
+        * **datafile** : _dictionary_ &lt;br /&gt;
+        a dictionary with the following keys: &lt;br /&gt;
+                &lt;ul&gt;
+                &lt;li&gt; **data** : _ndarray_ &lt;br /&gt;
+                A 2d array of the electron counts, or an array of 2d arrays of the electron counts. &lt;/li&gt;
+                &lt;li&gt; **pixelSize** : _tuple_ &lt;br /&gt;
+                (_number_, _number_) - the x and y pixel sizes.
+                For compatibility with `.dm3` files, the last 2 elements of the tuple are used. &lt;/li&gt;
+                &lt;li&gt; **pixelUnit** : _tuple_ &lt;br /&gt;
+                (_string_, _string_) - the x and y pixel units.
+                For compatibility with `.dm3` files, the last 2 elements of the tuple are used. &lt;/li&gt;
+                &lt;/ul&gt;
+
+        **Returns**
+        * **out** : _list, Lorentz_ &lt;br /&gt;
+        A list of `wsp-tools.sitie.Lorentz` instances, if the dictionary is an image sequence.
+        Otherwise, a single `wsp-tools.sitie.Lorentz` instance.
+        &#34;&#34;&#34;
+        if len(datafile[&#39;data&#39;].shape) == 2:
+                return(SITIEImage(datafile))
+        else:
+                f1 = datafile.copy()
+                out = []
+                for dataset in datafile[&#39;data&#39;]:
+                        f1[&#39;data&#39;] = dataset
+                        f1[&#39;pixelSize&#39;] = [datafile[&#39;pixelSize&#39;][-2], datafile[&#39;pixelSize&#39;][-1]]
+                        f1[&#39;pixelUnit&#39;] = [datafile[&#39;pixelUnit&#39;][-2], datafile[&#39;pixelUnit&#39;][-1]]
+                        out.append(SITIEImage(f1))
+                return(out)</code></pre>
 </details>
 </dd>
 </dl>
@@ -662,12 +743,12 @@ A 2d array containing the reconstructed Aharonov-Bohm phase shift.</li>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="ltempy.sitie.Lorentz"><code class="flex name class">
-<span>class <span class="ident">Lorentz</span></span>
+<dt id="ltempy.sitie.SITIEImage"><code class="flex name class">
+<span>class <span class="ident">SITIEImage</span></span>
 <span>(</span><span>datafile)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Class that contains sitie information about a lorentz image.</p>
+<div class="desc"><p>A LorentzImage object represents an image containing only magnetic contrast.</p>
 <p><strong>Parameters</strong></p>
 <ul>
 <li><strong>datafile</strong> : <em>dictionary</em> <br />
@@ -679,15 +760,15 @@ A 2d array of the electron counts. </li>
 (<em>number</em>, <em>number</em>) - the x and y pixel sizes. </li>
 <li> <strong>pixelUnit</strong> : <em>tuple</em> <br />
 (<em>string</em>, <em>string</em>) - the x and y pixel units. <br />
-Allowed values are <code>None</code>, <code>"nm"</code>, <code>"µm"</code>, <code>"mm"</code>, and <code>"m"</code>.</li>
+Allowed values are <code>"pm"</code>, <code>"nm"</code>, <code>"µm"</code>, <code>"um"</code>, <code>"mm"</code>, and <code>"m"</code>.</li>
 </ul></li>
 </ul></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Lorentz:
-        &#34;&#34;&#34;Class that contains sitie information about a lorentz image.
+<pre><code class="python">class SITIEImage:
+        &#34;&#34;&#34;A LorentzImage object represents an image containing only magnetic contrast.
 
         **Parameters**
 
@@ -700,75 +781,99 @@ Allowed values are <code>None</code>, <code>"nm"</code>, <code>"µm"</code>, <co
                 (_number_, _number_) - the x and y pixel sizes. &lt;/li&gt;
                 &lt;li&gt; **pixelUnit** : _tuple_ &lt;br /&gt;
                 (_string_, _string_) - the x and y pixel units. &lt;br /&gt;
-                Allowed values are `None`, `&#34;nm&#34;`, `&#34;µm&#34;`, `&#34;mm&#34;`, and `&#34;m&#34;`.&lt;/li&gt;
+                Allowed values are `&#34;pm&#34;`, `&#34;nm&#34;`, `&#34;µm&#34;`, `&#34;um&#34;`, `&#34;mm&#34;`, and `&#34;m&#34;`.&lt;/li&gt;
                 &lt;/ul&gt;
         &#34;&#34;&#34;
         def __init__(self, datafile):
-                self.data = ip.ndap(datafile.get(&#39;data&#39;))
+                self.data = process.ndap(datafile.get(&#39;data&#39;))
                 self.dx = datafile.get(&#39;pixelSize&#39;)[0]
                 self.dy = datafile.get(&#39;pixelSize&#39;)[1]
-                self.xUnit = datafile.get(&#39;pixelUnit&#39;)[0]
-                self.yUnit = datafile.get(&#39;pixelUnit&#39;)[1]
+                self.x_unit = datafile.get(&#39;pixelUnit&#39;)[0]
+                self.y_unit = datafile.get(&#39;pixelUnit&#39;)[1]
                 self.x = np.arange(0,self.data.shape[1]) * self.dx
                 self.y = np.arange(0,self.data.shape[0]) * self.dy
                 self.phase = None
                 self.Bx, self.By = None, None
                 self.fix_units()
 
-        def fix_units(self, xunit=None, yunit=None):
-                &#34;&#34;&#34;Change the pixel units to meters.
+        def fix_units(self):
+                &#34;&#34;&#34;Try to set the units to meters.&#34;&#34;&#34;
+                if self.x_unit == &#39;m&#39;:
+                        xr = 1
+                elif self.x_unit == &#39;mm&#39;:
+                        xr = 1e-3
+                elif self.x_unit == &#39;µm&#39; or self.x_unit == &#39;um&#39;:
+                        xr = 1e-6
+                elif self.x_unit == &#39;nm&#39;:
+                        xr = 1e-9
+                elif self.x_unit == &#39;pm&#39;:
+                        xr = 1e-12
+                else:
+                        print(&#34;Failed to set units to meters - pixelUnit was not recognized.&#34;)
+                        return(self)
+                if self.y_unit == &#39;m&#39;:
+                        yr = 1
+                elif self.y_unit == &#39;mm&#39;:
+                        yr = 1e-3
+                elif self.y_unit == &#39;µm&#39; or self.y_unit == &#39;um&#39;:
+                        yr = 1e-6
+                elif self.y_unit == &#39;nm&#39;:
+                        yr = 1e-9
+                elif self.y_unit == &#39;pm&#39;:
+                        yr = 1e-12
+                else:
+                        print(&#34;Failed to set units to meters - pixelUnit was not recognized.&#34;)
+                        return(self)
+                return(self.set_units(xr, &#34;m&#34;, yr, &#34;m&#34;))
+
+        def set_units(self, xr=1, x_unit=&#34;&#34;, yr=None, y_unit=None):
+                &#34;&#34;&#34;Change the pixel units.
 
                 **Parameters**
 
-                * **unit** : _number, optional_ &lt;br /&gt;
-                The scale to multiply values by (i.e., going from &#39;µm&#39; to &#39;m&#39;, you would use `unit = 1e-6`). If none is given, `fix_units` will try to convert from `self.pixelUnit` to meters.
+                * **xr** : _number, optional_ &lt;br /&gt;
+                New x-units per old x-units. (For example, 1e3 to convert from meters to mm). &lt;br /&gt;
+                Default is `xr = 1`.
+
+                * **x_unit** : _string, optional_ &lt;br /&gt;
+                The new x-units (e.g., &#34;nm&#34; or &#34;µm&#34;). &lt;br /&gt;
+                Default is `x_unit = &#34;&#34;`.
+
+                * **yr** : _number, optional_ &lt;br /&gt;
+                New y-units per old y-units. (For example, 1e3 to convert from meters to mm).
+                If left empty, defaults to `xr`&lt;br /&gt;
+                Default is `yr = None`.
+
+                * **y_unit** : _string, optional_ &lt;br /&gt;
+                The new y-units (e.g., &#34;nm&#34; or &#34;µm&#34;). If left empty, defaults to `x_unit`. &lt;br /&gt;
+                Default is `y_unit = None`.
 
                 **Returns**
 
                 * **self** : _lorentz_
                 &#34;&#34;&#34;
-                if xunit is None:
-                        if self.xUnit == &#39;nm&#39;:
-                                xunit = 1e-9
-                        elif self.xUnit == &#39;mm&#39;:
-                                xunit = 1e-3
-                        elif self.xUnit == &#39;µm&#39;:
-                                xunit = 1e-6
-                        elif self.xUnit == &#39;m&#39;:
-                                xunit = 1
-                        else:
-                                xunit = 1
-                if yunit is None:
-                        if self.yUnit == &#39;nm&#39;:
-                                yunit = 1e-9
-                        elif self.yUnit == &#39;mm&#39;:
-                                yunit = 1e-3
-                        elif self.yUnit == &#39;µm&#39;:
-                                yunit = 1e-6
-                        elif self.yUnit == &#39;m&#39;:
-                                yunit = 1
-                        else:
-                                yunit = 1
-                self.dx *= xunit
-                self.dy *= yunit
-                self.xUnit = &#39;m&#39;
-                self.yUnit = &#39;m&#39;
-                self.x *= xunit
-                self.y *= yunit
-                return(None)
+                if yr is None:
+                        yr = xr
+                if y_unit is None:
+                        y_unit = x_unit
+                self.x_unit = x_unit
+                self.y_unit = y_unit
+                self.dx *= xr
+                self.dy *= yr
+                self.x *= xr
+                self.y *= yr
+                return(self)
 
-        def sitie(self, df = 1, thickness = 60e-9, wavelength=1.97e-12):
+        def reconstruct(self, df = 1e-3, thickness = 60e-9, wavelength=1.97e-12):
                 &#34;&#34;&#34;Carries out phase and B-field reconstruction.
 
-                Assigns phase, Bx, and By attributes.
-
-                Updates metadata with the defocus and wavelength.
+                Assigns `self.phase`, `self.Bx`, and `self.By` attributes.
 
                 **Parameters**
 
                 * **df** : _number, optional_ &lt;br /&gt;
                 The defocus at which the images were taken. &lt;br /&gt;
-                Default is `df = 1`.
+                Default is `df = 1e-3`.
 
                 * **wavelength** : _number, optional_ &lt;br /&gt;
                 The electron wavelength. &lt;br /&gt;
@@ -778,86 +883,118 @@ Allowed values are <code>None</code>, <code>"nm"</code>, <code>"µm"</code>, <co
 
                 * **self** : _lorentz_
                 &#34;&#34;&#34;
-                self.phase = ip.ndap(phase_from_img(self.data, df, self.dx, self.dy, wavelength))
-                self.Bx, self.By = [ip.ndap(arr) for arr in ind_from_phase(self.phase, thickness)]
-                return(None)</code></pre>
+                self.phase = process.ndap(phase_from_img(self.data, df, self.dx, self.dy, wavelength))
+                self.Bx, self.By = [process.ndap(arr) for arr in ind_from_phase(self.phase, thickness)]
+                return(self)
+
+        def validate(self, dx, threshold = 0.9, damping = damping, **kwargs):
+                r&#34;&#34;&#34;Estimate the validity of the SITIE approximation for the given parameters.
+
+                SITIE expands on the approximations of TIE by assuming coherent illumination (that is,
+                low divergence angle relative to the defocus and the spatial frequencies to be resolved).
+                Another way to say this is that the damping envelope \(g(q_{\perp})\) of Ref (1), Eqn (4) is negligible.
+                Therefore, this function checks for \(q_{\perp}\) such that \(e^{-g(q_{\perp})} &gt; t\) where \(t\) is
+                a user-input threshold.
+
+                **Parameters**
+
+                * **dx** : _number_ &lt;br /&gt;
+                The pixel size in meters. &lt;br /&gt;
+
+                * **threshold** : _number, optional_ &lt;br /&gt;
+                The minimum allowed value of \(e^{-g(q_{\perp})}\). Should be between 0 and 1. &lt;br /&gt;
+                Default is `threshold = 0.9`.
+
+                * **damping** : _function, optional_ &lt;br /&gt;
+                The damping function \(g(q_{\perp})\). Defaults to Ref (1), Eqn (4). &lt;br /&gt;
+                The default damping function takes the following kwargs:
+                        &lt;ul&gt;
+                                &lt;li&gt;
+                                **defocus** : _number, optional_ &lt;br /&gt;
+                                Default is `defocus = 1e-3`.
+                                &lt;/li&gt;
+                                &lt;li&gt;
+                                **wavelength** : _number, optional_ &lt;br /&gt;
+                                Default is `wavelength = 1.97e-12`.
+                                &lt;/li&gt;
+                                &lt;li&gt;
+                                **C_s** : _number, optional_ &lt;br /&gt;
+                                The spherical aberration coefficient. &lt;br /&gt;
+                                Default is `C_s = 2.7e-3`.
+                                &lt;/li&gt;
+                                &lt;li&gt;
+                                **divangle** : _number, optional_ &lt;br /&gt;
+                                The divergence angle. &lt;br /&gt;
+                                Default is `divangle = 1e-5`.
+                                &lt;/li&gt;
+                        &lt;/ul&gt;
+
+                * ****kwargs** &lt;br /&gt;
+                Any arguments to be passed to the damping function.
+                &#34;&#34;&#34;
+                QX = np.fft.fftfreq(len(self.x), dx)
+                QY = np.fft.fftfreq(len(self.y), dx)
+                qx, qy = np.meshgrid(QX, QY)
+                test = np.exp(-damping(qx, qy, **kwargs))
+                if not np.any(test &gt; threshold):
+                        return(&#34;For these parameters, SITIE is valid only for features larger than your image size. &#34;)
+                min_feature_size = 1 / np.max(np.sqrt(qx**2 + qy**2)[test &gt; threshold])
+                return(&#34;For these parameters, SITIE is valid for feature sizes larger than {}m&#34;.format(min_feature_size))</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
-<dt id="ltempy.sitie.Lorentz.fix_units"><code class="name flex">
-<span>def <span class="ident">fix_units</span></span>(<span>self, xunit=None, yunit=None)</span>
+<dt id="ltempy.sitie.SITIEImage.fix_units"><code class="name flex">
+<span>def <span class="ident">fix_units</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Change the pixel units to meters.</p>
-<p><strong>Parameters</strong></p>
-<ul>
-<li><strong>unit</strong> : <em>number, optional</em> <br />
-The scale to multiply values by (i.e., going from 'µm' to 'm', you would use <code>unit = 1e-6</code>). If none is given, <code>fix_units</code> will try to convert from <code>self.pixelUnit</code> to meters.</li>
-</ul>
-<p><strong>Returns</strong></p>
-<ul>
-<li><strong>self</strong> : <em>lorentz</em></li>
-</ul></div>
+<div class="desc"><p>Try to set the units to meters.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def fix_units(self, xunit=None, yunit=None):
-        &#34;&#34;&#34;Change the pixel units to meters.
-
-        **Parameters**
-
-        * **unit** : _number, optional_ &lt;br /&gt;
-        The scale to multiply values by (i.e., going from &#39;µm&#39; to &#39;m&#39;, you would use `unit = 1e-6`). If none is given, `fix_units` will try to convert from `self.pixelUnit` to meters.
-
-        **Returns**
-
-        * **self** : _lorentz_
-        &#34;&#34;&#34;
-        if xunit is None:
-                if self.xUnit == &#39;nm&#39;:
-                        xunit = 1e-9
-                elif self.xUnit == &#39;mm&#39;:
-                        xunit = 1e-3
-                elif self.xUnit == &#39;µm&#39;:
-                        xunit = 1e-6
-                elif self.xUnit == &#39;m&#39;:
-                        xunit = 1
-                else:
-                        xunit = 1
-        if yunit is None:
-                if self.yUnit == &#39;nm&#39;:
-                        yunit = 1e-9
-                elif self.yUnit == &#39;mm&#39;:
-                        yunit = 1e-3
-                elif self.yUnit == &#39;µm&#39;:
-                        yunit = 1e-6
-                elif self.yUnit == &#39;m&#39;:
-                        yunit = 1
-                else:
-                        yunit = 1
-        self.dx *= xunit
-        self.dy *= yunit
-        self.xUnit = &#39;m&#39;
-        self.yUnit = &#39;m&#39;
-        self.x *= xunit
-        self.y *= yunit
-        return(None)</code></pre>
+<pre><code class="python">def fix_units(self):
+        &#34;&#34;&#34;Try to set the units to meters.&#34;&#34;&#34;
+        if self.x_unit == &#39;m&#39;:
+                xr = 1
+        elif self.x_unit == &#39;mm&#39;:
+                xr = 1e-3
+        elif self.x_unit == &#39;µm&#39; or self.x_unit == &#39;um&#39;:
+                xr = 1e-6
+        elif self.x_unit == &#39;nm&#39;:
+                xr = 1e-9
+        elif self.x_unit == &#39;pm&#39;:
+                xr = 1e-12
+        else:
+                print(&#34;Failed to set units to meters - pixelUnit was not recognized.&#34;)
+                return(self)
+        if self.y_unit == &#39;m&#39;:
+                yr = 1
+        elif self.y_unit == &#39;mm&#39;:
+                yr = 1e-3
+        elif self.y_unit == &#39;µm&#39; or self.y_unit == &#39;um&#39;:
+                yr = 1e-6
+        elif self.y_unit == &#39;nm&#39;:
+                yr = 1e-9
+        elif self.y_unit == &#39;pm&#39;:
+                yr = 1e-12
+        else:
+                print(&#34;Failed to set units to meters - pixelUnit was not recognized.&#34;)
+                return(self)
+        return(self.set_units(xr, &#34;m&#34;, yr, &#34;m&#34;))</code></pre>
 </details>
 </dd>
-<dt id="ltempy.sitie.Lorentz.sitie"><code class="name flex">
-<span>def <span class="ident">sitie</span></span>(<span>self, df=1, thickness=6e-08, wavelength=1.97e-12)</span>
+<dt id="ltempy.sitie.SITIEImage.reconstruct"><code class="name flex">
+<span>def <span class="ident">reconstruct</span></span>(<span>self, df=0.001, thickness=6e-08, wavelength=1.97e-12)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Carries out phase and B-field reconstruction.</p>
-<p>Assigns phase, Bx, and By attributes.</p>
-<p>Updates metadata with the defocus and wavelength.</p>
+<p>Assigns <code>self.phase</code>, <code>self.Bx</code>, and <code>self.By</code> attributes.</p>
 <p><strong>Parameters</strong></p>
 <ul>
 <li>
 <p><strong>df</strong> : <em>number, optional</em> <br />
 The defocus at which the images were taken. <br />
-Default is <code>df = 1</code>.</p>
+Default is <code>df = 1e-3</code>.</p>
 </li>
 <li>
 <p><strong>wavelength</strong> : <em>number, optional</em> <br />
@@ -873,18 +1010,16 @@ Default is <code>wavelength = 1.96e-12</code> (relativistic wavelength of a 300k
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def sitie(self, df = 1, thickness = 60e-9, wavelength=1.97e-12):
+<pre><code class="python">def reconstruct(self, df = 1e-3, thickness = 60e-9, wavelength=1.97e-12):
         &#34;&#34;&#34;Carries out phase and B-field reconstruction.
 
-        Assigns phase, Bx, and By attributes.
-
-        Updates metadata with the defocus and wavelength.
+        Assigns `self.phase`, `self.Bx`, and `self.By` attributes.
 
         **Parameters**
 
         * **df** : _number, optional_ &lt;br /&gt;
         The defocus at which the images were taken. &lt;br /&gt;
-        Default is `df = 1`.
+        Default is `df = 1e-3`.
 
         * **wavelength** : _number, optional_ &lt;br /&gt;
         The electron wavelength. &lt;br /&gt;
@@ -894,9 +1029,195 @@ Default is <code>wavelength = 1.96e-12</code> (relativistic wavelength of a 300k
 
         * **self** : _lorentz_
         &#34;&#34;&#34;
-        self.phase = ip.ndap(phase_from_img(self.data, df, self.dx, self.dy, wavelength))
-        self.Bx, self.By = [ip.ndap(arr) for arr in ind_from_phase(self.phase, thickness)]
-        return(None)</code></pre>
+        self.phase = process.ndap(phase_from_img(self.data, df, self.dx, self.dy, wavelength))
+        self.Bx, self.By = [process.ndap(arr) for arr in ind_from_phase(self.phase, thickness)]
+        return(self)</code></pre>
+</details>
+</dd>
+<dt id="ltempy.sitie.SITIEImage.set_units"><code class="name flex">
+<span>def <span class="ident">set_units</span></span>(<span>self, xr=1, x_unit='', yr=None, y_unit=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Change the pixel units.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li>
+<p><strong>xr</strong> : <em>number, optional</em> <br />
+New x-units per old x-units. (For example, 1e3 to convert from meters to mm). <br />
+Default is <code>xr = 1</code>.</p>
+</li>
+<li>
+<p><strong>x_unit</strong> : <em>string, optional</em> <br />
+The new x-units (e.g., "nm" or "µm"). <br />
+Default is <code>x_unit = ""</code>.</p>
+</li>
+<li>
+<p><strong>yr</strong> : <em>number, optional</em> <br />
+New y-units per old y-units. (For example, 1e3 to convert from meters to mm).
+If left empty, defaults to <code>xr</code><br />
+Default is <code>yr = None</code>.</p>
+</li>
+<li>
+<p><strong>y_unit</strong> : <em>string, optional</em> <br />
+The new y-units (e.g., "nm" or "µm"). If left empty, defaults to <code>x_unit</code>. <br />
+Default is <code>y_unit = None</code>.</p>
+</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><strong>self</strong> : <em>lorentz</em></li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_units(self, xr=1, x_unit=&#34;&#34;, yr=None, y_unit=None):
+        &#34;&#34;&#34;Change the pixel units.
+
+        **Parameters**
+
+        * **xr** : _number, optional_ &lt;br /&gt;
+        New x-units per old x-units. (For example, 1e3 to convert from meters to mm). &lt;br /&gt;
+        Default is `xr = 1`.
+
+        * **x_unit** : _string, optional_ &lt;br /&gt;
+        The new x-units (e.g., &#34;nm&#34; or &#34;µm&#34;). &lt;br /&gt;
+        Default is `x_unit = &#34;&#34;`.
+
+        * **yr** : _number, optional_ &lt;br /&gt;
+        New y-units per old y-units. (For example, 1e3 to convert from meters to mm).
+        If left empty, defaults to `xr`&lt;br /&gt;
+        Default is `yr = None`.
+
+        * **y_unit** : _string, optional_ &lt;br /&gt;
+        The new y-units (e.g., &#34;nm&#34; or &#34;µm&#34;). If left empty, defaults to `x_unit`. &lt;br /&gt;
+        Default is `y_unit = None`.
+
+        **Returns**
+
+        * **self** : _lorentz_
+        &#34;&#34;&#34;
+        if yr is None:
+                yr = xr
+        if y_unit is None:
+                y_unit = x_unit
+        self.x_unit = x_unit
+        self.y_unit = y_unit
+        self.dx *= xr
+        self.dy *= yr
+        self.x *= xr
+        self.y *= yr
+        return(self)</code></pre>
+</details>
+</dd>
+<dt id="ltempy.sitie.SITIEImage.validate"><code class="name flex">
+<span>def <span class="ident">validate</span></span>(<span>self, dx, threshold=0.9, damping=&lt;function damping&gt;, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Estimate the validity of the SITIE approximation for the given parameters.</p>
+<p>SITIE expands on the approximations of TIE by assuming coherent illumination (that is,
+low divergence angle relative to the defocus and the spatial frequencies to be resolved).
+Another way to say this is that the damping envelope <span><span class="MathJax_Preview">g(q_{\perp})</span><script type="math/tex">g(q_{\perp})</script></span> of Ref (1), Eqn (4) is negligible.
+Therefore, this function checks for <span><span class="MathJax_Preview">q_{\perp}</span><script type="math/tex">q_{\perp}</script></span> such that <span><span class="MathJax_Preview">e^{-g(q_{\perp})} &gt; t</span><script type="math/tex">e^{-g(q_{\perp})} > t</script></span> where <span><span class="MathJax_Preview">t</span><script type="math/tex">t</script></span> is
+a user-input threshold.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li>
+<p><strong>dx</strong> : <em>number</em> <br />
+The pixel size in meters. <br /></p>
+</li>
+<li>
+<p><strong>threshold</strong> : <em>number, optional</em> <br />
+The minimum allowed value of <span><span class="MathJax_Preview">e^{-g(q_{\perp})}</span><script type="math/tex">e^{-g(q_{\perp})}</script></span>. Should be between 0 and 1. <br />
+Default is <code>threshold = 0.9</code>.</p>
+</li>
+<li>
+<p><strong>damping</strong> : <em>function, optional</em> <br />
+The damping function <span><span class="MathJax_Preview">g(q_{\perp})</span><script type="math/tex">g(q_{\perp})</script></span>. Defaults to Ref (1), Eqn (4). <br />
+The default damping function takes the following kwargs:
+<ul>
+<li>
+<strong>defocus</strong> : <em>number, optional</em> <br />
+Default is <code>defocus = 1e-3</code>.
+</li>
+<li>
+<strong>wavelength</strong> : <em>number, optional</em> <br />
+Default is <code>wavelength = 1.97e-12</code>.
+</li>
+<li>
+<strong>C_s</strong> : <em>number, optional</em> <br />
+The spherical aberration coefficient. <br />
+Default is <code>C_s = 2.7e-3</code>.
+</li>
+<li>
+<strong>divangle</strong> : <em>number, optional</em> <br />
+The divergence angle. <br />
+Default is <code>divangle = 1e-5</code>.
+</li>
+</ul></p>
+</li>
+<li>
+<p><strong>**kwargs</strong> <br />
+Any arguments to be passed to the damping function.</p>
+</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def validate(self, dx, threshold = 0.9, damping = damping, **kwargs):
+        r&#34;&#34;&#34;Estimate the validity of the SITIE approximation for the given parameters.
+
+        SITIE expands on the approximations of TIE by assuming coherent illumination (that is,
+        low divergence angle relative to the defocus and the spatial frequencies to be resolved).
+        Another way to say this is that the damping envelope \(g(q_{\perp})\) of Ref (1), Eqn (4) is negligible.
+        Therefore, this function checks for \(q_{\perp}\) such that \(e^{-g(q_{\perp})} &gt; t\) where \(t\) is
+        a user-input threshold.
+
+        **Parameters**
+
+        * **dx** : _number_ &lt;br /&gt;
+        The pixel size in meters. &lt;br /&gt;
+
+        * **threshold** : _number, optional_ &lt;br /&gt;
+        The minimum allowed value of \(e^{-g(q_{\perp})}\). Should be between 0 and 1. &lt;br /&gt;
+        Default is `threshold = 0.9`.
+
+        * **damping** : _function, optional_ &lt;br /&gt;
+        The damping function \(g(q_{\perp})\). Defaults to Ref (1), Eqn (4). &lt;br /&gt;
+        The default damping function takes the following kwargs:
+                &lt;ul&gt;
+                        &lt;li&gt;
+                        **defocus** : _number, optional_ &lt;br /&gt;
+                        Default is `defocus = 1e-3`.
+                        &lt;/li&gt;
+                        &lt;li&gt;
+                        **wavelength** : _number, optional_ &lt;br /&gt;
+                        Default is `wavelength = 1.97e-12`.
+                        &lt;/li&gt;
+                        &lt;li&gt;
+                        **C_s** : _number, optional_ &lt;br /&gt;
+                        The spherical aberration coefficient. &lt;br /&gt;
+                        Default is `C_s = 2.7e-3`.
+                        &lt;/li&gt;
+                        &lt;li&gt;
+                        **divangle** : _number, optional_ &lt;br /&gt;
+                        The divergence angle. &lt;br /&gt;
+                        Default is `divangle = 1e-5`.
+                        &lt;/li&gt;
+                &lt;/ul&gt;
+
+        * ****kwargs** &lt;br /&gt;
+        Any arguments to be passed to the damping function.
+        &#34;&#34;&#34;
+        QX = np.fft.fftfreq(len(self.x), dx)
+        QY = np.fft.fftfreq(len(self.y), dx)
+        qx, qy = np.meshgrid(QX, QY)
+        test = np.exp(-damping(qx, qy, **kwargs))
+        if not np.any(test &gt; threshold):
+                return(&#34;For these parameters, SITIE is valid only for features larger than your image size. &#34;)
+        min_feature_size = 1 / np.max(np.sqrt(qx**2 + qy**2)[test &gt; threshold])
+        return(&#34;For these parameters, SITIE is valid for feature sizes larger than {}m&#34;.format(min_feature_size))</code></pre>
 </details>
 </dd>
 </dl>
@@ -910,26 +1231,23 @@ Default is <code>wavelength = 1.96e-12</code> (relativistic wavelength of a 300k
 <ul></ul>
 </div>
 <ul id="index">
-<li><h3>Super-module</h3>
-<ul>
-<li><code><a title="ltempy" href="index.html">ltempy</a></code></li>
-</ul>
-</li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
 <li><code><a title="ltempy.sitie.ind_from_img" href="#ltempy.sitie.ind_from_img">ind_from_img</a></code></li>
 <li><code><a title="ltempy.sitie.ind_from_phase" href="#ltempy.sitie.ind_from_phase">ind_from_phase</a></code></li>
-<li><code><a title="ltempy.sitie.lorentz" href="#ltempy.sitie.lorentz">lorentz</a></code></li>
 <li><code><a title="ltempy.sitie.phase_from_img" href="#ltempy.sitie.phase_from_img">phase_from_img</a></code></li>
+<li><code><a title="ltempy.sitie.sitie_image" href="#ltempy.sitie.sitie_image">sitie_image</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="ltempy.sitie.Lorentz" href="#ltempy.sitie.Lorentz">Lorentz</a></code></h4>
+<h4><code><a title="ltempy.sitie.SITIEImage" href="#ltempy.sitie.SITIEImage">SITIEImage</a></code></h4>
 <ul class="">
-<li><code><a title="ltempy.sitie.Lorentz.fix_units" href="#ltempy.sitie.Lorentz.fix_units">fix_units</a></code></li>
-<li><code><a title="ltempy.sitie.Lorentz.sitie" href="#ltempy.sitie.Lorentz.sitie">sitie</a></code></li>
+<li><code><a title="ltempy.sitie.SITIEImage.fix_units" href="#ltempy.sitie.SITIEImage.fix_units">fix_units</a></code></li>
+<li><code><a title="ltempy.sitie.SITIEImage.reconstruct" href="#ltempy.sitie.SITIEImage.reconstruct">reconstruct</a></code></li>
+<li><code><a title="ltempy.sitie.SITIEImage.set_units" href="#ltempy.sitie.SITIEImage.set_units">set_units</a></code></li>
+<li><code><a title="ltempy.sitie.SITIEImage.validate" href="#ltempy.sitie.SITIEImage.validate">validate</a></code></li>
 </ul>
 </li>
 </ul>

@@ -116,12 +116,16 @@ def ab_phase(mx, my, mz, dx=1, dy=1, thickness=60e-9, p = np.array([0,0,1])):
 	* **phase** : _ndarray_ <br />
 	The Aharonov-Bohm phase imparted on the electron by the magnetization. Shape will be the same as mx, my, mz.
 	"""
+	# All direct from definitions in Mansuripur
 	M, s, s_mag, sig, z_hat = sims_shared(mx, my, mz, dx, dy)
 	Gp = G(p, sig, z_hat, thickness * s_mag)
 	sig_x_z = np.cross(sig, z_hat, axisa=0, axisb=0, axisc=0)
 	p_x_p_M = np.cross(p, np.cross(p, M, axisa=0, axisb=0, axisc=0), axis=0, axisb=0, axisc=0)
 	weights = 2 * _.e / _.hbar / _.c * 1j * thickness / s_mag * Gp * np.einsum('i...,i...->...',sig_x_z, p_x_p_M)
 	weights[:,0,0,:] = 0
+
+	# multiply by weights.shape to counter ifft2's normalization
+	# old versions of numpy don't have the `norm = 'backward'` option
 	phase = weights.shape[1] * weights.shape[2] * np.fft.ifft2(weights, axes=(1,2))
 	return(np.squeeze(phase.real))
 
@@ -252,7 +256,7 @@ def A_from_mag(mx, my, mz, dx = 1, dy = 1, z = 0, thickness = 60e-9):
 	A = A_mn.shape[1] * A_mn.shape[2] * np.fft.ifft2(A_mn, axes=(1,2))
 	return(np.squeeze(A.real))
 
-def img_from_mag(mx, my, mz, dx = 1, dy = 1, defocus = 0, thickness = 60e-9, wavelength = 1.97e-12, p = np.array([0,0,1])):
+def img_from_mag(mx, my, mz, dx = 1, dy = 1, defocus = 0, thickness = 60e-9, wavelength = 1.97e-12, p = np.array([0,0,1]), divangle = 1e-5):
 	"""Calculate the theoretical Lorentz TEM image from a given (2 or 3 dim) magnetization.
 
 	This is an implementation of the SITIE equation (Eq 10) from J. Chess et al. 2017, _Streamlined approach to mapping the magnetic induction of skyrmionic materials_, in combination with Mansuripur et al.
@@ -294,16 +298,24 @@ def img_from_mag(mx, my, mz, dx = 1, dy = 1, defocus = 0, thickness = 60e-9, wav
 	sig_x_z = np.cross(sig, z_hat, axisa=0, axisb=0, axisc=0)
 	p_x_p_M = np.cross(p, np.cross(p, M, axisa=0, axisb=0, axisc=0), axis=0, axisb=0, axisc=0)
 	### weights is the only thing different from ab_phase (\nabla^2 = - 4 pi^2 s_mag^2)
-	weights = - 4 * _.pi **2 * 2 * _.e / _.hbar / _.c * 1j * thickness * s_mag * Gp * np.einsum('i...,i...->...',sig_x_z, p_x_p_M)
+	weights = 2 * _.e / _.hbar / _.c * 1j * thickness / s_mag * Gp * np.einsum('i...,i...->...',sig_x_z, p_x_p_M)
 	weights[:,0,0,:] = 0
 
-	out = weights.shape[1] * weights.shape[2] * wavelength * defocus / 2 / _.pi * np.fft.ifft2(weights, axes=(1,2))
-	if out.shape[-1] > 1:
-		out = np.sum(out, axis=-1)
-	out = 1 - np.squeeze(out)
+	nabla2weights = - 4 * _.pi**2 * s_mag**2 * weights
+	nablaweights = 1j * 2 * _.pi * s * weights
+
+	nabla2phi = nabla2weights.shape[1] * nabla2weights.shape[2] * np.fft.ifft2(nabla2weights, axes=(1,2))
+	nablaphi = nablaweights.shape[1] * nablaweights.shape[2] * np.fft.ifft2(nablaweights, axes=(1,2))
+	nablaphi2 = nablaphi[0]**2 + nablaphi[1]**2
+
+	if nablaphi2.shape[-1] > 1:
+		nablaphi2 = np.sum(nablaphi2, axis=-1)
+	if nabla2phi.shape[-1] > 1:
+		nabla2phi = np.sum(nabla2phi, axis=-1)
+	out = 1 - wavelength * defocus / 2 / _.pi * np.squeeze(nabla2phi) - (_.pi * divangle * defocus)**2 / 2 / np.log(2) * np.squeeze(nablaphi2)
 	return(out.real)
 
-def img_from_phase(phase, dx = 1, dy = 1, defocus = 0, wavelength = 1.97e-12):
+def img_from_phase(phase, dx = 1, dy = 1, defocus = 0, wavelength = 1.97e-12, divangle = 1e-5):
 	"""Calculate the Lorentz TEM image given a two-dimensional phase distribution and defocus.
 
 	This is an implementation of the SITIE equation (Eq 10) from J. Chess et al. 2017, _Streamlined approach to mapping the magnetic induction of skyrmionic materials_.
@@ -337,8 +349,10 @@ def img_from_phase(phase, dx = 1, dy = 1, defocus = 0, wavelength = 1.97e-12):
 	Sx = np.fft.fftfreq(phase.shape[1], dx)
 	Sy = np.fft.fftfreq(phase.shape[0], dy)
 	sx, sy = np.meshgrid(Sx, Sy) ### (y-dim, x-dim, z-dim)
-	phase = - 4 * _.pi**2 * (sx**2 + sy**2) * np.fft.fft2(phase)
-	img = 1 - wavelength * defocus / 2 / _.pi * np.fft.ifft2(phase)
+	tmp = np.fft.fft2(phase)
+	nabla2phase = - 4 * _.pi**2 * np.fft.ifft2((sx**2 + sy**2) * tmp)
+	nablaphase2 = - 4 * _.pi**2 * (np.fft.ifft2(sx * tmp)**2 + np.fft.ifft2(sy * tmp)**2)
+	img = 1 - wavelength * defocus / 2 / _.pi * nabla2phase - (_.pi * divangle * defocus)**2 / 2 / np.log(2) * nablaphase2
 	return(img.real)
 
 def jchessmodel(x, y, z=0, **kwargs):
@@ -459,4 +473,4 @@ def propagate(mode, dx = 1, dy = 1, T=T, **kwargs):
 	qx, qy = np.meshgrid(U, V)
 	psi_q = np.fft.fft2(mode)
 	psi_out = np.fft.ifft2(psi_q * T(qx, qy, **kwargs))
-	return(psi_out)
+	return(np.abs(psi_out)**2)

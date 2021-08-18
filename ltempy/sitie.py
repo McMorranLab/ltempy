@@ -214,10 +214,55 @@ class SITIEImage:
 		return(self)
 
 	def validate(self, dx, threshold = 0.9, damping = damping, **kwargs):
+		r"""Estimate the validity of the SITIE approximation for the given parameters.
+
+		SITIE expands on the approximations of TIE by assuming coherent illumination (that is,
+		low divergence angle relative to the defocus and the spatial frequencies to be resolved).
+		Another way to say this is that the damping envelope \(g(q_{\perp})\) of Ref (1), Eqn (4) is negligible.
+		Therefore, this function checks for \(q_{\perp}\) such that \(e^{-g(q_{\perp})} > t\) where \(t\) is
+		a user-input threshold.
+
+		**Parameters**
+
+		* **dx** : _number_ <br />
+		The pixel size in meters. <br />
+
+		* **threshold** : _number, optional_ <br />
+		The minimum allowed value of \(e^{-g(q_{\perp})}\). Should be between 0 and 1. <br />
+		Default is `threshold = 0.9`.
+
+		* **damping** : _function, optional_ <br />
+		The damping function \(g(q_{\perp})\). Defaults to Ref (1), Eqn (4). <br />
+		The default damping function takes the following kwargs:
+			<ul>
+				<li>
+				**defocus** : _number, optional_ <br />
+				Default is `defocus = 1e-3`.
+				</li>
+				<li>
+				**wavelength** : _number, optional_ <br />
+				Default is `wavelength = 1.97e-12`.
+				</li>
+				<li>
+				**C_s** : _number, optional_ <br />
+				The spherical aberration coefficient. <br />
+				Default is `C_s = 2.7e-3`.
+				</li>
+				<li>
+				**divangle** : _number, optional_ <br />
+				The divergence angle. <br />
+				Default is `divangle = 1e-5`.
+				</li>
+			</ul>
+
+		* ****kwargs** <br />
+		Any arguments to be passed to the damping function.
+		"""
 		QX = np.fft.fftfreq(len(self.x), dx)
 		QY = np.fft.fftfreq(len(self.y), dx)
 		qx, qy = np.meshgrid(QX, QY)
 		test = np.exp(-damping(qx, qy, **kwargs))
+		
 		if not np.any(test > threshold):
 			return("For these parameters, SITIE is valid only for features larger than your image size. ")
 		min_feature_size = 1 / np.max(np.sqrt(qx**2 + qy**2)[test > threshold])

@@ -20,7 +20,7 @@ def aperture(qx, qy, radius=None):
 	"""Utility function for propagate(). Circular aperture.
 	"""
 	if radius is None:
-		radius = np.max(np.sqrt(qx**2 + qy**2))
+		radius = np.max(np.sqrt(qx**2))
 	out = np.zeros_like(qx)
 	out[np.sqrt(qx**2 + qy**2) < radius] = 1
 	return(out)
@@ -41,9 +41,9 @@ def sims_shared(mx, my, mz, dx, dy):
 	mx = np.atleast_3d(mx) ### (y-dim, x-dim, z-dim)
 	my = np.atleast_3d(my)
 	mz = np.atleast_3d(mz)
-	Mx = mx.shape[0] * mx.shape[1] * np.fft.fft2(mx, axes=(0,1))
-	My = my.shape[0] * my.shape[1] * np.fft.fft2(my, axes=(0,1))
-	Mz = mz.shape[0] * mz.shape[1] * np.fft.fft2(mz, axes=(0,1))
+	Mx = 1 / mx.shape[0] / mx.shape[1] * np.fft.fft2(mx, axes=(0,1))
+	My = 1 / my.shape[0] / my.shape[1] * np.fft.fft2(my, axes=(0,1))
+	Mz = 1 / mz.shape[0] / mz.shape[1] * np.fft.fft2(mz, axes=(0,1))
 	M = np.array([Mx, My, Mz]) ### (vec, y-dim, x-dim, z-dim)
 
 	Sx = np.fft.fftfreq(mx.shape[1], dx)
