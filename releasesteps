@@ -10,6 +10,8 @@ update version in: setup.py, setup.cfg
 ###################### Write docs #############
 ######### (from root ltempy directory)
 pdoc --html --force -c latex_math=True -o docs ltempy
+mv docs/ltempy/* docs/
+rm -r docs/ltempy
 
 ##################### VCS #####################
 git add .
