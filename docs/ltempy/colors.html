@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>ltempy.colors API documentation</title>
+<meta name="description" content="Generate rgba data from scalar values and implement the CIELAB colorspace …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML" integrity="sha256-kZafAc6mZvK3W3v1pHOcUix30OHQN6pU/NO2oFkqZVw=" crossorigin></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>ltempy.colors</code></h1>
+</header>
+<section id="section-intro">
+<p>Generate rgba data from scalar values and implement the CIELAB colorspace.</p>
+<p>The CIELAB colorspace is intended to be perceptually uniform. While it doesn't fully succeed,
+it does well enough to use color and brightness as independent information channels.</p>
+<p>In this module, the CIELAB colorspace is used as a representation of complex values,
+where color represents phase and brightness represents magnitude.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python"># ltempy is a set of LTEM analysis and simulation tools developed by WSP as a member of the McMorran Lab
+# Copyright (C) 2021  William S. Parker
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
+
+&#34;&#34;&#34;Generate rgba data from scalar values and implement the CIELAB colorspace.
+
+The CIELAB colorspace is intended to be perceptually uniform. While it doesn&#39;t fully succeed,
+it does well enough to use color and brightness as independent information channels.
+
+In this module, the CIELAB colorspace is used as a representation of complex values,
+where color represents phase and brightness represents magnitude.
+&#34;&#34;&#34;
+
+import numpy as np
+from matplotlib.colors import ListedColormap
+import matplotlib.pyplot as plt
+from . import constants as _
+
+__all__ = [&#39;cielab_rgba&#39;,
+                        &#39;rgba&#39;,
+                        &#39;cielab_cmap&#39;]
+
+def cielab_cmap(samples=256):
+        &#34;&#34;&#34;Creates a `matplotlib.colors.ListedColormap` of the CIELAB color space.
+
+        **Parameters**
+
+        * **samples** : _integer, optional_ &lt;br /&gt;
+        The number of samples. Any additional values will be nearest-neighbor interpolated by matplotlib. &lt;br /&gt;
+        Default is `samples = 256`.
+
+        **Returns**
+
+        * _ListedColormap_ &lt;br /&gt;
+        A colormap. Many `matplotlib` functions that accept strings for the cmap argument
+        also accept a `ListedColormap`: `plt.imshow(data, cmap=cmap)`.
+        &#34;&#34;&#34;
+        angles = np.linspace(0,2*_.pi,samples)
+        cvals = np.exp(1j*angles).reshape(1, samples)
+        rgbavals = cielab_rgba(cvals).squeeze()/255
+        cmap = ListedColormap(rgbavals)
+        return(cmap)
+
+def cielab_rgba(data, brightness = &#39;intensity&#39;, alpha = &#39;uniform&#39;):
+        &#34;&#34;&#34;Convert complex values to rgba values based on the CIELAB color space.
+
+        Color represents the complex phase, while brightness may represent amplitude,
+        intensity (amplituded squared) or be uniform.
+
+        The CIELAB color space is designed to be perceptually uniform - none of the
+        colors appear brighter or darker than the others.
+
+        **Parameters**
+
+        * **data** : _ndarray_ &lt;br /&gt;
+        An array with the data to convert. Dtype may be complex or real - if real,
+        the color will be uniform, and values will be represented by brightness. Does not need to be normalized.
+
+        * **brightness** : _string, optional_ &lt;br /&gt;
+        Allowed values: `&#39;intensity&#39;`, `&#39;amplitude&#39;`, `&#39;uniform&#39;`. &lt;br /&gt;
+        Default is `brightness = &#39;intensity&#39;`.
+
+        * **alpha** : _string, optional_ &lt;br /&gt;
+        Allowed values: `&#39;intensity&#39;`, `&#39;amplitude&#39;`, `&#39;uniform&#39;`. Determines the alpha
+        component of the rgba value. &lt;br /&gt;
+        Default is `alpha = &#39;uniform&#39;`.
+
+        **Returns**
+
+        * _ndarray_ &lt;br /&gt;
+        The calculated rgba components. If the input array has
+        shape MxN, the output array will have shape MxNx4.
+        &#34;&#34;&#34;
+        vals = {
+                &#39;uniform&#39;: lambda data: 255,
+                &#39;amplitude&#39;: lambda data: np.absolute(data) * 255,
+                &#39;intensity&#39;: lambda data: np.absolute(data)**2 * 255
+                }
+        if not brightness in vals.keys():
+                raise ValueError(&#34;Invalid brightness value; should be one of {}&#34;.format(list(vals.keys())))
+        if not alpha in vals.keys():
+                raise ValueError(&#34;Invalid alpha value; should be one of {}&#34;.format(list(vals.keys())))
+
+        data /= np.max(np.abs(data))
+        rgba_image_components = np.zeros(np.append(data.shape, 4),dtype=np.uint8)
+        bvalue = vals[brightness](data)
+        avalue = vals[alpha](data)
+        hue = (np.angle(data) + np.pi) / 2
+        pi6 = np.pi/6
+        def sin2(array, offset):
+                return(np.sin(array-offset)**2)
+        r = sin2(hue, .15*pi6) + 0.35 * sin2(hue, 3.15 * pi6)
+        b = sin2(hue, 4.25 * pi6)
+        g = .6*sin2(hue, 2*pi6) + 0.065 * sin2(hue, 5.05 * pi6) + 0.445*b + 0.33*r
+        rgba_image_components[...,0] = (r * bvalue).astype(np.uint8)
+        rgba_image_components[...,1] = (g * bvalue).astype(np.uint8)
+        rgba_image_components[...,2] = (b * bvalue).astype(np.uint8)
+        rgba_image_components[...,3] = np.full(data.shape, fill_value=avalue, dtype=np.uint8)
+        return(rgba_image_components)
+
+def rgba(mode, cmap = None, brightness = &#39;intensity&#39;, alpha = &#39;uniform&#39;):
+        &#34;&#34;&#34;Converts a 2d complex array to rgba data.
+
+        **Parameters**
+
+        * **mode** : _complex ndarray_ &lt;br /&gt;
+        An array with the data to represent. Dtype may be complex or real.
+
+        * **cmap** : _string, optional_ &lt;br /&gt;
+        A `matplotlib` ScalarMappable to use for colors. If left blank,
+        the CIELAB color space will be used instead. &lt;br /&gt;
+        Default is `cmap = None`.
+
+        * **brightness** : _string, optional_ &lt;br /&gt;
+        Allowed values: `&#39;intensity&#39;`, `&#39;amplitude&#39;`, `&#39;uniform&#39;`. &lt;br /&gt;
+        Default is `brightness = &#39;intensity&#39;`.
+
+        * **alpha** : _string, optional_ &lt;br /&gt;
+        Allowed values: `&#39;intensity&#39;`, `&#39;amplitude&#39;`, `&#39;uniform&#39;`. Determines the alpha (opacity)
+        component of the rgba value. &lt;br /&gt;
+        Default is `alpha = &#39;uniform&#39;`.
+
+        **Returns**
+
+        * _ndarray_ &lt;br /&gt;
+        The calculated rgba components. If the input array has
+        shape NxN, the output array will have shape NxNx4.
+        &#34;&#34;&#34;
+        vals = {
+                &#39;uniform&#39;: lambda data: 255,
+                &#39;amplitude&#39;: lambda data: 255 * np.absolute(data),
+                &#39;intensity&#39;: lambda data: 255 * np.absolute(data)**2
+                }
+        if not brightness in vals.keys():
+                raise ValueError(&#34;Invalid brightness value; should be one of {}&#34;.format(list(vals.keys())))
+        if not alpha in vals.keys():
+                raise ValueError(&#34;Invalid alpha value; should be one of {}&#34;.format(list(vals.keys())))
+        if cmap is None:
+                return(cielab_rgba(mode, brightness, alpha))
+        mode /= np.max(np.absolute(mode))
+        colormap = plt.cm.ScalarMappable(cmap=cmap)
+        out = colormap.to_rgba(np.angle(mode))
+        out[...,-1] = vals[alpha](mode)
+        out[...,0] *= vals[brightness](mode)
+        out[...,1] *= vals[brightness](mode)
+        out[...,2] *= vals[brightness](mode)
+        return(out.astype(np.uint8))</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="ltempy.colors.cielab_cmap"><code class="name flex">
+<span>def <span class="ident">cielab_cmap</span></span>(<span>samples=256)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Creates a <code>matplotlib.colors.ListedColormap</code> of the CIELAB color space.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>samples</strong> : <em>integer, optional</em> <br />
+The number of samples. Any additional values will be nearest-neighbor interpolated by matplotlib. <br />
+Default is <code>samples = 256</code>.</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><em>ListedColormap</em> <br />
+A colormap. Many <code>matplotlib</code> functions that accept strings for the cmap argument
+also accept a <code>ListedColormap</code>: <code>plt.imshow(data, cmap=cmap)</code>.</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cielab_cmap(samples=256):
+        &#34;&#34;&#34;Creates a `matplotlib.colors.ListedColormap` of the CIELAB color space.
+
+        **Parameters**
+
+        * **samples** : _integer, optional_ &lt;br /&gt;
+        The number of samples. Any additional values will be nearest-neighbor interpolated by matplotlib. &lt;br /&gt;
+        Default is `samples = 256`.
+
+        **Returns**
+
+        * _ListedColormap_ &lt;br /&gt;
+        A colormap. Many `matplotlib` functions that accept strings for the cmap argument
+        also accept a `ListedColormap`: `plt.imshow(data, cmap=cmap)`.
+        &#34;&#34;&#34;
+        angles = np.linspace(0,2*_.pi,samples)
+        cvals = np.exp(1j*angles).reshape(1, samples)
+        rgbavals = cielab_rgba(cvals).squeeze()/255
+        cmap = ListedColormap(rgbavals)
+        return(cmap)</code></pre>
+</details>
+</dd>
+<dt id="ltempy.colors.cielab_rgba"><code class="name flex">
+<span>def <span class="ident">cielab_rgba</span></span>(<span>data, brightness='intensity', alpha='uniform')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Convert complex values to rgba values based on the CIELAB color space.</p>
+<p>Color represents the complex phase, while brightness may represent amplitude,
+intensity (amplituded squared) or be uniform.</p>
+<p>The CIELAB color space is designed to be perceptually uniform - none of the
+colors appear brighter or darker than the others.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li>
+<p><strong>data</strong> : <em>ndarray</em> <br />
+An array with the data to convert. Dtype may be complex or real - if real,
+the color will be uniform, and values will be represented by brightness. Does not need to be normalized.</p>
+</li>
+<li>
+<p><strong>brightness</strong> : <em>string, optional</em> <br />
+Allowed values: <code>'intensity'</code>, <code>'amplitude'</code>, <code>'uniform'</code>. <br />
+Default is <code>brightness = 'intensity'</code>.</p>
+</li>
+<li>
+<p><strong>alpha</strong> : <em>string, optional</em> <br />
+Allowed values: <code>'intensity'</code>, <code>'amplitude'</code>, <code>'uniform'</code>. Determines the alpha
+component of the rgba value. <br />
+Default is <code>alpha = 'uniform'</code>.</p>
+</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><em>ndarray</em> <br />
+The calculated rgba components. If the input array has
+shape MxN, the output array will have shape MxNx4.</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cielab_rgba(data, brightness = &#39;intensity&#39;, alpha = &#39;uniform&#39;):
+        &#34;&#34;&#34;Convert complex values to rgba values based on the CIELAB color space.
+
+        Color represents the complex phase, while brightness may represent amplitude,
+        intensity (amplituded squared) or be uniform.
+
+        The CIELAB color space is designed to be perceptually uniform - none of the
+        colors appear brighter or darker than the others.
+
+        **Parameters**
+
+        * **data** : _ndarray_ &lt;br /&gt;
+        An array with the data to convert. Dtype may be complex or real - if real,
+        the color will be uniform, and values will be represented by brightness. Does not need to be normalized.
+
+        * **brightness** : _string, optional_ &lt;br /&gt;
+        Allowed values: `&#39;intensity&#39;`, `&#39;amplitude&#39;`, `&#39;uniform&#39;`. &lt;br /&gt;
+        Default is `brightness = &#39;intensity&#39;`.
+
+        * **alpha** : _string, optional_ &lt;br /&gt;
+        Allowed values: `&#39;intensity&#39;`, `&#39;amplitude&#39;`, `&#39;uniform&#39;`. Determines the alpha
+        component of the rgba value. &lt;br /&gt;
+        Default is `alpha = &#39;uniform&#39;`.
+
+        **Returns**
+
+        * _ndarray_ &lt;br /&gt;
+        The calculated rgba components. If the input array has
+        shape MxN, the output array will have shape MxNx4.
+        &#34;&#34;&#34;
+        vals = {
+                &#39;uniform&#39;: lambda data: 255,
+                &#39;amplitude&#39;: lambda data: np.absolute(data) * 255,
+                &#39;intensity&#39;: lambda data: np.absolute(data)**2 * 255
+                }
+        if not brightness in vals.keys():
+                raise ValueError(&#34;Invalid brightness value; should be one of {}&#34;.format(list(vals.keys())))
+        if not alpha in vals.keys():
+                raise ValueError(&#34;Invalid alpha value; should be one of {}&#34;.format(list(vals.keys())))
+
+        data /= np.max(np.abs(data))
+        rgba_image_components = np.zeros(np.append(data.shape, 4),dtype=np.uint8)
+        bvalue = vals[brightness](data)
+        avalue = vals[alpha](data)
+        hue = (np.angle(data) + np.pi) / 2
+        pi6 = np.pi/6
+        def sin2(array, offset):
+                return(np.sin(array-offset)**2)
+        r = sin2(hue, .15*pi6) + 0.35 * sin2(hue, 3.15 * pi6)
+        b = sin2(hue, 4.25 * pi6)
+        g = .6*sin2(hue, 2*pi6) + 0.065 * sin2(hue, 5.05 * pi6) + 0.445*b + 0.33*r
+        rgba_image_components[...,0] = (r * bvalue).astype(np.uint8)
+        rgba_image_components[...,1] = (g * bvalue).astype(np.uint8)
+        rgba_image_components[...,2] = (b * bvalue).astype(np.uint8)
+        rgba_image_components[...,3] = np.full(data.shape, fill_value=avalue, dtype=np.uint8)
+        return(rgba_image_components)</code></pre>
+</details>
+</dd>
+<dt id="ltempy.colors.rgba"><code class="name flex">
+<span>def <span class="ident">rgba</span></span>(<span>mode, cmap=None, brightness='intensity', alpha='uniform')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Converts a 2d complex array to rgba data.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li>
+<p><strong>mode</strong> : <em>complex ndarray</em> <br />
+An array with the data to represent. Dtype may be complex or real.</p>
+</li>
+<li>
+<p><strong>cmap</strong> : <em>string, optional</em> <br />
+A <code>matplotlib</code> ScalarMappable to use for colors. If left blank,
+the CIELAB color space will be used instead. <br />
+Default is <code>cmap = None</code>.</p>
+</li>
+<li>
+<p><strong>brightness</strong> : <em>string, optional</em> <br />
+Allowed values: <code>'intensity'</code>, <code>'amplitude'</code>, <code>'uniform'</code>. <br />
+Default is <code>brightness = 'intensity'</code>.</p>
+</li>
+<li>
+<p><strong>alpha</strong> : <em>string, optional</em> <br />
+Allowed values: <code>'intensity'</code>, <code>'amplitude'</code>, <code>'uniform'</code>. Determines the alpha (opacity)
+component of the rgba value. <br />
+Default is <code>alpha = 'uniform'</code>.</p>
+</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><em>ndarray</em> <br />
+The calculated rgba components. If the input array has
+shape NxN, the output array will have shape NxNx4.</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def rgba(mode, cmap = None, brightness = &#39;intensity&#39;, alpha = &#39;uniform&#39;):
+        &#34;&#34;&#34;Converts a 2d complex array to rgba data.
+
+        **Parameters**
+
+        * **mode** : _complex ndarray_ &lt;br /&gt;
+        An array with the data to represent. Dtype may be complex or real.
+
+        * **cmap** : _string, optional_ &lt;br /&gt;
+        A `matplotlib` ScalarMappable to use for colors. If left blank,
+        the CIELAB color space will be used instead. &lt;br /&gt;
+        Default is `cmap = None`.
+
+        * **brightness** : _string, optional_ &lt;br /&gt;
+        Allowed values: `&#39;intensity&#39;`, `&#39;amplitude&#39;`, `&#39;uniform&#39;`. &lt;br /&gt;
+        Default is `brightness = &#39;intensity&#39;`.
+
+        * **alpha** : _string, optional_ &lt;br /&gt;
+        Allowed values: `&#39;intensity&#39;`, `&#39;amplitude&#39;`, `&#39;uniform&#39;`. Determines the alpha (opacity)
+        component of the rgba value. &lt;br /&gt;
+        Default is `alpha = &#39;uniform&#39;`.
+
+        **Returns**
+
+        * _ndarray_ &lt;br /&gt;
+        The calculated rgba components. If the input array has
+        shape NxN, the output array will have shape NxNx4.
+        &#34;&#34;&#34;
+        vals = {
+                &#39;uniform&#39;: lambda data: 255,
+                &#39;amplitude&#39;: lambda data: 255 * np.absolute(data),
+                &#39;intensity&#39;: lambda data: 255 * np.absolute(data)**2
+                }
+        if not brightness in vals.keys():
+                raise ValueError(&#34;Invalid brightness value; should be one of {}&#34;.format(list(vals.keys())))
+        if not alpha in vals.keys():
+                raise ValueError(&#34;Invalid alpha value; should be one of {}&#34;.format(list(vals.keys())))
+        if cmap is None:
+                return(cielab_rgba(mode, brightness, alpha))
+        mode /= np.max(np.absolute(mode))
+        colormap = plt.cm.ScalarMappable(cmap=cmap)
+        out = colormap.to_rgba(np.angle(mode))
+        out[...,-1] = vals[alpha](mode)
+        out[...,0] *= vals[brightness](mode)
+        out[...,1] *= vals[brightness](mode)
+        out[...,2] *= vals[brightness](mode)
+        return(out.astype(np.uint8))</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="ltempy" href="index.html">ltempy</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="ltempy.colors.cielab_cmap" href="#ltempy.colors.cielab_cmap">cielab_cmap</a></code></li>
+<li><code><a title="ltempy.colors.cielab_rgba" href="#ltempy.colors.cielab_rgba">cielab_rgba</a></code></li>
+<li><code><a title="ltempy.colors.rgba" href="#ltempy.colors.rgba">rgba</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

@@ -1,8 +1,8 @@
-import ltempy as wt
+import ltempy as lp
 from ltempy import constants as _
 
 # %%
-def test_setUnits():
-	assert(wt.np.isclose(_.c,299792458.0))
-	wt.set_units(meter=2)
-	assert(wt.np.isclose(_.c,599584916.0))
+def test_set_units():
+	assert(lp.np.isclose(_.c,299792458.0))
+	lp.set_units(meter=2)
+	assert(lp.np.isclose(_.c,599584916.0))

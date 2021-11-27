@@ -15,7 +15,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-"""Image processing tools like high- and low-pass filters.
+"""Basic image processing tools.
 """
 
 import os
@@ -32,7 +32,8 @@ def high_pass(data, cutoff = 7, gaussian = False):
 	* **data** : _complex ndarray_ <br />
 
 	* **cutoff** : _number, optional_ <br />
-	Cutoff frequency or standard deviation of the gaussian filter, measured in inverse pixels. <br />
+	Cutoff frequency of the tophat filter
+	or standard deviation of the gaussian filter, measured in inverse pixels. <br />
 	Default is `cutoff = 7`.
 
 	* **gaussian** : _boolean, optional_ <br />
@@ -41,7 +42,7 @@ def high_pass(data, cutoff = 7, gaussian = False):
 
 	**Returns**
 
-	* **FFdata** : _complex ndarray_ <br />
+	* _complex ndarray_ <br />
 	"""
 	X = np.fft.fftfreq(data.shape[1], 1/data.shape[1])
 	Y = np.fft.fftfreq(data.shape[0], 1/data.shape[0])
@@ -57,15 +58,16 @@ def high_pass(data, cutoff = 7, gaussian = False):
 	return(FFdata)
 
 def low_pass(data, cutoff = 10, gaussian = False):
-	"""Apply a gaussian low-pass filter to a 2d-array.
+	"""Apply a low-pass filter to a 2d-array.
 
 	**Parameters**
 
 	* **data** : _complex ndarray_ <br />
 
 	* **cutoff** : _number, optional_ <br />
-	Cutoff frequency or standard deviation of the gaussian filter, measured in inverse pixels. <br />
-	Default is `cutoff = 7`.
+	Cutoff frequency of the tophat filter
+	or standard deviation of the gaussian filter, measured in inverse pixels. <br />
+	Default is `cutoff = 10`.
 
 	* **gaussian** : _boolean, optional_ <br />
 	If true, a gaussian filter is used instead of a tophat. <br />
@@ -73,7 +75,7 @@ def low_pass(data, cutoff = 10, gaussian = False):
 
 	**Returns**
 
-	* **FFdata** : _complex ndarray_ <br />
+	* _complex ndarray_ <br />
 	"""
 	X = np.fft.fftfreq(data.shape[1], 1/data.shape[1])
 	Y = np.fft.fftfreq(data.shape[0], 1/data.shape[0])
@@ -89,7 +91,7 @@ def low_pass(data, cutoff = 10, gaussian = False):
 	return(FFdata)
 
 def clip_data(data, sigma = 5):
-	"""Clip data to a certain number of standard deviations from average.
+	"""Clip data to a certain number of standard deviations from its average.
 
 	**Parameters**
 
@@ -101,7 +103,7 @@ def clip_data(data, sigma = 5):
 
 	**Returns**
 
-	* **data** : _complex ndarray_ <br />
+	* _complex ndarray_ <br />
 	"""
 	avg = np.mean(data)
 	stdev = np.std(data)
@@ -117,11 +119,12 @@ def shift_pos(data):
 
 	**Parameters**
 
-	* **data** : _complex ndarray_ <br />
+	* **data** : _ndarray_ <br />
+	Dtype must be real.
 
 	**Returns**
 
-	* **data** : _complex ndarray_
+	* _ndarray_
 	"""
 	return(data - np.min(data))
 
@@ -161,7 +164,7 @@ def outpath(datadir, outdir, fname, create = False):
 
 	**Returns**
 
-	* **outname** : _Path_ <br />
+	* _PurePath_ <br />
 	The name of the file to save (without a suffix).
 	"""
 	fname = os.path.splitext(fname)[0]
@@ -192,12 +195,15 @@ class ndap(np.ndarray):
 		self.isComplex = np.iscomplexobj(data)
 
 	def high_pass(self, cutoff = 7, gaussian = False):
-		"""Apply a gaussian high-pass filter to a 2d-array.
+		"""Apply a high-pass filter to a 2d-array.
 
 		**Parameters**
 
+		* **data** : _complex ndarray_ <br />
+
 		* **cutoff** : _number, optional_ <br />
-		Cutoff frequency or standard deviation of the gaussian filter, measured in inverse pixels. <br />
+		Cutoff frequency of the tophat filter
+		or standard deviation of the gaussian filter, measured in inverse pixels. <br />
 		Default is `cutoff = 7`.
 
 		* **gaussian** : _boolean, optional_ <br />
@@ -206,7 +212,7 @@ class ndap(np.ndarray):
 
 		**Returns**
 
-		* **self** : _ndap_ <br />
+		* _ndap_ <br />
 		"""
 		if self.isComplex:
 			self[:,:] = high_pass(self, cutoff, gaussian)
@@ -214,14 +220,17 @@ class ndap(np.ndarray):
 			self[:,:] = np.real(high_pass(self, cutoff, gaussian))
 		return(self)
 
-	def low_pass(self, cutoff = 100, gaussian = False):
-		"""Apply a gaussian low-pass filter to a 2d-array.
+	def low_pass(self, cutoff = 10, gaussian = False):
+		"""Apply a low-pass filter to a 2d-array.
 
 		**Parameters**
 
+		* **data** : _complex ndarray_ <br />
+
 		* **cutoff** : _number, optional_ <br />
-		Cutoff frequency or standard deviation of the gaussian filter, measured in inverse pixels. <br />
-		Default is `cutoff = 7`.
+		Cutoff frequency of the tophat filter
+		or standard deviation of the gaussian filter, measured in inverse pixels. <br />
+		Default is `cutoff = 10`.
 
 		* **gaussian** : _boolean, optional_ <br />
 		If true, a gaussian filter is used instead of a tophat. <br />
@@ -229,7 +238,7 @@ class ndap(np.ndarray):
 
 		**Returns**
 
-		* **self** : _ndap_ <br />
+		* _ndap_ <br />
 		"""
 		if self.isComplex:
 			self[:,:] = low_pass(self, cutoff, gaussian)
@@ -238,7 +247,7 @@ class ndap(np.ndarray):
 		return(self)
 
 	def clip_data(self, sigma = 5):
-		"""Clip data to a certain number of standard deviations from average.
+		"""Clip data to a certain number of standard deviations from its average.
 
 		**Parameters**
 
@@ -248,7 +257,7 @@ class ndap(np.ndarray):
 
 		**Returns**
 
-		* **self** : _ndap_ <br />
+		* _ndap_ <br />
 		"""
 		self[:,:] = clip_data(self, sigma)
 		return(self)
@@ -258,7 +267,10 @@ class ndap(np.ndarray):
 
 		**Returns**
 
-		* **self** : _ndap_ <br />
+		* _ndap_ <br />
 		"""
+		if self.isComplex:
+			print("Positive shift not applied to complex data.")
+			return(self)
 		self[:,:] = shift_pos(self)
 		return(self)

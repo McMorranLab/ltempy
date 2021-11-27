@@ -1,5 +1,61 @@
+# ltempy is a set of LTEM analysis and simulation tools developed by WSP as a member of the McMorran Lab
+# Copyright (C) 2021  William S. Parker
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 import numpy as np
 from . import constants as _
+
+def weights(M, s, s_mag, sig, z_hat, p, thickness):
+	### Calculates the weights for the Mansuripur algo
+	### aka, the terms in the sum on the RHS of Eq 13(a), without exp(2\pi i ...)
+	Gp = G(p, sig, z_hat, thickness * s_mag)
+	sig_x_z = np.cross(sig, z_hat, axisa=0, axisb=0, axisc=0)
+	p_x_p_M = np.cross(p, np.cross(p, M, axisa=0, axisb=0, axisc=0), axis=0, axisb=0, axisc=0)
+	weights = 2 * _.e / _.hbar / _.c * 1j * thickness / s_mag * Gp * np.einsum('i...,i...->...',sig_x_z, p_x_p_M)
+	weights[:,0,0,:] = 0
+	return(weights)
+
+def laplacian_2d(data, dx, dy):
+	### 2-dimensional laplacian, implemented via Fourier transform
+	QX = np.fft.fftfreq(data.shape[1], dx)
+	QY = np.fft.fftfreq(data.shape[0], dy)
+	qx, qy = np.meshgrid(QX, QY)
+	out = - 4 * _.pi**2 * (qx**2 + qy**2) * np.fft.fft2(data)
+	out = np.fft.ifft2(out)
+	return(out)
+
+def inverse_laplacian_2d(data, dx, dy):
+	### 2-dimensional inverse laplacian, implemented via Fourier transform
+	QX = np.fft.fftfreq(data.shape[1], dx)
+	QY = np.fft.fftfreq(data.shape[0], dy)
+	qx, qy = np.meshgrid(QX, QY)
+	out = np.nan_to_num(- np.fft.fft2(data) / 4 / _.pi**2 / (qx**2 + qy**2), posinf = 0, neginf = 0)
+	out = np.fft.ifft2(out)
+	return(out)
+
+def gradient_2d(data, dx, dy):
+	### 2-dimensional gradient, implemented via Fourier transform
+	QX = np.fft.fftfreq(data.shape[1], dx)
+	QY = np.fft.fftfreq(data.shape[0], dy)
+	qx, qy = np.meshgrid(QX, QY)
+	out = np.fft.fft2(data)
+	out_x = - 1j * 2 * _.pi * qx * out
+	out_y = - 1j * 2 * _.pi * qy * out
+	out_x = np.fft.ifft2(out_x)
+	out_y = np.fft.ifft2(out_y)
+	return(np.array([out_x, out_y]))
 
 def T(qx, qy, defocus = 1e-3, wavelength = 1.97e-12, C_s = 2.7e-3, divangle = 1e-5):
 	"""Utility function for propagate(). Microscope transfer function.
@@ -8,6 +64,7 @@ def T(qx, qy, defocus = 1e-3, wavelength = 1.97e-12, C_s = 2.7e-3, divangle = 1e
 	return(out)
 
 def damping(qx, qy, defocus = 1e-3, wavelength = 1.97e-12, C_s = 2.7e-3, divangle = 1e-5):
+	### Damping function for microscope transfer fct
 	qp = np.sqrt(qx**2 + qy**2)
 	return((_.pi * divangle / wavelength)**2 * (C_s * wavelength**3 * qp**3 + defocus * wavelength * qp)**2)
 
@@ -20,12 +77,13 @@ def aperture(qx, qy, radius=None):
 	"""Utility function for propagate(). Circular aperture.
 	"""
 	if radius is None:
-		radius = np.max(np.sqrt(qx**2))
+		radius = np.min([np.max(np.abs(qx)), np.max(np.abs(qy))])
 	out = np.zeros_like(qx)
-	out[np.sqrt(qx**2 + qy**2) < radius] = 1
+	out[np.sqrt(qx**2 + qy**2) <= radius] = 1
 	return(out)
 
 def G(p, sig, z_hat, ts_mag):
+	### Mansuripur, Eq 13(b)
 	sum1 = np.einsum('i,i...->...', p, sig)
 	sum2 = np.einsum('i,i...->...', p, z_hat)
 	out = 1 / (sum1**2 + sum2**2)[np.newaxis,...]
@@ -50,7 +108,7 @@ def sims_shared(mx, my, mz, dx, dy):
 	Sy = np.fft.fftfreq(mx.shape[0], dy)
 	sx, sy = np.meshgrid(Sx, Sy) ### (y-dim, x-dim)
 
-	s = np.array([sx, sy, 0*sy])[...,np.newaxis] ### (vec, y-dim, x-dim, z-dim)
+	s = np.array([sx, sy, 0 * sy])[...,np.newaxis] ### (vec, y-dim, x-dim, z-dim)
 	s_mag = np.sqrt(np.einsum('i...,i...->...',s,s))[np.newaxis,...] ### (vec, y-dim, x-dim, z-dim)
 	sig = s/s_mag
 

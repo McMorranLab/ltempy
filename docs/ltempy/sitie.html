@@ -24,8 +24,9 @@
 </header>
 <section id="section-intro">
 <p>Contains utilities for reconstructing phase and magnetization from Lorentz images.</p>
-<p>The most common use case is to generate a Lorentz object from a <code>.dm3</code> or <code>.ser</code> file.
-Then you can analyze using high_pass(), sitie(), clip_data(), etc.</p>
+<p>This module implements the Single Image Transport of Intensity Equation (SITIE) [1].</p>
+<p>The most common use case is to generate a <code><a title="ltempy.sitie.SITIEImage" href="#ltempy.sitie.SITIEImage">SITIEImage</a></code> object from a <code>.dm3</code> or <code>.ser</code> file,
+then reconstruct phase and induction with <code><a title="ltempy.sitie.sitie" href="#ltempy.sitie.sitie">sitie()</a></code>.</p>
 <p>Example:</p>
 <pre><code class="language-python">import ncempy.io.dm as dm
 import ltempy as lp
@@ -34,13 +35,14 @@ fname = '/path/to/data.dm3'
 dm3file = dm.dmReader(fname)
 
 img = lp.lorentz(dm3file)
-img.sitie(defocus=1e-3)
-img.phase.clip_data(sigma=5).high_pass().low_pass()
-img.Bx.clip_data(sigma=5).high_pass().low_pass()
-img.By.clip_data(sigma=5).high_pass().low_pass()
+img.reconstruct(defocus=1e-3)
 
-### plot img.Bx, img.By, img.phase, img.data, img.rawData, etc
+### plot img.Bx, img.By, img.phase, img.data, etc
 </code></pre>
+<hr>
+<ol>
+<li>Chess, J. J. et al. Streamlined approach to mapping the magnetic induction of skyrmionic materials. Ultramicroscopy 177, 78–83 (2017).</li>
+</ol>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -63,8 +65,10 @@ img.By.clip_data(sigma=5).high_pass().low_pass()
 
 &#34;&#34;&#34;Contains utilities for reconstructing phase and magnetization from Lorentz images.
 
-The most common use case is to generate a Lorentz object from a `.dm3` or `.ser` file.
-Then you can analyze using high_pass(), sitie(), clip_data(), etc.
+This module implements the Single Image Transport of Intensity Equation (SITIE) [1].
+
+The most common use case is to generate a `SITIEImage` object from a `.dm3` or `.ser` file,
+then reconstruct phase and induction with `sitie()`.
 
 Example:
 
@@ -76,13 +80,15 @@ fname = &#39;/path/to/data.dm3&#39;
 dm3file = dm.dmReader(fname)
 
 img = lp.lorentz(dm3file)
-img.sitie(defocus=1e-3)
-img.phase.clip_data(sigma=5).high_pass().low_pass()
-img.Bx.clip_data(sigma=5).high_pass().low_pass()
-img.By.clip_data(sigma=5).high_pass().low_pass()
+img.reconstruct(defocus=1e-3)
 
-### plot img.Bx, img.By, img.phase, img.data, img.rawData, etc
+### plot img.Bx, img.By, img.phase, img.data, etc
 ```
+
+---
+
+1. Chess, J. J. et al. Streamlined approach to mapping the magnetic induction of skyrmionic materials. Ultramicroscopy 177, 78–83 (2017).
+
 &#34;&#34;&#34;
 
 # %%
@@ -91,57 +97,15 @@ import os
 
 from . import process
 from . import constants as _
-from ._utils import damping
 np.seterr(divide=&#39;ignore&#39;, invalid=&#39;ignore&#39;)
 
 __all__ = [
                 &#39;SITIEImage&#39;,
-                &#39;sitie_image&#39;,
                 &#39;ind_from_phase&#39;,
-                &#39;ind_from_img&#39;,
-                &#39;phase_from_img&#39;]
-
-def sitie_image(datafile):
-        &#34;&#34;&#34;Creates a `Lorentz` class instance for each image in a sequence.
-
-        This function acts as a wrapper for the `Lorentz` class, adding an extra handler
-        for image sequences. When the dictionary contains a sequence of images, it is split into
-        individual `Lorentz` class instances.
-
-        **Parameters**
-
-        * **datafile** : _dictionary_ &lt;br /&gt;
-        a dictionary with the following keys: &lt;br /&gt;
-                &lt;ul&gt;
-                &lt;li&gt; **data** : _ndarray_ &lt;br /&gt;
-                A 2d array of the electron counts, or an array of 2d arrays of the electron counts. &lt;/li&gt;
-                &lt;li&gt; **pixelSize** : _tuple_ &lt;br /&gt;
-                (_number_, _number_) - the x and y pixel sizes.
-                For compatibility with `.dm3` files, the last 2 elements of the tuple are used. &lt;/li&gt;
-                &lt;li&gt; **pixelUnit** : _tuple_ &lt;br /&gt;
-                (_string_, _string_) - the x and y pixel units.
-                For compatibility with `.dm3` files, the last 2 elements of the tuple are used. &lt;/li&gt;
-                &lt;/ul&gt;
-
-        **Returns**
-        * **out** : _list, Lorentz_ &lt;br /&gt;
-        A list of `wsp-tools.sitie.Lorentz` instances, if the dictionary is an image sequence.
-        Otherwise, a single `wsp-tools.sitie.Lorentz` instance.
-        &#34;&#34;&#34;
-        if len(datafile[&#39;data&#39;].shape) == 2:
-                return(SITIEImage(datafile))
-        else:
-                f1 = datafile.copy()
-                out = []
-                for dataset in datafile[&#39;data&#39;]:
-                        f1[&#39;data&#39;] = dataset
-                        f1[&#39;pixelSize&#39;] = [datafile[&#39;pixelSize&#39;][-2], datafile[&#39;pixelSize&#39;][-1]]
-                        f1[&#39;pixelUnit&#39;] = [datafile[&#39;pixelUnit&#39;][-2], datafile[&#39;pixelUnit&#39;][-1]]
-                        out.append(SITIEImage(f1))
-                return(out)
+                &#39;sitie&#39;]
 
 class SITIEImage:
-        &#34;&#34;&#34;A LorentzImage object represents an image containing only magnetic contrast.
+        &#34;&#34;&#34;A SITIEImage object represents a defocussed image containing only magnetic contrast.
 
         **Parameters**
 
@@ -170,7 +134,7 @@ class SITIEImage:
                 self.fix_units()
 
         def fix_units(self):
-                &#34;&#34;&#34;Try to set the units to meters.&#34;&#34;&#34;
+                &#34;&#34;&#34;Set the units to meters.&#34;&#34;&#34;
                 if self.x_unit == &#39;m&#39;:
                         xr = 1
                 elif self.x_unit == &#39;mm&#39;:
@@ -223,7 +187,7 @@ class SITIEImage:
 
                 **Returns**
 
-                * **self** : _lorentz_
+                * _SITIEImage_
                 &#34;&#34;&#34;
                 if yr is None:
                         yr = xr
@@ -248,76 +212,60 @@ class SITIEImage:
                 The defocus at which the images were taken. &lt;br /&gt;
                 Default is `df = 1e-3`.
 
+                * **thickness** : _number, optional_ &lt;br /&gt;
+                The thickness of the sample. &lt;br /&gt;
+                Default is `thickness = 60e-9`.
+
                 * **wavelength** : _number, optional_ &lt;br /&gt;
                 The electron wavelength. &lt;br /&gt;
                 Default is `wavelength = 1.96e-12` (relativistic wavelength of a 300kV electron).
 
                 **Returns**
 
-                * **self** : _lorentz_
+                * _SITIEImage_
                 &#34;&#34;&#34;
-                self.phase = process.ndap(phase_from_img(self.data, df, self.dx, self.dy, wavelength))
-                self.Bx, self.By = [process.ndap(arr) for arr in ind_from_phase(self.phase, thickness)]
+                self.phase = process.ndap(sitie(self.data, df, self.dx, self.dy, wavelength))
+                self.Bx, self.By = [process.ndap(arr) for arr in ind_from_phase(self.phase, dx = self.dx, dy = self.dy, thickness = thickness)]
                 return(self)
 
-        def validate(self, dx, threshold = 0.9, damping = damping, **kwargs):
+        def validate(self, threshold = 0.1, divangle = 1e-5, defocus = 1):
                 r&#34;&#34;&#34;Estimate the validity of the SITIE approximation for the given parameters.
 
                 SITIE expands on the approximations of TIE by assuming coherent illumination (that is,
                 low divergence angle relative to the defocus and the spatial frequencies to be resolved).
-                Another way to say this is that the damping envelope \(g(q_{\perp})\) of Ref (1), Eqn (4) is negligible.
-                Therefore, this function checks for \(q_{\perp}\) such that \(e^{-g(q_{\perp})} &gt; t\) where \(t\) is
-                a user-input threshold.
+                Another way to say this is that the damping envelope \(g(q_{\perp})\) is negligible.
+
+                This returns \(q_{\perp}\) satisfying
+
+                \[\frac{(\pi \Theta_c \Delta f)^2}{2} q_{\perp}^2 = \text{threshold}\]
+
+                where \(\Delta f\) is the defocus and \(\Theta_c\) is the divergence angle. This \(q_{\perp}\)
+                is the largest spatial frequency for which the SITIE approximation is valid.
 
                 **Parameters**
 
-                * **dx** : _number_ &lt;br /&gt;
-                The pixel size in meters. &lt;br /&gt;
-
                 * **threshold** : _number, optional_ &lt;br /&gt;
-                The minimum allowed value of \(e^{-g(q_{\perp})}\). Should be between 0 and 1. &lt;br /&gt;
-                Default is `threshold = 0.9`.
+                The largest value that you consider \(&lt;&lt; 1\). &lt;br /&gt;
+                Default is `threshold = 0.1`.
 
-                * **damping** : _function, optional_ &lt;br /&gt;
-                The damping function \(g(q_{\perp})\). Defaults to Ref (1), Eqn (4). &lt;br /&gt;
-                The default damping function takes the following kwargs:
-                        &lt;ul&gt;
-                                &lt;li&gt;
-                                **defocus** : _number, optional_ &lt;br /&gt;
-                                Default is `defocus = 1e-3`.
-                                &lt;/li&gt;
-                                &lt;li&gt;
-                                **wavelength** : _number, optional_ &lt;br /&gt;
-                                Default is `wavelength = 1.97e-12`.
-                                &lt;/li&gt;
-                                &lt;li&gt;
-                                **C_s** : _number, optional_ &lt;br /&gt;
-                                The spherical aberration coefficient. &lt;br /&gt;
-                                Default is `C_s = 2.7e-3`.
-                                &lt;/li&gt;
-                                &lt;li&gt;
-                                **divangle** : _number, optional_ &lt;br /&gt;
-                                The divergence angle. &lt;br /&gt;
-                                Default is `divangle = 1e-5`.
-                                &lt;/li&gt;
-                        &lt;/ul&gt;
+                * **divangle** : _number, optional_ &lt;br /&gt;
+                The divergence angle. &lt;br /&gt;
+                Default is `divangle = 1e-5`.
+
+                * **defocus** : _number, optional_ &lt;br /&gt;
+                Default is `defocus = 1`.
 
                 * ****kwargs** &lt;br /&gt;
                 Any arguments to be passed to the damping function.
                 &#34;&#34;&#34;
-                QX = np.fft.fftfreq(len(self.x), dx)
-                QY = np.fft.fftfreq(len(self.y), dx)
-                qx, qy = np.meshgrid(QX, QY)
-                test = np.exp(-damping(qx, qy, **kwargs))
-                if not np.any(test &gt; threshold):
-                        return(&#34;For these parameters, SITIE is valid only for features larger than your image size. &#34;)
-                min_feature_size = 1 / np.max(np.sqrt(qx**2 + qy**2)[test &gt; threshold])
-                return(&#34;For these parameters, SITIE is valid for feature sizes larger than {}m&#34;.format(min_feature_size))
+                prefactor = np.abs((_.pi * divangle * defocus)**2 / 2)
+                qp_max = np.sqrt(threshold / prefactor)
+                return(qp_max)
 
-def phase_from_img(img, defocus = 0, dx = 1, dy = 1, wavelength = 1.97e-12):
+def sitie(img, defocus = 0, dx = 1, dy = 1, wavelength = 1.97e-12):
         &#34;&#34;&#34;Reconstruct the Aharonov-Bohm phase from a defocussed image.
 
-        This is an implementation of the SITIE equation (Eq 10) from J. Chess et al., 2017, _Streamlined approach to mapping the magnetic induction of skyrmionic materials_.
+        This is an implementation of the SITIE equation from [1], Eqn (10).
 
         **Parameters**
 
@@ -341,7 +289,7 @@ def phase_from_img(img, defocus = 0, dx = 1, dy = 1, wavelength = 1.97e-12):
 
         **Returns**
 
-        * **phase** : _ndarray_ &lt;br /&gt;
+        * _ndarray_ &lt;br /&gt;
         A 2d array containing the reconstructed Aharonov-Bohm phase shift.
         &#34;&#34;&#34;
         Sx = np.fft.fftfreq(img.shape[1], dx)
@@ -354,18 +302,20 @@ def phase_from_img(img, defocus = 0, dx = 1, dy = 1, wavelength = 1.97e-12):
         phase = np.fft.ifft2(rhs)
         return(phase.real)
 
-def ind_from_img(img, defocus = 0, dx = 1, dy = 1, thickness = 60e-9, wavelength = 1.97e-12):
-        &#34;&#34;&#34;Reconstruct the magnetic induction from a defocussed image.
+def ind_from_phase(phase, dx = 1, dy = 1, thickness = 60e-9):
+        r&#34;&#34;&#34;Calculate the magnetic induction given the Aharonov-Bohm phase shift.
 
-        This is an implementation of the SITIE equation Eq (10) and Eq (11) from J. Chess et al., 2017, _Streamlined approach to mapping the magnetic induction of skyrmionic materials_.
+        Calculated using
+
+        \[\nabla_{\perp} \phi_m = -\frac{e\tau}{\hbar} \left[\mathbf{B}\times\hat{\mathbf{e}}_{z}\right]\]
+
+        where \(\tau\) is the thickness, \(\mathbf{B}\) is the transverse magnetic field components, integrated over \(z\),
+        and \(\hat{\mathbf{e}}_z\) is the direction of propagation.
 
         **Parameters**
 
-        * **img** : _ndarray_ &lt;br /&gt;
-        The 2d image data.
-
-        * **defocus** : _number, optional_ &lt;br /&gt;
-        Default is `defocus = 0`.
+        * **phase** : _ndarray_ &lt;br /&gt;
+        A 2d array containing the electron phase immediately after the sample.
 
         * **dx** : _number, optional_ &lt;br /&gt;
         The pixel spacing in the x-direction. &lt;br /&gt;
@@ -374,36 +324,6 @@ def ind_from_img(img, defocus = 0, dx = 1, dy = 1, thickness = 60e-9, wavelength
         * **dy** : _number, optional_ &lt;br /&gt;
         The pixel spacing in the y-direction. &lt;br /&gt;
         Default is `dy = 1`.
-
-        * **thickness** : _number, optional_ &lt;br /&gt;
-        The thickness of the sample. &lt;br /&gt;
-        Default is `thickness = 60e-9`.
-
-        * **wavelength** : _number, optional_ &lt;br /&gt;
-        The relativistic electron wavelength. &lt;br /&gt;
-        Default is `wavelength = 1.97e-9`.
-
-        **Returns**
-
-        * **Bx** : _ndarray_ &lt;br /&gt;
-        A 2d array containing the reconstructed x-component of magnetic induction.
-
-        * **By** : _ndarray_ &lt;br /&gt;
-        A 2d array containing the reconstructed y-component of magnetic induction.
-        &#34;&#34;&#34;
-        phase = phase_from_img(img, defocus, dx, dy, wavelength)
-        Bx, By = ind_from_phase(phase, thickness)
-        return(np.array([Bx.real, By.real]))
-
-def ind_from_phase(phase, thickness = 60e-9):
-        &#34;&#34;&#34;Calculate the magnetic induction given the Aharonov-Bohm phase shift.
-
-        This is an implementation of Eq (11) from J. Chess et al., 2017, _Streamlined approach to mapping the magnetic induction of skyrmionic materials_.
-
-        **Parameters**
-
-        * **phase** : _ndarray_ &lt;br /&gt;
-        A 2d array containing the electron phase immediately after the sample.
 
         * **thickness** : _number, optional_ &lt;br /&gt;
         The thickness of the sample. &lt;br /&gt;
@@ -417,7 +337,8 @@ def ind_from_phase(phase, thickness = 60e-9):
         * **By** : _ndarray_ &lt;br /&gt;
         The y-component of the magnetic induction.
         &#34;&#34;&#34;
-        dpdy, dpdx = np.gradient(phase)
+        dpdx = np.gradient(phase, dy, axis=1)
+        dpdy = np.gradient(phase, dx, axis=0)
         Bx = _.hbar/_.e/thickness * dpdy
         By = -_.hbar/_.e/thickness * dpdx
         return(np.array([Bx.real, By.real]))</code></pre>
@@ -430,21 +351,20 @@ def ind_from_phase(phase, thickness = 60e-9):
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="ltempy.sitie.ind_from_img"><code class="name flex">
-<span>def <span class="ident">ind_from_img</span></span>(<span>img, defocus=0, dx=1, dy=1, thickness=6e-08, wavelength=1.97e-12)</span>
+<dt id="ltempy.sitie.ind_from_phase"><code class="name flex">
+<span>def <span class="ident">ind_from_phase</span></span>(<span>phase, dx=1, dy=1, thickness=6e-08)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Reconstruct the magnetic induction from a defocussed image.</p>
-<p>This is an implementation of the SITIE equation Eq (10) and Eq (11) from J. Chess et al., 2017, <em>Streamlined approach to mapping the magnetic induction of skyrmionic materials</em>.</p>
+<div class="desc"><p>Calculate the magnetic induction given the Aharonov-Bohm phase shift.</p>
+<p>Calculated using</p>
+<p><span><span class="MathJax_Preview">\nabla_{\perp} \phi_m = -\frac{e\tau}{\hbar} \left[\mathbf{B}\times\hat{\mathbf{e}}_{z}\right]</span><script type="math/tex; mode=display">\nabla_{\perp} \phi_m = -\frac{e\tau}{\hbar} \left[\mathbf{B}\times\hat{\mathbf{e}}_{z}\right]</script></span></p>
+<p>where <span><span class="MathJax_Preview">\tau</span><script type="math/tex">\tau</script></span> is the thickness, <span><span class="MathJax_Preview">\mathbf{B}</span><script type="math/tex">\mathbf{B}</script></span> is the transverse magnetic field components, integrated over <span><span class="MathJax_Preview">z</span><script type="math/tex">z</script></span>,
+and <span><span class="MathJax_Preview">\hat{\mathbf{e}}_z</span><script type="math/tex">\hat{\mathbf{e}}_z</script></span> is the direction of propagation.</p>
 <p><strong>Parameters</strong></p>
 <ul>
 <li>
-<p><strong>img</strong> : <em>ndarray</em> <br />
-The 2d image data.</p>
-</li>
-<li>
-<p><strong>defocus</strong> : <em>number, optional</em> <br />
-Default is <code>defocus = 0</code>.</p>
+<p><strong>phase</strong> : <em>ndarray</em> <br />
+A 2d array containing the electron phase immediately after the sample.</p>
 </li>
 <li>
 <p><strong>dx</strong> : <em>number, optional</em> <br />
@@ -455,86 +375,6 @@ Default is <code>dx = 1</code></p>
 <p><strong>dy</strong> : <em>number, optional</em> <br />
 The pixel spacing in the y-direction. <br />
 Default is <code>dy = 1</code>.</p>
-</li>
-<li>
-<p><strong>thickness</strong> : <em>number, optional</em> <br />
-The thickness of the sample. <br />
-Default is <code>thickness = 60e-9</code>.</p>
-</li>
-<li>
-<p><strong>wavelength</strong> : <em>number, optional</em> <br />
-The relativistic electron wavelength. <br />
-Default is <code>wavelength = 1.97e-9</code>.</p>
-</li>
-</ul>
-<p><strong>Returns</strong></p>
-<ul>
-<li>
-<p><strong>Bx</strong> : <em>ndarray</em> <br />
-A 2d array containing the reconstructed x-component of magnetic induction.</p>
-</li>
-<li>
-<p><strong>By</strong> : <em>ndarray</em> <br />
-A 2d array containing the reconstructed y-component of magnetic induction.</p>
-</li>
-</ul></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def ind_from_img(img, defocus = 0, dx = 1, dy = 1, thickness = 60e-9, wavelength = 1.97e-12):
-        &#34;&#34;&#34;Reconstruct the magnetic induction from a defocussed image.
-
-        This is an implementation of the SITIE equation Eq (10) and Eq (11) from J. Chess et al., 2017, _Streamlined approach to mapping the magnetic induction of skyrmionic materials_.
-
-        **Parameters**
-
-        * **img** : _ndarray_ &lt;br /&gt;
-        The 2d image data.
-
-        * **defocus** : _number, optional_ &lt;br /&gt;
-        Default is `defocus = 0`.
-
-        * **dx** : _number, optional_ &lt;br /&gt;
-        The pixel spacing in the x-direction. &lt;br /&gt;
-        Default is `dx = 1`
-
-        * **dy** : _number, optional_ &lt;br /&gt;
-        The pixel spacing in the y-direction. &lt;br /&gt;
-        Default is `dy = 1`.
-
-        * **thickness** : _number, optional_ &lt;br /&gt;
-        The thickness of the sample. &lt;br /&gt;
-        Default is `thickness = 60e-9`.
-
-        * **wavelength** : _number, optional_ &lt;br /&gt;
-        The relativistic electron wavelength. &lt;br /&gt;
-        Default is `wavelength = 1.97e-9`.
-
-        **Returns**
-
-        * **Bx** : _ndarray_ &lt;br /&gt;
-        A 2d array containing the reconstructed x-component of magnetic induction.
-
-        * **By** : _ndarray_ &lt;br /&gt;
-        A 2d array containing the reconstructed y-component of magnetic induction.
-        &#34;&#34;&#34;
-        phase = phase_from_img(img, defocus, dx, dy, wavelength)
-        Bx, By = ind_from_phase(phase, thickness)
-        return(np.array([Bx.real, By.real]))</code></pre>
-</details>
-</dd>
-<dt id="ltempy.sitie.ind_from_phase"><code class="name flex">
-<span>def <span class="ident">ind_from_phase</span></span>(<span>phase, thickness=6e-08)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Calculate the magnetic induction given the Aharonov-Bohm phase shift.</p>
-<p>This is an implementation of Eq (11) from J. Chess et al., 2017, <em>Streamlined approach to mapping the magnetic induction of skyrmionic materials</em>.</p>
-<p><strong>Parameters</strong></p>
-<ul>
-<li>
-<p><strong>phase</strong> : <em>ndarray</em> <br />
-A 2d array containing the electron phase immediately after the sample.</p>
 </li>
 <li>
 <p><strong>thickness</strong> : <em>number, optional</em> <br />
@@ -557,15 +397,28 @@ The y-component of the magnetic induction.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def ind_from_phase(phase, thickness = 60e-9):
-        &#34;&#34;&#34;Calculate the magnetic induction given the Aharonov-Bohm phase shift.
+<pre><code class="python">def ind_from_phase(phase, dx = 1, dy = 1, thickness = 60e-9):
+        r&#34;&#34;&#34;Calculate the magnetic induction given the Aharonov-Bohm phase shift.
 
-        This is an implementation of Eq (11) from J. Chess et al., 2017, _Streamlined approach to mapping the magnetic induction of skyrmionic materials_.
+        Calculated using
+
+        \[\nabla_{\perp} \phi_m = -\frac{e\tau}{\hbar} \left[\mathbf{B}\times\hat{\mathbf{e}}_{z}\right]\]
+
+        where \(\tau\) is the thickness, \(\mathbf{B}\) is the transverse magnetic field components, integrated over \(z\),
+        and \(\hat{\mathbf{e}}_z\) is the direction of propagation.
 
         **Parameters**
 
         * **phase** : _ndarray_ &lt;br /&gt;
         A 2d array containing the electron phase immediately after the sample.
+
+        * **dx** : _number, optional_ &lt;br /&gt;
+        The pixel spacing in the x-direction. &lt;br /&gt;
+        Default is `dx = 1`
+
+        * **dy** : _number, optional_ &lt;br /&gt;
+        The pixel spacing in the y-direction. &lt;br /&gt;
+        Default is `dy = 1`.
 
         * **thickness** : _number, optional_ &lt;br /&gt;
         The thickness of the sample. &lt;br /&gt;
@@ -579,18 +432,19 @@ The y-component of the magnetic induction.</p>
         * **By** : _ndarray_ &lt;br /&gt;
         The y-component of the magnetic induction.
         &#34;&#34;&#34;
-        dpdy, dpdx = np.gradient(phase)
+        dpdx = np.gradient(phase, dy, axis=1)
+        dpdy = np.gradient(phase, dx, axis=0)
         Bx = _.hbar/_.e/thickness * dpdy
         By = -_.hbar/_.e/thickness * dpdx
         return(np.array([Bx.real, By.real]))</code></pre>
 </details>
 </dd>
-<dt id="ltempy.sitie.phase_from_img"><code class="name flex">
-<span>def <span class="ident">phase_from_img</span></span>(<span>img, defocus=0, dx=1, dy=1, wavelength=1.97e-12)</span>
+<dt id="ltempy.sitie.sitie"><code class="name flex">
+<span>def <span class="ident">sitie</span></span>(<span>img, defocus=0, dx=1, dy=1, wavelength=1.97e-12)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Reconstruct the Aharonov-Bohm phase from a defocussed image.</p>
-<p>This is an implementation of the SITIE equation (Eq 10) from J. Chess et al., 2017, <em>Streamlined approach to mapping the magnetic induction of skyrmionic materials</em>.</p>
+<p>This is an implementation of the SITIE equation from [1], Eqn (10).</p>
 <p><strong>Parameters</strong></p>
 <ul>
 <li>
@@ -619,17 +473,17 @@ Default is <code>wavelength = 1.97e-9</code>.</p>
 </ul>
 <p><strong>Returns</strong></p>
 <ul>
-<li><strong>phase</strong> : <em>ndarray</em> <br />
+<li><em>ndarray</em> <br />
 A 2d array containing the reconstructed Aharonov-Bohm phase shift.</li>
 </ul></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def phase_from_img(img, defocus = 0, dx = 1, dy = 1, wavelength = 1.97e-12):
+<pre><code class="python">def sitie(img, defocus = 0, dx = 1, dy = 1, wavelength = 1.97e-12):
         &#34;&#34;&#34;Reconstruct the Aharonov-Bohm phase from a defocussed image.
 
-        This is an implementation of the SITIE equation (Eq 10) from J. Chess et al., 2017, _Streamlined approach to mapping the magnetic induction of skyrmionic materials_.
+        This is an implementation of the SITIE equation from [1], Eqn (10).
 
         **Parameters**
 
@@ -653,7 +507,7 @@ A 2d array containing the reconstructed Aharonov-Bohm phase shift.</li>
 
         **Returns**
 
-        * **phase** : _ndarray_ &lt;br /&gt;
+        * _ndarray_ &lt;br /&gt;
         A 2d array containing the reconstructed Aharonov-Bohm phase shift.
         &#34;&#34;&#34;
         Sx = np.fft.fftfreq(img.shape[1], dx)
@@ -667,77 +521,6 @@ A 2d array containing the reconstructed Aharonov-Bohm phase shift.</li>
         return(phase.real)</code></pre>
 </details>
 </dd>
-<dt id="ltempy.sitie.sitie_image"><code class="name flex">
-<span>def <span class="ident">sitie_image</span></span>(<span>datafile)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Creates a <code>Lorentz</code> class instance for each image in a sequence.</p>
-<p>This function acts as a wrapper for the <code>Lorentz</code> class, adding an extra handler
-for image sequences. When the dictionary contains a sequence of images, it is split into
-individual <code>Lorentz</code> class instances.</p>
-<p><strong>Parameters</strong></p>
-<ul>
-<li><strong>datafile</strong> : <em>dictionary</em> <br />
-a dictionary with the following keys: <br />
-<ul>
-<li> <strong>data</strong> : <em>ndarray</em> <br />
-A 2d array of the electron counts, or an array of 2d arrays of the electron counts. </li>
-<li> <strong>pixelSize</strong> : <em>tuple</em> <br />
-(<em>number</em>, <em>number</em>) - the x and y pixel sizes.
-For compatibility with <code>.dm3</code> files, the last 2 elements of the tuple are used. </li>
-<li> <strong>pixelUnit</strong> : <em>tuple</em> <br />
-(<em>string</em>, <em>string</em>) - the x and y pixel units.
-For compatibility with <code>.dm3</code> files, the last 2 elements of the tuple are used. </li>
-</ul></li>
-</ul>
-<p><strong>Returns</strong>
-* <strong>out</strong> : <em>list, Lorentz</em> <br />
-A list of <code>wsp-tools.sitie.Lorentz</code> instances, if the dictionary is an image sequence.
-Otherwise, a single <code>wsp-tools.sitie.Lorentz</code> instance.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def sitie_image(datafile):
-        &#34;&#34;&#34;Creates a `Lorentz` class instance for each image in a sequence.
-
-        This function acts as a wrapper for the `Lorentz` class, adding an extra handler
-        for image sequences. When the dictionary contains a sequence of images, it is split into
-        individual `Lorentz` class instances.
-
-        **Parameters**
-
-        * **datafile** : _dictionary_ &lt;br /&gt;
-        a dictionary with the following keys: &lt;br /&gt;
-                &lt;ul&gt;
-                &lt;li&gt; **data** : _ndarray_ &lt;br /&gt;
-                A 2d array of the electron counts, or an array of 2d arrays of the electron counts. &lt;/li&gt;
-                &lt;li&gt; **pixelSize** : _tuple_ &lt;br /&gt;
-                (_number_, _number_) - the x and y pixel sizes.
-                For compatibility with `.dm3` files, the last 2 elements of the tuple are used. &lt;/li&gt;
-                &lt;li&gt; **pixelUnit** : _tuple_ &lt;br /&gt;
-                (_string_, _string_) - the x and y pixel units.
-                For compatibility with `.dm3` files, the last 2 elements of the tuple are used. &lt;/li&gt;
-                &lt;/ul&gt;
-
-        **Returns**
-        * **out** : _list, Lorentz_ &lt;br /&gt;
-        A list of `wsp-tools.sitie.Lorentz` instances, if the dictionary is an image sequence.
-        Otherwise, a single `wsp-tools.sitie.Lorentz` instance.
-        &#34;&#34;&#34;
-        if len(datafile[&#39;data&#39;].shape) == 2:
-                return(SITIEImage(datafile))
-        else:
-                f1 = datafile.copy()
-                out = []
-                for dataset in datafile[&#39;data&#39;]:
-                        f1[&#39;data&#39;] = dataset
-                        f1[&#39;pixelSize&#39;] = [datafile[&#39;pixelSize&#39;][-2], datafile[&#39;pixelSize&#39;][-1]]
-                        f1[&#39;pixelUnit&#39;] = [datafile[&#39;pixelUnit&#39;][-2], datafile[&#39;pixelUnit&#39;][-1]]
-                        out.append(SITIEImage(f1))
-                return(out)</code></pre>
-</details>
-</dd>
 </dl>
 </section>
 <section>
@@ -748,7 +531,7 @@ Otherwise, a single <code>wsp-tools.sitie.Lorentz</code> instance.</p></div>
 <span>(</span><span>datafile)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>A LorentzImage object represents an image containing only magnetic contrast.</p>
+<div class="desc"><p>A SITIEImage object represents a defocussed image containing only magnetic contrast.</p>
 <p><strong>Parameters</strong></p>
 <ul>
 <li><strong>datafile</strong> : <em>dictionary</em> <br />
@@ -768,7 +551,7 @@ Allowed values are <code>"pm"</code>, <code>"nm"</code>, <code>"µm"</code>, <co
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class SITIEImage:
-        &#34;&#34;&#34;A LorentzImage object represents an image containing only magnetic contrast.
+        &#34;&#34;&#34;A SITIEImage object represents a defocussed image containing only magnetic contrast.
 
         **Parameters**
 
@@ -797,7 +580,7 @@ Allowed values are <code>"pm"</code>, <code>"nm"</code>, <code>"µm"</code>, <co
                 self.fix_units()
 
         def fix_units(self):
-                &#34;&#34;&#34;Try to set the units to meters.&#34;&#34;&#34;
+                &#34;&#34;&#34;Set the units to meters.&#34;&#34;&#34;
                 if self.x_unit == &#39;m&#39;:
                         xr = 1
                 elif self.x_unit == &#39;mm&#39;:
@@ -850,7 +633,7 @@ Allowed values are <code>"pm"</code>, <code>"nm"</code>, <code>"µm"</code>, <co
 
                 **Returns**
 
-                * **self** : _lorentz_
+                * _SITIEImage_
                 &#34;&#34;&#34;
                 if yr is None:
                         yr = xr
@@ -875,71 +658,55 @@ Allowed values are <code>"pm"</code>, <code>"nm"</code>, <code>"µm"</code>, <co
                 The defocus at which the images were taken. &lt;br /&gt;
                 Default is `df = 1e-3`.
 
+                * **thickness** : _number, optional_ &lt;br /&gt;
+                The thickness of the sample. &lt;br /&gt;
+                Default is `thickness = 60e-9`.
+
                 * **wavelength** : _number, optional_ &lt;br /&gt;
                 The electron wavelength. &lt;br /&gt;
                 Default is `wavelength = 1.96e-12` (relativistic wavelength of a 300kV electron).
 
                 **Returns**
 
-                * **self** : _lorentz_
+                * _SITIEImage_
                 &#34;&#34;&#34;
-                self.phase = process.ndap(phase_from_img(self.data, df, self.dx, self.dy, wavelength))
-                self.Bx, self.By = [process.ndap(arr) for arr in ind_from_phase(self.phase, thickness)]
+                self.phase = process.ndap(sitie(self.data, df, self.dx, self.dy, wavelength))
+                self.Bx, self.By = [process.ndap(arr) for arr in ind_from_phase(self.phase, dx = self.dx, dy = self.dy, thickness = thickness)]
                 return(self)
 
-        def validate(self, dx, threshold = 0.9, damping = damping, **kwargs):
+        def validate(self, threshold = 0.1, divangle = 1e-5, defocus = 1):
                 r&#34;&#34;&#34;Estimate the validity of the SITIE approximation for the given parameters.
 
                 SITIE expands on the approximations of TIE by assuming coherent illumination (that is,
                 low divergence angle relative to the defocus and the spatial frequencies to be resolved).
-                Another way to say this is that the damping envelope \(g(q_{\perp})\) of Ref (1), Eqn (4) is negligible.
-                Therefore, this function checks for \(q_{\perp}\) such that \(e^{-g(q_{\perp})} &gt; t\) where \(t\) is
-                a user-input threshold.
+                Another way to say this is that the damping envelope \(g(q_{\perp})\) is negligible.
+
+                This returns \(q_{\perp}\) satisfying
+
+                \[\frac{(\pi \Theta_c \Delta f)^2}{2} q_{\perp}^2 = \text{threshold}\]
+
+                where \(\Delta f\) is the defocus and \(\Theta_c\) is the divergence angle. This \(q_{\perp}\)
+                is the largest spatial frequency for which the SITIE approximation is valid.
 
                 **Parameters**
 
-                * **dx** : _number_ &lt;br /&gt;
-                The pixel size in meters. &lt;br /&gt;
-
                 * **threshold** : _number, optional_ &lt;br /&gt;
-                The minimum allowed value of \(e^{-g(q_{\perp})}\). Should be between 0 and 1. &lt;br /&gt;
-                Default is `threshold = 0.9`.
+                The largest value that you consider \(&lt;&lt; 1\). &lt;br /&gt;
+                Default is `threshold = 0.1`.
 
-                * **damping** : _function, optional_ &lt;br /&gt;
-                The damping function \(g(q_{\perp})\). Defaults to Ref (1), Eqn (4). &lt;br /&gt;
-                The default damping function takes the following kwargs:
-                        &lt;ul&gt;
-                                &lt;li&gt;
-                                **defocus** : _number, optional_ &lt;br /&gt;
-                                Default is `defocus = 1e-3`.
-                                &lt;/li&gt;
-                                &lt;li&gt;
-                                **wavelength** : _number, optional_ &lt;br /&gt;
-                                Default is `wavelength = 1.97e-12`.
-                                &lt;/li&gt;
-                                &lt;li&gt;
-                                **C_s** : _number, optional_ &lt;br /&gt;
-                                The spherical aberration coefficient. &lt;br /&gt;
-                                Default is `C_s = 2.7e-3`.
-                                &lt;/li&gt;
-                                &lt;li&gt;
-                                **divangle** : _number, optional_ &lt;br /&gt;
-                                The divergence angle. &lt;br /&gt;
-                                Default is `divangle = 1e-5`.
-                                &lt;/li&gt;
-                        &lt;/ul&gt;
+                * **divangle** : _number, optional_ &lt;br /&gt;
+                The divergence angle. &lt;br /&gt;
+                Default is `divangle = 1e-5`.
+
+                * **defocus** : _number, optional_ &lt;br /&gt;
+                Default is `defocus = 1`.
 
                 * ****kwargs** &lt;br /&gt;
                 Any arguments to be passed to the damping function.
                 &#34;&#34;&#34;
-                QX = np.fft.fftfreq(len(self.x), dx)
-                QY = np.fft.fftfreq(len(self.y), dx)
-                qx, qy = np.meshgrid(QX, QY)
-                test = np.exp(-damping(qx, qy, **kwargs))
-                if not np.any(test &gt; threshold):
-                        return(&#34;For these parameters, SITIE is valid only for features larger than your image size. &#34;)
-                min_feature_size = 1 / np.max(np.sqrt(qx**2 + qy**2)[test &gt; threshold])
-                return(&#34;For these parameters, SITIE is valid for feature sizes larger than {}m&#34;.format(min_feature_size))</code></pre>
+                prefactor = np.abs((_.pi * divangle * defocus)**2 / 2)
+                qp_max = np.sqrt(threshold / prefactor)
+                return(qp_max)</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -947,13 +714,13 @@ Allowed values are <code>"pm"</code>, <code>"nm"</code>, <code>"µm"</code>, <co
 <span>def <span class="ident">fix_units</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Try to set the units to meters.</p></div>
+<div class="desc"><p>Set the units to meters.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def fix_units(self):
-        &#34;&#34;&#34;Try to set the units to meters.&#34;&#34;&#34;
+        &#34;&#34;&#34;Set the units to meters.&#34;&#34;&#34;
         if self.x_unit == &#39;m&#39;:
                 xr = 1
         elif self.x_unit == &#39;mm&#39;:
@@ -997,6 +764,11 @@ The defocus at which the images were taken. <br />
 Default is <code>df = 1e-3</code>.</p>
 </li>
 <li>
+<p><strong>thickness</strong> : <em>number, optional</em> <br />
+The thickness of the sample. <br />
+Default is <code>thickness = 60e-9</code>.</p>
+</li>
+<li>
 <p><strong>wavelength</strong> : <em>number, optional</em> <br />
 The electron wavelength. <br />
 Default is <code>wavelength = 1.96e-12</code> (relativistic wavelength of a 300kV electron).</p>
@@ -1004,7 +776,7 @@ Default is <code>wavelength = 1.96e-12</code> (relativistic wavelength of a 300k
 </ul>
 <p><strong>Returns</strong></p>
 <ul>
-<li><strong>self</strong> : <em>lorentz</em></li>
+<li><em>SITIEImage</em></li>
 </ul></div>
 <details class="source">
 <summary>
@@ -1021,16 +793,20 @@ Default is <code>wavelength = 1.96e-12</code> (relativistic wavelength of a 300k
         The defocus at which the images were taken. &lt;br /&gt;
         Default is `df = 1e-3`.
 
+        * **thickness** : _number, optional_ &lt;br /&gt;
+        The thickness of the sample. &lt;br /&gt;
+        Default is `thickness = 60e-9`.
+
         * **wavelength** : _number, optional_ &lt;br /&gt;
         The electron wavelength. &lt;br /&gt;
         Default is `wavelength = 1.96e-12` (relativistic wavelength of a 300kV electron).
 
         **Returns**
 
-        * **self** : _lorentz_
+        * _SITIEImage_
         &#34;&#34;&#34;
-        self.phase = process.ndap(phase_from_img(self.data, df, self.dx, self.dy, wavelength))
-        self.Bx, self.By = [process.ndap(arr) for arr in ind_from_phase(self.phase, thickness)]
+        self.phase = process.ndap(sitie(self.data, df, self.dx, self.dy, wavelength))
+        self.Bx, self.By = [process.ndap(arr) for arr in ind_from_phase(self.phase, dx = self.dx, dy = self.dy, thickness = thickness)]
         return(self)</code></pre>
 </details>
 </dd>
@@ -1065,7 +841,7 @@ Default is <code>y_unit = None</code>.</p>
 </ul>
 <p><strong>Returns</strong></p>
 <ul>
-<li><strong>self</strong> : <em>lorentz</em></li>
+<li><em>SITIEImage</em></li>
 </ul></div>
 <details class="source">
 <summary>
@@ -1095,7 +871,7 @@ Default is <code>y_unit = None</code>.</p>
 
         **Returns**
 
-        * **self** : _lorentz_
+        * _SITIEImage_
         &#34;&#34;&#34;
         if yr is None:
                 yr = xr
@@ -1111,50 +887,32 @@ Default is <code>y_unit = None</code>.</p>
 </details>
 </dd>
 <dt id="ltempy.sitie.SITIEImage.validate"><code class="name flex">
-<span>def <span class="ident">validate</span></span>(<span>self, dx, threshold=0.9, damping=&lt;function damping&gt;, **kwargs)</span>
+<span>def <span class="ident">validate</span></span>(<span>self, threshold=0.1, divangle=1e-05, defocus=1)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Estimate the validity of the SITIE approximation for the given parameters.</p>
 <p>SITIE expands on the approximations of TIE by assuming coherent illumination (that is,
 low divergence angle relative to the defocus and the spatial frequencies to be resolved).
-Another way to say this is that the damping envelope <span><span class="MathJax_Preview">g(q_{\perp})</span><script type="math/tex">g(q_{\perp})</script></span> of Ref (1), Eqn (4) is negligible.
-Therefore, this function checks for <span><span class="MathJax_Preview">q_{\perp}</span><script type="math/tex">q_{\perp}</script></span> such that <span><span class="MathJax_Preview">e^{-g(q_{\perp})} &gt; t</span><script type="math/tex">e^{-g(q_{\perp})} > t</script></span> where <span><span class="MathJax_Preview">t</span><script type="math/tex">t</script></span> is
-a user-input threshold.</p>
+Another way to say this is that the damping envelope <span><span class="MathJax_Preview">g(q_{\perp})</span><script type="math/tex">g(q_{\perp})</script></span> is negligible.</p>
+<p>This returns <span><span class="MathJax_Preview">q_{\perp}</span><script type="math/tex">q_{\perp}</script></span> satisfying</p>
+<p><span><span class="MathJax_Preview">\frac{(\pi \Theta_c \Delta f)^2}{2} q_{\perp}^2 = \text{threshold}</span><script type="math/tex; mode=display">\frac{(\pi \Theta_c \Delta f)^2}{2} q_{\perp}^2 = \text{threshold}</script></span></p>
+<p>where <span><span class="MathJax_Preview">\Delta f</span><script type="math/tex">\Delta f</script></span> is the defocus and <span><span class="MathJax_Preview">\Theta_c</span><script type="math/tex">\Theta_c</script></span> is the divergence angle. This <span><span class="MathJax_Preview">q_{\perp}</span><script type="math/tex">q_{\perp}</script></span>
+is the largest spatial frequency for which the SITIE approximation is valid.</p>
 <p><strong>Parameters</strong></p>
 <ul>
 <li>
-<p><strong>dx</strong> : <em>number</em> <br />
-The pixel size in meters. <br /></p>
-</li>
-<li>
 <p><strong>threshold</strong> : <em>number, optional</em> <br />
-The minimum allowed value of <span><span class="MathJax_Preview">e^{-g(q_{\perp})}</span><script type="math/tex">e^{-g(q_{\perp})}</script></span>. Should be between 0 and 1. <br />
-Default is <code>threshold = 0.9</code>.</p>
+The largest value that you consider <span><span class="MathJax_Preview">&lt;&lt; 1</span><script type="math/tex"><< 1</script></span>. <br />
+Default is <code>threshold = 0.1</code>.</p>
 </li>
 <li>
-<p><strong>damping</strong> : <em>function, optional</em> <br />
-The damping function <span><span class="MathJax_Preview">g(q_{\perp})</span><script type="math/tex">g(q_{\perp})</script></span>. Defaults to Ref (1), Eqn (4). <br />
-The default damping function takes the following kwargs:
-<ul>
-<li>
-<strong>defocus</strong> : <em>number, optional</em> <br />
-Default is <code>defocus = 1e-3</code>.
-</li>
-<li>
-<strong>wavelength</strong> : <em>number, optional</em> <br />
-Default is <code>wavelength = 1.97e-12</code>.
-</li>
-<li>
-<strong>C_s</strong> : <em>number, optional</em> <br />
-The spherical aberration coefficient. <br />
-Default is <code>C_s = 2.7e-3</code>.
-</li>
-<li>
-<strong>divangle</strong> : <em>number, optional</em> <br />
+<p><strong>divangle</strong> : <em>number, optional</em> <br />
 The divergence angle. <br />
-Default is <code>divangle = 1e-5</code>.
+Default is <code>divangle = 1e-5</code>.</p>
 </li>
-</ul></p>
+<li>
+<p><strong>defocus</strong> : <em>number, optional</em> <br />
+Default is <code>defocus = 1</code>.</p>
 </li>
 <li>
 <p><strong>**kwargs</strong> <br />
@@ -1165,59 +923,39 @@ Any arguments to be passed to the damping function.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def validate(self, dx, threshold = 0.9, damping = damping, **kwargs):
+<pre><code class="python">def validate(self, threshold = 0.1, divangle = 1e-5, defocus = 1):
         r&#34;&#34;&#34;Estimate the validity of the SITIE approximation for the given parameters.
 
         SITIE expands on the approximations of TIE by assuming coherent illumination (that is,
         low divergence angle relative to the defocus and the spatial frequencies to be resolved).
-        Another way to say this is that the damping envelope \(g(q_{\perp})\) of Ref (1), Eqn (4) is negligible.
-        Therefore, this function checks for \(q_{\perp}\) such that \(e^{-g(q_{\perp})} &gt; t\) where \(t\) is
-        a user-input threshold.
+        Another way to say this is that the damping envelope \(g(q_{\perp})\) is negligible.
+
+        This returns \(q_{\perp}\) satisfying
+
+        \[\frac{(\pi \Theta_c \Delta f)^2}{2} q_{\perp}^2 = \text{threshold}\]
+
+        where \(\Delta f\) is the defocus and \(\Theta_c\) is the divergence angle. This \(q_{\perp}\)
+        is the largest spatial frequency for which the SITIE approximation is valid.
 
         **Parameters**
 
-        * **dx** : _number_ &lt;br /&gt;
-        The pixel size in meters. &lt;br /&gt;
-
         * **threshold** : _number, optional_ &lt;br /&gt;
-        The minimum allowed value of \(e^{-g(q_{\perp})}\). Should be between 0 and 1. &lt;br /&gt;
-        Default is `threshold = 0.9`.
+        The largest value that you consider \(&lt;&lt; 1\). &lt;br /&gt;
+        Default is `threshold = 0.1`.
 
-        * **damping** : _function, optional_ &lt;br /&gt;
-        The damping function \(g(q_{\perp})\). Defaults to Ref (1), Eqn (4). &lt;br /&gt;
-        The default damping function takes the following kwargs:
-                &lt;ul&gt;
-                        &lt;li&gt;
-                        **defocus** : _number, optional_ &lt;br /&gt;
-                        Default is `defocus = 1e-3`.
-                        &lt;/li&gt;
-                        &lt;li&gt;
-                        **wavelength** : _number, optional_ &lt;br /&gt;
-                        Default is `wavelength = 1.97e-12`.
-                        &lt;/li&gt;
-                        &lt;li&gt;
-                        **C_s** : _number, optional_ &lt;br /&gt;
-                        The spherical aberration coefficient. &lt;br /&gt;
-                        Default is `C_s = 2.7e-3`.
-                        &lt;/li&gt;
-                        &lt;li&gt;
-                        **divangle** : _number, optional_ &lt;br /&gt;
-                        The divergence angle. &lt;br /&gt;
-                        Default is `divangle = 1e-5`.
-                        &lt;/li&gt;
-                &lt;/ul&gt;
+        * **divangle** : _number, optional_ &lt;br /&gt;
+        The divergence angle. &lt;br /&gt;
+        Default is `divangle = 1e-5`.
+
+        * **defocus** : _number, optional_ &lt;br /&gt;
+        Default is `defocus = 1`.
 
         * ****kwargs** &lt;br /&gt;
         Any arguments to be passed to the damping function.
         &#34;&#34;&#34;
-        QX = np.fft.fftfreq(len(self.x), dx)
-        QY = np.fft.fftfreq(len(self.y), dx)
-        qx, qy = np.meshgrid(QX, QY)
-        test = np.exp(-damping(qx, qy, **kwargs))
-        if not np.any(test &gt; threshold):
-                return(&#34;For these parameters, SITIE is valid only for features larger than your image size. &#34;)
-        min_feature_size = 1 / np.max(np.sqrt(qx**2 + qy**2)[test &gt; threshold])
-        return(&#34;For these parameters, SITIE is valid for feature sizes larger than {}m&#34;.format(min_feature_size))</code></pre>
+        prefactor = np.abs((_.pi * divangle * defocus)**2 / 2)
+        qp_max = np.sqrt(threshold / prefactor)
+        return(qp_max)</code></pre>
 </details>
 </dd>
 </dl>
@@ -1231,12 +969,15 @@ Any arguments to be passed to the damping function.</p>
 <ul></ul>
 </div>
 <ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="ltempy" href="index.html">ltempy</a></code></li>
+</ul>
+</li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="ltempy.sitie.ind_from_img" href="#ltempy.sitie.ind_from_img">ind_from_img</a></code></li>
 <li><code><a title="ltempy.sitie.ind_from_phase" href="#ltempy.sitie.ind_from_phase">ind_from_phase</a></code></li>
-<li><code><a title="ltempy.sitie.phase_from_img" href="#ltempy.sitie.phase_from_img">phase_from_img</a></code></li>
-<li><code><a title="ltempy.sitie.sitie_image" href="#ltempy.sitie.sitie_image">sitie_image</a></code></li>
+<li><code><a title="ltempy.sitie.sitie" href="#ltempy.sitie.sitie">sitie</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>

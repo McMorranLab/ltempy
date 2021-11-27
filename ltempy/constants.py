@@ -14,18 +14,25 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-"""Allows unit scaling across the module.
+r"""Allows unit scaling across `ltempy`.
 
-To operate in different base units:
+By default, `ltempy` uses SI units. This module allows you to scale
+the SI base units. So, for example, to work in kilometers rather than meters:
 
 ```python
 import ltempy as lp
 lp.set_units(meter = 1e-3) # set km as base unit for length
 
-print(lp.constants.c) # yields 299792.458
+print(lp.constants.c) # yields 299792.458 km / s
 ```
 
-Note that all other modules update automatically as well.
+Note that all other modules of `ltempy` and their functions update automatically as well.
+So for example, if you set km as the base unit for length (`lp.set_units(meter = 1e-3)`),
+and then run a sitie reconstruction with `defocus = 1`, you've just run sitie with defocus equal to 1km.
+
+Also note that `ltempy` functions that use constants (such as `ind_from_phase`, which uses `constants.e` and
+`constants.hbar`) will be affected, as both \(e\) (the electron charge) and \(\hbar\) (the reduced Planck constant),
+have different numerical values when km is the base unit.
 """
 
 __all__ = ['s','m','kg','A','K','mol','cd','c','hbar','e','pi','set_units']

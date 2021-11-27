@@ -15,15 +15,15 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 """
-ltempy contains tools for Lorentz TEM data analysis, simulation, and presentation.
+`ltempy` is a set of tools for the analysis, simulation, and presentation of Lorentz TEM data.
 
 Features:
 
-* Single Image Transport of Intensity Equation (SITIE) reconstruction
-* simulations - calculations of phase, B, A, image
-* basic image processing - high_pass, low_pass, clipping
-* a matplotlib.pyplot wrapper tailored to presenting induction maps and Lorentz data
-* an implementation of the CIELAB colorspace
+* Single Image Transport of Intensity Equation (SITIE) phase reconstruction
+* simulations of phase, magnetic field, magnetic vector potential, and Lorentz images
+* basic image processing
+* a `matplotlib.pyplot` wrapper tailored to presenting induction maps and Lorentz data
+* an implementation of the CIELAB perceptually-uniform colorspace
 * module-wide unit scaling (i.e., working in nm rather than m)
 """
 
@@ -31,14 +31,9 @@ import numpy as np
 import os
 from pathlib import Path
 
-from .cielab import *
+from .colors import *
 from .constants import set_units
 from .process import *
 from .simulate import *
 from .sitie import *
-
-try:
-	import matplotlib
-	from .plot import *
-except:
-	pass
+from .plot import *

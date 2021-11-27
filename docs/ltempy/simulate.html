@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.10.0" />
+<meta name="generator" content="pdoc 0.9.2" />
 <title>ltempy.simulate API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Simulate Aharonov-Bohm phase, magnetic vector potential, magnetic field, and LTEM images …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -23,6 +23,38 @@
 <h1 class="title">Module <code>ltempy.simulate</code></h1>
 </header>
 <section id="section-intro">
+<p>Simulate Aharonov-Bohm phase, magnetic vector potential, magnetic field, and LTEM images.</p>
+<p>Given a magnetic thin film with magnetization <span><span class="MathJax_Preview">\mathbf{m}(x,y)</span><script type="math/tex">\mathbf{m}(x,y)</script></span> and thickness <span><span class="MathJax_Preview">\tau</span><script type="math/tex">\tau</script></span>, one can
+come to analytical expressions [1] for the Fourier components of</p>
+<ol>
+<li>the magnetic vector potential <span><span class="MathJax_Preview">\mathbf{A}(x, y, z)</span><script type="math/tex">\mathbf{A}(x, y, z)</script></span></li>
+<li>the magnetic field <span><span class="MathJax_Preview">\mathbf{B}(x, y, z)</span><script type="math/tex">\mathbf{B}(x, y, z)</script></span></li>
+<li>the Aharonov-Bohm phase <span><span class="MathJax_Preview">\phi_m(x, y)</span><script type="math/tex">\phi_m(x, y)</script></span> acquired by an electron passing through the sample</li>
+</ol>
+<p>From there, the magnetic vector potential, magnetic field, and phase can be calculated directly
+using a fast fourier transform algorithm.</p>
+<p>The Aharonov-Bohm phase can be related to the integrated perpendicular components of magnetic field via</p>
+<p><span><span class="MathJax_Preview">
+\nabla_{\perp} \phi_m = -\frac{e\tau}{\hbar} \left[\mathbf{B}\times\hat{\mathbf{e}}_{z}\right]
+</span><script type="math/tex; mode=display">
+\nabla_{\perp} \phi_m = -\frac{e\tau}{\hbar} \left[\mathbf{B}\times\hat{\mathbf{e}}_{z}\right]
+</script></span></p>
+<p>where <span><span class="MathJax_Preview">\hat{\mathbf{e}}_z</span><script type="math/tex">\hat{\mathbf{e}}_z</script></span> is the direction of propagation.</p>
+<p>Lorentz TEM images can be calculated three ways [2] (all within the framework of Fourier optics):</p>
+<ol>
+<li><code><a title="ltempy.simulate.img_from_mag" href="#ltempy.simulate.img_from_mag">img_from_mag()</a></code>: Directly from the magnetization, using the paraxial approximation.</li>
+<li><code><a title="ltempy.simulate.img_from_phase" href="#ltempy.simulate.img_from_phase">img_from_phase()</a></code>: From a phase, using the paraxial approximation.</li>
+<li><code><a title="ltempy.simulate.propagate" href="#ltempy.simulate.propagate">propagate()</a></code>: From an exit wavefunction, without the paraxial approximation.</li>
+</ol>
+<hr>
+<ol>
+<li>
+<p>Mansuripur, M. Computation of electron diffraction patterns in Lorentz electron microscopy of thin magnetic films. Journal of Applied Physics 69, 2455–2464 (1991).</p>
+</li>
+<li>
+<p>Chess, J. J. et al. Streamlined approach to mapping the magnetic induction of skyrmionic materials. Ultramicroscopy 177, 78–83 (2017).</p>
+</li>
+</ol>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -42,12 +74,45 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
+r&#34;&#34;&#34;Simulate Aharonov-Bohm phase, magnetic vector potential, magnetic field, and LTEM images.
+
+Given a magnetic thin film with magnetization \(\mathbf{m}(x,y)\) and thickness \(\tau\), one can
+come to analytical expressions [1] for the Fourier components of
+
+1. the magnetic vector potential \(\mathbf{A}(x, y, z)\)
+2. the magnetic field \(\mathbf{B}(x, y, z)\)
+3. the Aharonov-Bohm phase \(\phi_m(x, y)\) acquired by an electron passing through the sample
+
+From there, the magnetic vector potential, magnetic field, and phase can be calculated directly
+using a fast fourier transform algorithm.
+
+The Aharonov-Bohm phase can be related to the integrated perpendicular components of magnetic field via
+
+\[
+\nabla_{\perp} \phi_m = -\frac{e\tau}{\hbar} \left[\mathbf{B}\times\hat{\mathbf{e}}_{z}\right]
+\]
+
+where \(\hat{\mathbf{e}}_z\) is the direction of propagation.
+
+Lorentz TEM images can be calculated three ways [2] (all within the framework of Fourier optics):
+
+1. `img_from_mag`: Directly from the magnetization, using the paraxial approximation.
+2. `img_from_phase`: From a phase, using the paraxial approximation.
+3. `propagate`: From an exit wavefunction, without the paraxial approximation.
+
+---
+
+1. Mansuripur, M. Computation of electron diffraction patterns in Lorentz electron microscopy of thin magnetic films. Journal of Applied Physics 69, 2455–2464 (1991).
+
+2. Chess, J. J. et al. Streamlined approach to mapping the magnetic induction of skyrmionic materials. Ultramicroscopy 177, 78–83 (2017).
+
+&#34;&#34;&#34;
 
 from . import constants as _
 import numpy as np
 from .process import shift_pos
 from .sitie import ind_from_phase
-from ._utils import T, sims_shared, G, A_mn_components
+from ._utils import T, sims_shared, weights, G, A_mn_components, laplacian_2d, inverse_laplacian_2d, gradient_2d
 
 __all__ = [
                         &#39;ab_phase&#39;,
@@ -59,58 +124,15 @@ __all__ = [
                         &#39;ind_from_mag&#39;,
                         &#39;propagate&#39;]
 
-def ind_from_mag(mx, my, mz, dx=1, dy=1, thickness=60e-9, p = np.array([0,0,1])):
-        &#34;&#34;&#34;Calculate the magnetic induction imparted on a fast electron by a magnetized sample.
-
-        This is shorthand for `ind_from_phase(ab_phase(*args))`.
-
-        **Parameters**
-
-        * **mx** : _ndarray_ &lt;br /&gt;
-        The x-component of magnetization. Should be two or three dimensions.
-
-        * **my** : _ndarray_ &lt;br /&gt;
-        The y-component of magnetization. Should be two or three dimensions.
-
-        * **mz** : _ndarray_ &lt;br /&gt;
-        The z-component of magnetization. Should be two or three dimensions.
-
-        * **dx** : _number, optional_ &lt;br /&gt;
-        The spacing between pixels/samples in mx, my, mz, in the x-direction. &lt;br /&gt;
-        Default is `dx = 1`.
-
-        * **dy** : _number, optional_ &lt;br /&gt;
-        The spacing between pixels/samples in mx, my, mz, in the y-direction. &lt;br /&gt;
-        Default is `dy = 1`.
-
-        * **thickness** : _number, optional_ &lt;br /&gt;
-        The thickness of each slice of the x-y plane (if no z-dependence, the thickness of the sample). &lt;br /&gt;
-        Default is `thickness = 60e-9`.
-
-        * **p** : _ndarray, optional_ &lt;br /&gt;
-        A unit vector representing the direction of the electron&#39;s path. Shape should be (3,). &lt;br /&gt;
-        Default is `p = np.array([0,0,1])`.
-
-        **Returns**
-
-        * **Bx** : _ndarray_ &lt;br /&gt;
-        The x-component of the magnetic induction.
-
-        * **By** : _ndarray_ &lt;br /&gt;
-        The y-component of the magnetic induction.
-        &#34;&#34;&#34;
-        phase = ab_phase(mx, my, mz, dx, dy, thickness, p)
-        if len(phase.shape) &gt; 2:
-                phase = np.sum(phase, axis=-1)
-        Bx, By = ind_from_phase(phase, thickness)
-        return(np.array([Bx, By]))
-
+# Mansuripur
 def ab_phase(mx, my, mz, dx=1, dy=1, thickness=60e-9, p = np.array([0,0,1])):
         &#34;&#34;&#34;Calculate the Aharonov-Bohm phase imparted on a fast electron by a magnetized sample.
 
-        This is an implementation of the algorithm described in Mansuripur et. al, _Computation of electron diffraction patterns in Lorentz TEM_, Eq (13) specifically.
+        This is a direct implementation of [1], Eq (13).
 
-        The shape of the output array is the same as mx, my, and mz. If mx, my, mz are three dimensional (i.e., have z-dependence as well as x and y), the third dimension of the output array represents the Aharonov-Bohm phase of each z-slice of the magnetization.
+        The shape of the output array is the same as mx, my, and mz. If mx, my, mz are three dimensional
+        (i.e., have z-dependence as well as x and y), the third dimension of the output array represents
+        the Aharonov-Bohm phase of each z-slice of the magnetization.
 
         **Parameters**
 
@@ -136,29 +158,31 @@ def ab_phase(mx, my, mz, dx=1, dy=1, thickness=60e-9, p = np.array([0,0,1])):
         Default is `thickness = 60e-9`.
 
         * **p** : _ndarray, optional_ &lt;br /&gt;
-        A unit vector representing the direction of the electron&#39;s path. Shape should be (3,). &lt;br /&gt;
+        A unit vector representing the direction of the electron&#39;s path. Shape should be `(3,)`. &lt;br /&gt;
         Default is `p = np.array([0,0,1])`.
 
         **Returns**
 
-        * **phase** : _ndarray_ &lt;br /&gt;
+        * _ndarray_ &lt;br /&gt;
         The Aharonov-Bohm phase imparted on the electron by the magnetization. Shape will be the same as mx, my, mz.
         &#34;&#34;&#34;
+        # All direct from definitions in Mansuripur
         M, s, s_mag, sig, z_hat = sims_shared(mx, my, mz, dx, dy)
-        Gp = G(p, sig, z_hat, thickness * s_mag)
-        sig_x_z = np.cross(sig, z_hat, axisa=0, axisb=0, axisc=0)
-        p_x_p_M = np.cross(p, np.cross(p, M, axisa=0, axisb=0, axisc=0), axis=0, axisb=0, axisc=0)
-        weights = 2 * _.e / _.hbar / _.c * 1j * thickness / s_mag * Gp * np.einsum(&#39;i...,i...-&gt;...&#39;,sig_x_z, p_x_p_M)
-        weights[:,0,0,:] = 0
-        phase = weights.shape[1] * weights.shape[2] * np.fft.ifft2(weights, axes=(1,2))
+        w = weights(M, s, s_mag, sig, z_hat, p, thickness)
+
+        # multiply by weights.shape to counter ifft2&#39;s normalization
+        # old versions of numpy don&#39;t have the `norm = &#39;backward&#39;` option
+        phase = w.shape[1] * w.shape[2] * np.fft.ifft2(w, axes=(1,2))
         return(np.squeeze(phase.real))
 
-def B_from_mag(mx, my, mz, z = 0, dx = 1, dy = 1, thickness = 60e-9):
-        &#34;&#34;&#34;Calculate the magnetic field of a specified 2-d magnetic configuration.
+def B_from_mag(mx, my, mz, dx = 1, dy = 1, z = 0, thickness = 60e-9):
+        r&#34;&#34;&#34;Calculate the magnetic field of a specified 2-d magnetic configuration.
 
-        This is an adaptation of the algorithm described in Mansuripur et. al, _Computation of electron diffraction patterns in Lorentz TEM_, Eq (13) specifically.
+        This is an implementation of [1], Eqn (11), which gives an analytic expression for
+        the Fourier components of the magnetic vector potential. The magnetic field Fourier components
+        are then calculated analytically via \(\mathbf{B} = \nabla\times\mathbf{A}\).
 
-        The output shape is (3, mx.shape[0], mx.shape[1], z.shape[0]).
+        The output shape is `(3, mx.shape[0], mx.shape[1], z.shape[0])`.
 
         **Parameters**
 
@@ -171,10 +195,6 @@ def B_from_mag(mx, my, mz, z = 0, dx = 1, dy = 1, thickness = 60e-9):
         * **mz** : _ndarray_ &lt;br /&gt;
         The z-component of magnetization. Must be a 2-d array.
 
-        * **z** : _number, optional_, ndarray_ &lt;br /&gt;
-        The z-coordinates at which to calculate the B-field. Can be a number, or a 1d-array. &lt;br /&gt;
-        Default is `z = 0`.
-
         * **dx** : _number, optional_ &lt;br /&gt;
         The spacing between pixels/samples in mx, my, mz, in the x-direction. &lt;br /&gt;
         Default is `dx = 1`.
@@ -183,13 +203,17 @@ def B_from_mag(mx, my, mz, z = 0, dx = 1, dy = 1, thickness = 60e-9):
         The spacing between pixels/samples in mx, my, mz, in the y-direction. &lt;br /&gt;
         Default is `dy = 1`.
 
+        * **z** : _number, optional_, ndarray_ &lt;br /&gt;
+        The z-coordinates at which to calculate the B-field. Can be a number, or a 1d-array. &lt;br /&gt;
+        Default is `z = 0`.
+
         * **thickness** : _number, optional_ &lt;br /&gt;
         The thickness of the sample. &lt;br /&gt;
         Default is `thickness = 60e-9`.
 
         **Returns**
 
-        * **B** : _ndarray_ &lt;br /&gt;
+        * _ndarray_ &lt;br /&gt;
         The magnetic field resulting from the given 2d magnetization.
         &#34;&#34;&#34;
         z = np.atleast_1d(z)
@@ -225,12 +249,13 @@ def B_from_mag(mx, my, mz, z = 0, dx = 1, dy = 1, thickness = 60e-9):
         B = B_mn.shape[1] * B_mn.shape[2] * np.fft.ifft2(B_mn, axes=(1,2))
         return(np.squeeze(B.real))
 
-def A_from_mag(mx, my, mz, z = 0, dx = 1, dy = 1, thickness = 60e-9):
-        &#34;&#34;&#34;Calculate the magnetic vector potential of a specified 2-d magnetic configuration.
+def A_from_mag(mx, my, mz, dx = 1, dy = 1, z = 0, thickness = 60e-9):
+        r&#34;&#34;&#34;Calculate the magnetic vector potential of a specified 2-d magnetic configuration.
 
-        This is an adaptation of the algorithm described in Mansuripur et. al, _Computation of electron diffraction patterns in Lorentz TEM_, Eq (13) specifically.
+        This is an implementation of [1], Eqn (11), which gives the Fourier components of
+        the magnetic vector potential.
 
-        The output shape is (3, mx.shape[0], mx.shape[1], z.shape[0]).
+        The output shape is `(3, mx.shape[0], mx.shape[1], z.shape[0])`.
 
         **Parameters**
 
@@ -243,10 +268,6 @@ def A_from_mag(mx, my, mz, z = 0, dx = 1, dy = 1, thickness = 60e-9):
         * **mz** : _ndarray_ &lt;br /&gt;
         The z-component of magnetization. Must be a 2-d array.
 
-        * **z** : _number, optional_, ndarray_ &lt;br /&gt;
-        The z-coordinates at which to calculate the B-field. Can be a number_, or a 1d-array. &lt;br /&gt;
-        Default is `z = 0`.
-
         * **dx** : _number, optional_ &lt;br /&gt;
         The spacing between pixels/samples in mx, my, mz, in the x-direction. &lt;br /&gt;
         Default is `dx = 1`.
@@ -255,13 +276,17 @@ def A_from_mag(mx, my, mz, z = 0, dx = 1, dy = 1, thickness = 60e-9):
         The spacing between pixels/samples in mx, my, mz, in the y-direction. &lt;br /&gt;
         Default is `dy = 1`.
 
+        * **z** : _number, optional_, ndarray_ &lt;br /&gt;
+        The z-coordinates at which to calculate the B-field. Can be a number_, or a 1d-array. &lt;br /&gt;
+        Default is `z = 0`.
+
         * **thickness** : _number, optional_ &lt;br /&gt;
         The thickness of the sample. &lt;br /&gt;
         Default is `thickness = 60e-9`.
 
         **Returns**
 
-        * **B** : _ndarray_ &lt;br /&gt;
+        * _ndarray_ &lt;br /&gt;
         The magnetic vector potential resulting from the given 2d magnetization.
         &#34;&#34;&#34;
         z = np.atleast_1d(z)
@@ -280,10 +305,56 @@ def A_from_mag(mx, my, mz, z = 0, dx = 1, dy = 1, thickness = 60e-9):
         A = A_mn.shape[1] * A_mn.shape[2] * np.fft.ifft2(A_mn, axes=(1,2))
         return(np.squeeze(A.real))
 
-def img_from_mag(mx, my, mz, dx = 1, dy = 1, defocus = 0, thickness = 60e-9, wavelength = 1.97e-12, p = np.array([0,0,1])):
-        &#34;&#34;&#34;Calculate the theoretical Lorentz TEM image from a given (2 or 3 dim) magnetization.
+def ind_from_mag(mx, my, mz, dx=1, dy=1, thickness=60e-9, p = np.array([0,0,1])):
+        &#34;&#34;&#34;Calculate the integrated perpendicular magnetic field of a magnetized sample.
 
-        This is an implementation of the SITIE equation (Eq 10) from J. Chess et al. 2017, _Streamlined approach to mapping the magnetic induction of skyrmionic materials_, in combination with Mansuripur et al.
+        This is shorthand for `ind_from_phase(ab_phase(*args))`. This method is used rather than `B_from_mag`
+        because the integral over z can be done analytically.
+
+        **Parameters**
+
+        * **mx** : _ndarray_ &lt;br /&gt;
+        The x-component of magnetization. Should be two or three dimensions.
+
+        * **my** : _ndarray_ &lt;br /&gt;
+        The y-component of magnetization. Should be two or three dimensions.
+
+        * **mz** : _ndarray_ &lt;br /&gt;
+        The z-component of magnetization. Should be two or three dimensions.
+
+        * **dx** : _number, optional_ &lt;br /&gt;
+        The spacing between pixels/samples in mx, my, mz, in the x-direction. &lt;br /&gt;
+        Default is `dx = 1`.
+
+        * **dy** : _number, optional_ &lt;br /&gt;
+        The spacing between pixels/samples in mx, my, mz, in the y-direction. &lt;br /&gt;
+        Default is `dy = 1`.
+
+        * **thickness** : _number, optional_ &lt;br /&gt;
+        The thickness of each slice of the x-y plane (if no z-dependence, the thickness of the sample). &lt;br /&gt;
+        Default is `thickness = 60e-9`.
+
+        * **p** : _ndarray, optional_ &lt;br /&gt;
+        A unit vector representing the direction of the electron&#39;s path. Shape should be `(3,)`. &lt;br /&gt;
+        Default is `p = np.array([0,0,1])`.
+
+        **Returns**
+
+        * _ndarray_ &lt;br /&gt;
+        The x-component of the magnetic induction.
+
+        * _ndarray_ &lt;br /&gt;
+        The y-component of the magnetic induction.
+        &#34;&#34;&#34;
+        phase = ab_phase(mx, my, mz, dx, dy, thickness, p)
+        Bx, By = ind_from_phase(phase, dx, dy, thickness)
+        return(np.array([Bx, By]))
+
+def img_from_mag(mx, my, mz, dx = 1, dy = 1, defocus = 0, thickness = 60e-9, wavelength = 1.97e-12, p = np.array([0,0,1]), divangle = 1e-5):
+        r&#34;&#34;&#34;Calculate the Lorentz TEM image from a given (2 or 3 dim) magnetization.
+
+        This is a combination of [2], Eqn (7), which gives the output intensity in terms of \(\phi_m\) within the paraxial approximation,
+        and [1], Eqn (13), which gives the Fourier components of \(\phi_m\) in terms of the magnetization.
 
         **Parameters**
 
@@ -308,33 +379,49 @@ def img_from_mag(mx, my, mz, dx = 1, dy = 1, defocus = 0, thickness = 60e-9, wav
         The defocus - note that this should be non-zero in order to see any contrast. &lt;br /&gt;
         Default is `defocus = 0`.
 
+        * **thickness** : _number, optional_ &lt;br /&gt;
+        The thickness of each slice of the x-y plane (if no z-dependence, the thickness of the sample). &lt;br /&gt;
+        Default is `thickness = 60e-9`.
+
         * **wavelength** : _number, optional_ &lt;br /&gt;
         The relativistic electron wavelength. &lt;br /&gt;
         Default is `wavelength = 1.97e-12`.
 
+        * **p** : _ndarray, optional_ &lt;br /&gt;
+        A unit vector representing the direction of the electron&#39;s path. Shape should be `(3,)`. &lt;br /&gt;
+        Default is `p = np.array([0,0,1])`.
+
+        * **divangle** : _number, optional_ &lt;br /&gt;
+        The divergence angle \(\Theta_c\). &lt;br /&gt;
+        Default is `divangle = 1e-5`.
+
         **Returns**
 
-        * **img** : _ndarray_ &lt;br /&gt;
+        * _ndarray_ &lt;br /&gt;
         The intensity of the image plane.
         &#34;&#34;&#34;
         M, s, s_mag, sig, z_hat = sims_shared(mx, my, mz, dx, dy)
-        Gp = G(p, sig, z_hat, thickness * s_mag)
-        sig_x_z = np.cross(sig, z_hat, axisa=0, axisb=0, axisc=0)
-        p_x_p_M = np.cross(p, np.cross(p, M, axisa=0, axisb=0, axisc=0), axis=0, axisb=0, axisc=0)
-        ### weights is the only thing different from ab_phase (\nabla^2 = - 4 pi^2 s_mag^2)
-        weights = - 4 * _.pi **2 * 2 * _.e / _.hbar / _.c * 1j * thickness * s_mag * Gp * np.einsum(&#39;i...,i...-&gt;...&#39;,sig_x_z, p_x_p_M)
-        weights[:,0,0,:] = 0
+        w = weights(M, s, s_mag, sig, z_hat, p, thickness)
 
-        out = weights.shape[1] * weights.shape[2] * wavelength * defocus / 2 / _.pi * np.fft.ifft2(weights, axes=(1,2))
-        if out.shape[-1] &gt; 1:
-                out = np.sum(out, axis=-1)
-        out = 1 - np.squeeze(out)
+        nabla2weights = - 4 * _.pi**2 * s_mag**2 * w
+        nablaweights = 1j * 2 * _.pi * s * w
+
+        nabla2phi = nabla2weights.shape[1] * nabla2weights.shape[2] * np.fft.ifft2(nabla2weights, axes=(1,2))
+        nablaphi = nablaweights.shape[1] * nablaweights.shape[2] * np.fft.ifft2(nablaweights, axes=(1,2))
+        nablaphi2 = nablaphi[0]**2 + nablaphi[1]**2
+
+        if nablaphi2.shape[-1] &gt; 1:
+                nablaphi2 = np.sum(nablaphi2, axis=-1)
+        if nabla2phi.shape[-1] &gt; 1:
+                nabla2phi = np.sum(nabla2phi, axis=-1)
+        out = 1 - wavelength * defocus / 2 / _.pi * np.squeeze(nabla2phi) - (_.pi * divangle * defocus)**2 / 2 / np.log(2) * np.squeeze(nablaphi2)
         return(out.real)
 
-def img_from_phase(phase, dx = 1, dy = 1, defocus = 0, wavelength = 1.97e-12):
-        &#34;&#34;&#34;Calculate the Lorentz TEM image given a two-dimensional phase distribution and defocus.
+def img_from_phase(phase, dx = 1, dy = 1, defocus = 0, wavelength = 1.97e-12, divangle = 1e-5):
+        r&#34;&#34;&#34;Calculate the Lorentz TEM image given a two-dimensional phase distribution and defocus.
 
-        This is an implementation of the SITIE equation (Eq 10) from J. Chess et al. 2017, _Streamlined approach to mapping the magnetic induction of skyrmionic materials_.
+        This is an implementation of [2], Eqn (7), which gives the output intensity in terms of \(\phi_m\)
+        within the paraxial approximation.
 
         **Parameters**
 
@@ -357,88 +444,26 @@ def img_from_phase(phase, dx = 1, dy = 1, defocus = 0, wavelength = 1.97e-12):
         The relativistic electron wavelength. &lt;br /&gt;
         Default is `wavelength = 1.97e-12`.
 
+        * **divangle** : _number, optional_ &lt;br /&gt;
+        The divergence angle \(\Theta_c\). &lt;br /&gt;
+        Default is `divangle = 1e-5`.
+
         **Returns**
 
-        * **img** : _ndarray_ &lt;br /&gt;
+        * _ndarray_ &lt;br /&gt;
         The intensity of the image plane.
         &#34;&#34;&#34;
-        Sx = np.fft.fftfreq(phase.shape[1], dx)
-        Sy = np.fft.fftfreq(phase.shape[0], dy)
-        sx, sy = np.meshgrid(Sx, Sy) ### (y-dim, x-dim, z-dim)
-        phase = - 4 * _.pi**2 * (sx**2 + sy**2) * np.fft.fft2(phase)
-        img = 1 - wavelength * defocus / 2 / _.pi * np.fft.ifft2(phase)
+        nabla2phase = laplacian_2d(phase, dx, dy)
+        nablaphase = gradient_2d(phase, dx, dy)
+        nablaphase2 = nablaphase[0]**2 + nablaphase[1]**2
+
+        img = 1 - wavelength * defocus / 2 / _.pi * nabla2phase - (_.pi * divangle * defocus)**2 / 2 / np.log(2) * nablaphase2
         return(img.real)
-
-def jchessmodel(x, y, z=0, **kwargs):
-        &#34;&#34;&#34;Calculates the magnetization of a hopfion based on Jordan Chess&#39; model.
-
-        **Parameters**
-
-        * **x** : _number, ndarray_ &lt;br /&gt;
-        The x-coordinates over which to calculate magnetization.
-
-        * **y** : _number, ndarray_ &lt;br /&gt;
-        The y-coordinates over which to calculate magnetization.
-
-        * **z** : _number, ndarray, optional_ &lt;br /&gt;
-        The z-coordinates over which to calculate magnetization. Note, if z is an
-        ndarray, then x, y, and z should have the same shape rather than relying
-        on array broadcasting. &lt;br /&gt;
-        Default is `z = 0`.
-
-        * **aa**, **ba**, **ca** : _number, optional_ &lt;br /&gt;
-        In this model, the thickness of the domain wall is set by a
-        Gaussian function, defined as `aa * exp(-ba * z**2) + ca`. &lt;br /&gt;
-        Defaults are `aa = 5`, `ba = 5`, `ca = 0`.
-
-        * **ak**, **bk**, **ck** : _number, optional_ &lt;br /&gt;
-        In this model, the thickness of the core is set by a Gaussian function,
-        defined as `ak * exp(-bk * z**2) + ck`. &lt;br /&gt;
-        Defaults are `ak = 5e7`, `bk = -50`, `ck = 0`.
-
-        * **bg**, **cg** : _number, optional_ &lt;br /&gt;
-        In this model, the helicity varies as a function of z, given
-        as `pi / 2 * tanh( bg * z ) + cg`. &lt;br /&gt;
-        Defaults are `bg = 5e7`, `cg = pi/2`.
-
-        * **n** : _number, optional_ &lt;br /&gt;
-        The skyrmion number. &lt;br /&gt;
-        Default is `n = 1`.
-
-        **Returns**
-
-        * **mx** : _ndarray_ &lt;br /&gt;
-        The x-component of magnetization. Shape will be the same as x and y.
-
-        * **my** : _ndarray_ &lt;br /&gt;
-        The y-component of magnetization. Shape will be the same as x and y.
-
-        * **mz** : _ndarray_ &lt;br /&gt;
-        The z-component of magnetization. Shape will be the same as x and y.
-        &#34;&#34;&#34;
-        p = {   &#39;aa&#39;:5, &#39;ba&#39;:5, &#39;ca&#39;:0,
-                        &#39;ak&#39;:5e7, &#39;bk&#39;:-5e1, &#39;ck&#39;:0,
-                        &#39;bg&#39;:5e7, &#39;cg&#39;:_.pi/2, &#39;n&#39;: 1}
-        for key in kwargs.keys():
-                if not key in p.keys(): return(&#34;Error: {:} is not a kwarg.&#34;.format(key))
-        p.update(kwargs)
-
-        r, phi = np.sqrt(x**2+y**2), np.arctan2(y,x)
-
-        alpha_z = p[&#39;aa&#39;] * np.exp(-p[&#39;ba&#39;] * z**2) + p[&#39;ca&#39;]
-        k_z = p[&#39;ak&#39;] * np.exp(-p[&#39;bk&#39;] * z**2) + p[&#39;ck&#39;]
-        gamma_z = _.pi / 2 * np.tanh(p[&#39;bg&#39;] * z) + p[&#39;cg&#39;]
-        Theta_rz = 2 * np.arctan2((k_z * r)**alpha_z, 1)
-
-        mx = np.cos(p[&#39;n&#39;]*phi%(2*_.pi)-gamma_z) * np.sin(Theta_rz)
-        my = np.sin(p[&#39;n&#39;]*phi%(2*_.pi)-gamma_z) * np.sin(Theta_rz)
-        mz = np.cos(Theta_rz)
-        return(np.array([mx, my, mz]))
 
 def propagate(mode, dx = 1, dy = 1, T=T, **kwargs):
         r&#34;&#34;&#34;Calculates the Lorentz image given the exit wave \(\psi_0\) and microscope transfer function \(T(\mathbf{q}_{\perp})\).
 
-        \[\psi_f = \mathcal{F}^{-1}\left[\mathcal{F}\left[\psi_0\right] T(\mathbf{q}_{\perp}) \right]\].
+        \[\psi_f = \mathcal{F}^{-1}\left[\mathcal{F}\left[\psi_0\right] T(\mathbf{q}_{\perp}) \right]\]
 
         **Parameters**
 
@@ -478,16 +503,83 @@ def propagate(mode, dx = 1, dy = 1, T=T, **kwargs):
 
         **Returns**
 
-        * **psi_out** : _complex ndarray_ &lt;br /&gt;
+        * _complex ndarray_ &lt;br /&gt;
         The transverse complex amplitude in the image plane. Output has the same
-        shape as x, y, and cphase.
+        shape as x, y, and mode.
         &#34;&#34;&#34;
-        U = np.fft.fftfreq(cphase.shape[1], dx)
-        V = np.fft.fftfreq(cphase.shape[0], dy)
+        U = np.fft.fftfreq(mode.shape[1], dx)
+        V = np.fft.fftfreq(mode.shape[0], dy)
         qx, qy = np.meshgrid(U, V)
         psi_q = np.fft.fft2(mode)
         psi_out = np.fft.ifft2(psi_q * T(qx, qy, **kwargs))
-        return(psi_out)</code></pre>
+        return(psi_out)
+
+# Miscellaneous
+def jchessmodel(x, y, z=0, **kwargs):
+        &#34;&#34;&#34;Calculates the magnetization of a hopfion based on Jordan Chess&#39; model.
+
+        **Parameters**
+
+        * **x** : _number, ndarray_ &lt;br /&gt;
+        The x-coordinates over which to calculate magnetization.
+
+        * **y** : _number, ndarray_ &lt;br /&gt;
+        The y-coordinates over which to calculate magnetization.
+
+        * **z** : _number, ndarray, optional_ &lt;br /&gt;
+        The z-coordinates over which to calculate magnetization. Note, if z is an
+        ndarray, then x, y, and z should have the same shape rather than relying
+        on array broadcasting. &lt;br /&gt;
+        Default is `z = 0`.
+
+        * **aa**, **ba**, **ca** : _number, optional_ &lt;br /&gt;
+        In this model, the thickness of the domain wall is set by a
+        Gaussian function, defined as `aa * exp(-ba * z**2) + ca`. &lt;br /&gt;
+        Defaults are `aa = 5`, `ba = 5`, `ca = 0`.
+
+        * **ak**, **bk**, **ck** : _number, optional_ &lt;br /&gt;
+        In this model, the thickness of the core is set by a Gaussian function,
+        defined as `ak * exp(-bk * z**2) + ck`. &lt;br /&gt;
+        Defaults are `ak = 5e7`, `bk = -50`, `ck = 0`.
+
+        * **bg**, **cg** : _number, optional_ &lt;br /&gt;
+        In this model, the helicity varies as a function of z, given
+        as `pi / 2 * tanh( bg * z ) + cg`. &lt;br /&gt;
+        Defaults are `bg = 5e7`, `cg = pi/2`.
+
+        * **n** : _number, optional_ &lt;br /&gt;
+        The skyrmion number. &lt;br /&gt;
+        Default is `n = 1`.
+
+        **Returns**
+
+        * _ndarray_ &lt;br /&gt;
+        The x-component of magnetization. Shape will be the same as x and y.
+
+        * _ndarray_ &lt;br /&gt;
+        The y-component of magnetization. Shape will be the same as x and y.
+
+        * _ndarray_ &lt;br /&gt;
+        The z-component of magnetization. Shape will be the same as x and y.
+        &#34;&#34;&#34;
+        p = {   &#39;aa&#39;:5, &#39;ba&#39;:5, &#39;ca&#39;:0,
+                        &#39;ak&#39;:5e7, &#39;bk&#39;:-5e1, &#39;ck&#39;:0,
+                        &#39;bg&#39;:5e7, &#39;cg&#39;:_.pi/2, &#39;n&#39;: 1}
+        for key in kwargs.keys():
+                if not key in p.keys(): return(&#34;Error: {:} is not a kwarg.&#34;.format(key))
+        p.update(kwargs)
+
+        r, phi = np.sqrt(x**2+y**2), np.arctan2(y,x)
+
+        alpha_z = p[&#39;aa&#39;] * np.exp(-p[&#39;ba&#39;] * z**2) + p[&#39;ca&#39;]
+        k_z = p[&#39;ak&#39;] * np.exp(-p[&#39;bk&#39;] * z**2) + p[&#39;ck&#39;]
+        gamma_z = _.pi / 2 * np.tanh(p[&#39;bg&#39;] * z) + p[&#39;cg&#39;]
+        Theta_rz = 2 * np.arctan2((k_z * r)**alpha_z, 1)
+
+        mx = np.cos(p[&#39;n&#39;]*phi%(2*_.pi)-gamma_z) * np.sin(Theta_rz)
+        my = np.sin(p[&#39;n&#39;]*phi%(2*_.pi)-gamma_z) * np.sin(Theta_rz)
+        mz = np.cos(Theta_rz)
+        return(np.array([mx, my, mz]))</code></pre>
 </details>
 </section>
 <section>
@@ -498,12 +590,13 @@ def propagate(mode, dx = 1, dy = 1, T=T, **kwargs):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="ltempy.simulate.A_from_mag"><code class="name flex">
-<span>def <span class="ident">A_from_mag</span></span>(<span>mx, my, mz, z=0, dx=1, dy=1, thickness=6e-08)</span>
+<span>def <span class="ident">A_from_mag</span></span>(<span>mx, my, mz, dx=1, dy=1, z=0, thickness=6e-08)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Calculate the magnetic vector potential of a specified 2-d magnetic configuration.</p>
-<p>This is an adaptation of the algorithm described in Mansuripur et. al, <em>Computation of electron diffraction patterns in Lorentz TEM</em>, Eq (13) specifically.</p>
-<p>The output shape is (3, mx.shape[0], mx.shape[1], z.shape[0]).</p>
+<p>This is an implementation of [1], Eqn (11), which gives the Fourier components of
+the magnetic vector potential.</p>
+<p>The output shape is <code>(3, mx.shape[0], mx.shape[1], z.shape[0])</code>.</p>
 <p><strong>Parameters</strong></p>
 <ul>
 <li>
@@ -519,11 +612,6 @@ The y-component of magnetization. Must be a 2-d array.</p>
 The z-component of magnetization. Must be a 2-d array.</p>
 </li>
 <li>
-<p><strong>z</strong> : <em>number, optional</em>, ndarray_ <br />
-The z-coordinates at which to calculate the B-field. Can be a number_, or a 1d-array. <br />
-Default is <code>z = 0</code>.</p>
-</li>
-<li>
 <p><strong>dx</strong> : <em>number, optional</em> <br />
 The spacing between pixels/samples in mx, my, mz, in the x-direction. <br />
 Default is <code>dx = 1</code>.</p>
@@ -534,6 +622,11 @@ The spacing between pixels/samples in mx, my, mz, in the y-direction. <br />
 Default is <code>dy = 1</code>.</p>
 </li>
 <li>
+<p><strong>z</strong> : <em>number, optional</em>, ndarray_ <br />
+The z-coordinates at which to calculate the B-field. Can be a number_, or a 1d-array. <br />
+Default is <code>z = 0</code>.</p>
+</li>
+<li>
 <p><strong>thickness</strong> : <em>number, optional</em> <br />
 The thickness of the sample. <br />
 Default is <code>thickness = 60e-9</code>.</p>
@@ -541,19 +634,20 @@ Default is <code>thickness = 60e-9</code>.</p>
 </ul>
 <p><strong>Returns</strong></p>
 <ul>
-<li><strong>B</strong> : <em>ndarray</em> <br />
+<li><em>ndarray</em> <br />
 The magnetic vector potential resulting from the given 2d magnetization.</li>
 </ul></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def A_from_mag(mx, my, mz, z = 0, dx = 1, dy = 1, thickness = 60e-9):
-        &#34;&#34;&#34;Calculate the magnetic vector potential of a specified 2-d magnetic configuration.
+<pre><code class="python">def A_from_mag(mx, my, mz, dx = 1, dy = 1, z = 0, thickness = 60e-9):
+        r&#34;&#34;&#34;Calculate the magnetic vector potential of a specified 2-d magnetic configuration.
 
-        This is an adaptation of the algorithm described in Mansuripur et. al, _Computation of electron diffraction patterns in Lorentz TEM_, Eq (13) specifically.
+        This is an implementation of [1], Eqn (11), which gives the Fourier components of
+        the magnetic vector potential.
 
-        The output shape is (3, mx.shape[0], mx.shape[1], z.shape[0]).
+        The output shape is `(3, mx.shape[0], mx.shape[1], z.shape[0])`.
 
         **Parameters**
 
@@ -566,10 +660,6 @@ The magnetic vector potential resulting from the given 2d magnetization.</li>
         * **mz** : _ndarray_ &lt;br /&gt;
         The z-component of magnetization. Must be a 2-d array.
 
-        * **z** : _number, optional_, ndarray_ &lt;br /&gt;
-        The z-coordinates at which to calculate the B-field. Can be a number_, or a 1d-array. &lt;br /&gt;
-        Default is `z = 0`.
-
         * **dx** : _number, optional_ &lt;br /&gt;
         The spacing between pixels/samples in mx, my, mz, in the x-direction. &lt;br /&gt;
         Default is `dx = 1`.
@@ -578,13 +668,17 @@ The magnetic vector potential resulting from the given 2d magnetization.</li>
         The spacing between pixels/samples in mx, my, mz, in the y-direction. &lt;br /&gt;
         Default is `dy = 1`.
 
+        * **z** : _number, optional_, ndarray_ &lt;br /&gt;
+        The z-coordinates at which to calculate the B-field. Can be a number_, or a 1d-array. &lt;br /&gt;
+        Default is `z = 0`.
+
         * **thickness** : _number, optional_ &lt;br /&gt;
         The thickness of the sample. &lt;br /&gt;
         Default is `thickness = 60e-9`.
 
         **Returns**
 
-        * **B** : _ndarray_ &lt;br /&gt;
+        * _ndarray_ &lt;br /&gt;
         The magnetic vector potential resulting from the given 2d magnetization.
         &#34;&#34;&#34;
         z = np.atleast_1d(z)
@@ -605,12 +699,14 @@ The magnetic vector potential resulting from the given 2d magnetization.</li>
 </details>
 </dd>
 <dt id="ltempy.simulate.B_from_mag"><code class="name flex">
-<span>def <span class="ident">B_from_mag</span></span>(<span>mx, my, mz, z=0, dx=1, dy=1, thickness=6e-08)</span>
+<span>def <span class="ident">B_from_mag</span></span>(<span>mx, my, mz, dx=1, dy=1, z=0, thickness=6e-08)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Calculate the magnetic field of a specified 2-d magnetic configuration.</p>
-<p>This is an adaptation of the algorithm described in Mansuripur et. al, <em>Computation of electron diffraction patterns in Lorentz TEM</em>, Eq (13) specifically.</p>
-<p>The output shape is (3, mx.shape[0], mx.shape[1], z.shape[0]).</p>
+<p>This is an implementation of [1], Eqn (11), which gives an analytic expression for
+the Fourier components of the magnetic vector potential. The magnetic field Fourier components
+are then calculated analytically via <span><span class="MathJax_Preview">\mathbf{B} = \nabla\times\mathbf{A}</span><script type="math/tex">\mathbf{B} = \nabla\times\mathbf{A}</script></span>.</p>
+<p>The output shape is <code>(3, mx.shape[0], mx.shape[1], z.shape[0])</code>.</p>
 <p><strong>Parameters</strong></p>
 <ul>
 <li>
@@ -626,11 +722,6 @@ The y-component of magnetization. Must be a 2-d array.</p>
 The z-component of magnetization. Must be a 2-d array.</p>
 </li>
 <li>
-<p><strong>z</strong> : <em>number, optional</em>, ndarray_ <br />
-The z-coordinates at which to calculate the B-field. Can be a number, or a 1d-array. <br />
-Default is <code>z = 0</code>.</p>
-</li>
-<li>
 <p><strong>dx</strong> : <em>number, optional</em> <br />
 The spacing between pixels/samples in mx, my, mz, in the x-direction. <br />
 Default is <code>dx = 1</code>.</p>
@@ -641,6 +732,11 @@ The spacing between pixels/samples in mx, my, mz, in the y-direction. <br />
 Default is <code>dy = 1</code>.</p>
 </li>
 <li>
+<p><strong>z</strong> : <em>number, optional</em>, ndarray_ <br />
+The z-coordinates at which to calculate the B-field. Can be a number, or a 1d-array. <br />
+Default is <code>z = 0</code>.</p>
+</li>
+<li>
 <p><strong>thickness</strong> : <em>number, optional</em> <br />
 The thickness of the sample. <br />
 Default is <code>thickness = 60e-9</code>.</p>
@@ -648,19 +744,21 @@ Default is <code>thickness = 60e-9</code>.</p>
 </ul>
 <p><strong>Returns</strong></p>
 <ul>
-<li><strong>B</strong> : <em>ndarray</em> <br />
+<li><em>ndarray</em> <br />
 The magnetic field resulting from the given 2d magnetization.</li>
 </ul></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def B_from_mag(mx, my, mz, z = 0, dx = 1, dy = 1, thickness = 60e-9):
-        &#34;&#34;&#34;Calculate the magnetic field of a specified 2-d magnetic configuration.
+<pre><code class="python">def B_from_mag(mx, my, mz, dx = 1, dy = 1, z = 0, thickness = 60e-9):
+        r&#34;&#34;&#34;Calculate the magnetic field of a specified 2-d magnetic configuration.
 
-        This is an adaptation of the algorithm described in Mansuripur et. al, _Computation of electron diffraction patterns in Lorentz TEM_, Eq (13) specifically.
+        This is an implementation of [1], Eqn (11), which gives an analytic expression for
+        the Fourier components of the magnetic vector potential. The magnetic field Fourier components
+        are then calculated analytically via \(\mathbf{B} = \nabla\times\mathbf{A}\).
 
-        The output shape is (3, mx.shape[0], mx.shape[1], z.shape[0]).
+        The output shape is `(3, mx.shape[0], mx.shape[1], z.shape[0])`.
 
         **Parameters**
 
@@ -673,10 +771,6 @@ The magnetic field resulting from the given 2d magnetization.</li>
         * **mz** : _ndarray_ &lt;br /&gt;
         The z-component of magnetization. Must be a 2-d array.
 
-        * **z** : _number, optional_, ndarray_ &lt;br /&gt;
-        The z-coordinates at which to calculate the B-field. Can be a number, or a 1d-array. &lt;br /&gt;
-        Default is `z = 0`.
-
         * **dx** : _number, optional_ &lt;br /&gt;
         The spacing between pixels/samples in mx, my, mz, in the x-direction. &lt;br /&gt;
         Default is `dx = 1`.
@@ -685,13 +779,17 @@ The magnetic field resulting from the given 2d magnetization.</li>
         The spacing between pixels/samples in mx, my, mz, in the y-direction. &lt;br /&gt;
         Default is `dy = 1`.
 
+        * **z** : _number, optional_, ndarray_ &lt;br /&gt;
+        The z-coordinates at which to calculate the B-field. Can be a number, or a 1d-array. &lt;br /&gt;
+        Default is `z = 0`.
+
         * **thickness** : _number, optional_ &lt;br /&gt;
         The thickness of the sample. &lt;br /&gt;
         Default is `thickness = 60e-9`.
 
         **Returns**
 
-        * **B** : _ndarray_ &lt;br /&gt;
+        * _ndarray_ &lt;br /&gt;
         The magnetic field resulting from the given 2d magnetization.
         &#34;&#34;&#34;
         z = np.atleast_1d(z)
@@ -733,8 +831,10 @@ The magnetic field resulting from the given 2d magnetization.</li>
 </code></dt>
 <dd>
 <div class="desc"><p>Calculate the Aharonov-Bohm phase imparted on a fast electron by a magnetized sample.</p>
-<p>This is an implementation of the algorithm described in Mansuripur et. al, <em>Computation of electron diffraction patterns in Lorentz TEM</em>, Eq (13) specifically.</p>
-<p>The shape of the output array is the same as mx, my, and mz. If mx, my, mz are three dimensional (i.e., have z-dependence as well as x and y), the third dimension of the output array represents the Aharonov-Bohm phase of each z-slice of the magnetization.</p>
+<p>This is a direct implementation of [1], Eq (13).</p>
+<p>The shape of the output array is the same as mx, my, and mz. If mx, my, mz are three dimensional
+(i.e., have z-dependence as well as x and y), the third dimension of the output array represents
+the Aharonov-Bohm phase of each z-slice of the magnetization.</p>
 <p><strong>Parameters</strong></p>
 <ul>
 <li>
@@ -766,13 +866,13 @@ Default is <code>thickness = 60e-9</code>.</p>
 </li>
 <li>
 <p><strong>p</strong> : <em>ndarray, optional</em> <br />
-A unit vector representing the direction of the electron's path. Shape should be (3,). <br />
+A unit vector representing the direction of the electron's path. Shape should be <code>(3,)</code>. <br />
 Default is <code>p = np.array([0,0,1])</code>.</p>
 </li>
 </ul>
 <p><strong>Returns</strong></p>
 <ul>
-<li><strong>phase</strong> : <em>ndarray</em> <br />
+<li><em>ndarray</em> <br />
 The Aharonov-Bohm phase imparted on the electron by the magnetization. Shape will be the same as mx, my, mz.</li>
 </ul></div>
 <details class="source">
@@ -782,9 +882,11 @@ The Aharonov-Bohm phase imparted on the electron by the magnetization. Shape wil
 <pre><code class="python">def ab_phase(mx, my, mz, dx=1, dy=1, thickness=60e-9, p = np.array([0,0,1])):
         &#34;&#34;&#34;Calculate the Aharonov-Bohm phase imparted on a fast electron by a magnetized sample.
 
-        This is an implementation of the algorithm described in Mansuripur et. al, _Computation of electron diffraction patterns in Lorentz TEM_, Eq (13) specifically.
+        This is a direct implementation of [1], Eq (13).
 
-        The shape of the output array is the same as mx, my, and mz. If mx, my, mz are three dimensional (i.e., have z-dependence as well as x and y), the third dimension of the output array represents the Aharonov-Bohm phase of each z-slice of the magnetization.
+        The shape of the output array is the same as mx, my, and mz. If mx, my, mz are three dimensional
+        (i.e., have z-dependence as well as x and y), the third dimension of the output array represents
+        the Aharonov-Bohm phase of each z-slice of the magnetization.
 
         **Parameters**
 
@@ -810,30 +912,31 @@ The Aharonov-Bohm phase imparted on the electron by the magnetization. Shape wil
         Default is `thickness = 60e-9`.
 
         * **p** : _ndarray, optional_ &lt;br /&gt;
-        A unit vector representing the direction of the electron&#39;s path. Shape should be (3,). &lt;br /&gt;
+        A unit vector representing the direction of the electron&#39;s path. Shape should be `(3,)`. &lt;br /&gt;
         Default is `p = np.array([0,0,1])`.
 
         **Returns**
 
-        * **phase** : _ndarray_ &lt;br /&gt;
+        * _ndarray_ &lt;br /&gt;
         The Aharonov-Bohm phase imparted on the electron by the magnetization. Shape will be the same as mx, my, mz.
         &#34;&#34;&#34;
+        # All direct from definitions in Mansuripur
         M, s, s_mag, sig, z_hat = sims_shared(mx, my, mz, dx, dy)
-        Gp = G(p, sig, z_hat, thickness * s_mag)
-        sig_x_z = np.cross(sig, z_hat, axisa=0, axisb=0, axisc=0)
-        p_x_p_M = np.cross(p, np.cross(p, M, axisa=0, axisb=0, axisc=0), axis=0, axisb=0, axisc=0)
-        weights = 2 * _.e / _.hbar / _.c * 1j * thickness / s_mag * Gp * np.einsum(&#39;i...,i...-&gt;...&#39;,sig_x_z, p_x_p_M)
-        weights[:,0,0,:] = 0
-        phase = weights.shape[1] * weights.shape[2] * np.fft.ifft2(weights, axes=(1,2))
+        w = weights(M, s, s_mag, sig, z_hat, p, thickness)
+
+        # multiply by weights.shape to counter ifft2&#39;s normalization
+        # old versions of numpy don&#39;t have the `norm = &#39;backward&#39;` option
+        phase = w.shape[1] * w.shape[2] * np.fft.ifft2(w, axes=(1,2))
         return(np.squeeze(phase.real))</code></pre>
 </details>
 </dd>
 <dt id="ltempy.simulate.img_from_mag"><code class="name flex">
-<span>def <span class="ident">img_from_mag</span></span>(<span>mx, my, mz, dx=1, dy=1, defocus=0, thickness=6e-08, wavelength=1.97e-12, p=array([0, 0, 1]))</span>
+<span>def <span class="ident">img_from_mag</span></span>(<span>mx, my, mz, dx=1, dy=1, defocus=0, thickness=6e-08, wavelength=1.97e-12, p=array([0, 0, 1]), divangle=1e-05)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Calculate the theoretical Lorentz TEM image from a given (2 or 3 dim) magnetization.</p>
-<p>This is an implementation of the SITIE equation (Eq 10) from J. Chess et al. 2017, <em>Streamlined approach to mapping the magnetic induction of skyrmionic materials</em>, in combination with Mansuripur et al.</p>
+<div class="desc"><p>Calculate the Lorentz TEM image from a given (2 or 3 dim) magnetization.</p>
+<p>This is a combination of [2], Eqn (7), which gives the output intensity in terms of <span><span class="MathJax_Preview">\phi_m</span><script type="math/tex">\phi_m</script></span> within the paraxial approximation,
+and [1], Eqn (13), which gives the Fourier components of <span><span class="MathJax_Preview">\phi_m</span><script type="math/tex">\phi_m</script></span> in terms of the magnetization.</p>
 <p><strong>Parameters</strong></p>
 <ul>
 <li>
@@ -864,24 +967,40 @@ The defocus - note that this should be non-zero in order to see any contrast. <b
 Default is <code>defocus = 0</code>.</p>
 </li>
 <li>
+<p><strong>thickness</strong> : <em>number, optional</em> <br />
+The thickness of each slice of the x-y plane (if no z-dependence, the thickness of the sample). <br />
+Default is <code>thickness = 60e-9</code>.</p>
+</li>
+<li>
 <p><strong>wavelength</strong> : <em>number, optional</em> <br />
 The relativistic electron wavelength. <br />
 Default is <code>wavelength = 1.97e-12</code>.</p>
 </li>
+<li>
+<p><strong>p</strong> : <em>ndarray, optional</em> <br />
+A unit vector representing the direction of the electron's path. Shape should be <code>(3,)</code>. <br />
+Default is <code>p = np.array([0,0,1])</code>.</p>
+</li>
+<li>
+<p><strong>divangle</strong> : <em>number, optional</em> <br />
+The divergence angle <span><span class="MathJax_Preview">\Theta_c</span><script type="math/tex">\Theta_c</script></span>. <br />
+Default is <code>divangle = 1e-5</code>.</p>
+</li>
 </ul>
 <p><strong>Returns</strong></p>
 <ul>
-<li><strong>img</strong> : <em>ndarray</em> <br />
+<li><em>ndarray</em> <br />
 The intensity of the image plane.</li>
 </ul></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def img_from_mag(mx, my, mz, dx = 1, dy = 1, defocus = 0, thickness = 60e-9, wavelength = 1.97e-12, p = np.array([0,0,1])):
-        &#34;&#34;&#34;Calculate the theoretical Lorentz TEM image from a given (2 or 3 dim) magnetization.
+<pre><code class="python">def img_from_mag(mx, my, mz, dx = 1, dy = 1, defocus = 0, thickness = 60e-9, wavelength = 1.97e-12, p = np.array([0,0,1]), divangle = 1e-5):
+        r&#34;&#34;&#34;Calculate the Lorentz TEM image from a given (2 or 3 dim) magnetization.
 
-        This is an implementation of the SITIE equation (Eq 10) from J. Chess et al. 2017, _Streamlined approach to mapping the magnetic induction of skyrmionic materials_, in combination with Mansuripur et al.
+        This is a combination of [2], Eqn (7), which gives the output intensity in terms of \(\phi_m\) within the paraxial approximation,
+        and [1], Eqn (13), which gives the Fourier components of \(\phi_m\) in terms of the magnetization.
 
         **Parameters**
 
@@ -906,36 +1025,52 @@ The intensity of the image plane.</li>
         The defocus - note that this should be non-zero in order to see any contrast. &lt;br /&gt;
         Default is `defocus = 0`.
 
+        * **thickness** : _number, optional_ &lt;br /&gt;
+        The thickness of each slice of the x-y plane (if no z-dependence, the thickness of the sample). &lt;br /&gt;
+        Default is `thickness = 60e-9`.
+
         * **wavelength** : _number, optional_ &lt;br /&gt;
         The relativistic electron wavelength. &lt;br /&gt;
         Default is `wavelength = 1.97e-12`.
 
+        * **p** : _ndarray, optional_ &lt;br /&gt;
+        A unit vector representing the direction of the electron&#39;s path. Shape should be `(3,)`. &lt;br /&gt;
+        Default is `p = np.array([0,0,1])`.
+
+        * **divangle** : _number, optional_ &lt;br /&gt;
+        The divergence angle \(\Theta_c\). &lt;br /&gt;
+        Default is `divangle = 1e-5`.
+
         **Returns**
 
-        * **img** : _ndarray_ &lt;br /&gt;
+        * _ndarray_ &lt;br /&gt;
         The intensity of the image plane.
         &#34;&#34;&#34;
         M, s, s_mag, sig, z_hat = sims_shared(mx, my, mz, dx, dy)
-        Gp = G(p, sig, z_hat, thickness * s_mag)
-        sig_x_z = np.cross(sig, z_hat, axisa=0, axisb=0, axisc=0)
-        p_x_p_M = np.cross(p, np.cross(p, M, axisa=0, axisb=0, axisc=0), axis=0, axisb=0, axisc=0)
-        ### weights is the only thing different from ab_phase (\nabla^2 = - 4 pi^2 s_mag^2)
-        weights = - 4 * _.pi **2 * 2 * _.e / _.hbar / _.c * 1j * thickness * s_mag * Gp * np.einsum(&#39;i...,i...-&gt;...&#39;,sig_x_z, p_x_p_M)
-        weights[:,0,0,:] = 0
+        w = weights(M, s, s_mag, sig, z_hat, p, thickness)
 
-        out = weights.shape[1] * weights.shape[2] * wavelength * defocus / 2 / _.pi * np.fft.ifft2(weights, axes=(1,2))
-        if out.shape[-1] &gt; 1:
-                out = np.sum(out, axis=-1)
-        out = 1 - np.squeeze(out)
+        nabla2weights = - 4 * _.pi**2 * s_mag**2 * w
+        nablaweights = 1j * 2 * _.pi * s * w
+
+        nabla2phi = nabla2weights.shape[1] * nabla2weights.shape[2] * np.fft.ifft2(nabla2weights, axes=(1,2))
+        nablaphi = nablaweights.shape[1] * nablaweights.shape[2] * np.fft.ifft2(nablaweights, axes=(1,2))
+        nablaphi2 = nablaphi[0]**2 + nablaphi[1]**2
+
+        if nablaphi2.shape[-1] &gt; 1:
+                nablaphi2 = np.sum(nablaphi2, axis=-1)
+        if nabla2phi.shape[-1] &gt; 1:
+                nabla2phi = np.sum(nabla2phi, axis=-1)
+        out = 1 - wavelength * defocus / 2 / _.pi * np.squeeze(nabla2phi) - (_.pi * divangle * defocus)**2 / 2 / np.log(2) * np.squeeze(nablaphi2)
         return(out.real)</code></pre>
 </details>
 </dd>
 <dt id="ltempy.simulate.img_from_phase"><code class="name flex">
-<span>def <span class="ident">img_from_phase</span></span>(<span>phase, dx=1, dy=1, defocus=0, wavelength=1.97e-12)</span>
+<span>def <span class="ident">img_from_phase</span></span>(<span>phase, dx=1, dy=1, defocus=0, wavelength=1.97e-12, divangle=1e-05)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Calculate the Lorentz TEM image given a two-dimensional phase distribution and defocus.</p>
-<p>This is an implementation of the SITIE equation (Eq 10) from J. Chess et al. 2017, <em>Streamlined approach to mapping the magnetic induction of skyrmionic materials</em>.</p>
+<p>This is an implementation of [2], Eqn (7), which gives the output intensity in terms of <span><span class="MathJax_Preview">\phi_m</span><script type="math/tex">\phi_m</script></span>
+within the paraxial approximation.</p>
 <p><strong>Parameters</strong></p>
 <ul>
 <li>
@@ -962,20 +1097,26 @@ Default is <code>defocus = 0</code>.</p>
 The relativistic electron wavelength. <br />
 Default is <code>wavelength = 1.97e-12</code>.</p>
 </li>
+<li>
+<p><strong>divangle</strong> : <em>number, optional</em> <br />
+The divergence angle <span><span class="MathJax_Preview">\Theta_c</span><script type="math/tex">\Theta_c</script></span>. <br />
+Default is <code>divangle = 1e-5</code>.</p>
+</li>
 </ul>
 <p><strong>Returns</strong></p>
 <ul>
-<li><strong>img</strong> : <em>ndarray</em> <br />
+<li><em>ndarray</em> <br />
 The intensity of the image plane.</li>
 </ul></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def img_from_phase(phase, dx = 1, dy = 1, defocus = 0, wavelength = 1.97e-12):
-        &#34;&#34;&#34;Calculate the Lorentz TEM image given a two-dimensional phase distribution and defocus.
+<pre><code class="python">def img_from_phase(phase, dx = 1, dy = 1, defocus = 0, wavelength = 1.97e-12, divangle = 1e-5):
+        r&#34;&#34;&#34;Calculate the Lorentz TEM image given a two-dimensional phase distribution and defocus.
 
-        This is an implementation of the SITIE equation (Eq 10) from J. Chess et al. 2017, _Streamlined approach to mapping the magnetic induction of skyrmionic materials_.
+        This is an implementation of [2], Eqn (7), which gives the output intensity in terms of \(\phi_m\)
+        within the paraxial approximation.
 
         **Parameters**
 
@@ -998,16 +1139,20 @@ The intensity of the image plane.</li>
         The relativistic electron wavelength. &lt;br /&gt;
         Default is `wavelength = 1.97e-12`.
 
+        * **divangle** : _number, optional_ &lt;br /&gt;
+        The divergence angle \(\Theta_c\). &lt;br /&gt;
+        Default is `divangle = 1e-5`.
+
         **Returns**
 
-        * **img** : _ndarray_ &lt;br /&gt;
+        * _ndarray_ &lt;br /&gt;
         The intensity of the image plane.
         &#34;&#34;&#34;
-        Sx = np.fft.fftfreq(phase.shape[1], dx)
-        Sy = np.fft.fftfreq(phase.shape[0], dy)
-        sx, sy = np.meshgrid(Sx, Sy) ### (y-dim, x-dim, z-dim)
-        phase = - 4 * _.pi**2 * (sx**2 + sy**2) * np.fft.fft2(phase)
-        img = 1 - wavelength * defocus / 2 / _.pi * np.fft.ifft2(phase)
+        nabla2phase = laplacian_2d(phase, dx, dy)
+        nablaphase = gradient_2d(phase, dx, dy)
+        nablaphase2 = nablaphase[0]**2 + nablaphase[1]**2
+
+        img = 1 - wavelength * defocus / 2 / _.pi * nabla2phase - (_.pi * divangle * defocus)**2 / 2 / np.log(2) * nablaphase2
         return(img.real)</code></pre>
 </details>
 </dd>
@@ -1015,8 +1160,9 @@ The intensity of the image plane.</li>
 <span>def <span class="ident">ind_from_mag</span></span>(<span>mx, my, mz, dx=1, dy=1, thickness=6e-08, p=array([0, 0, 1]))</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Calculate the magnetic induction imparted on a fast electron by a magnetized sample.</p>
-<p>This is shorthand for <code>ind_from_phase(ab_phase(*args))</code>.</p>
+<div class="desc"><p>Calculate the integrated perpendicular magnetic field of a magnetized sample.</p>
+<p>This is shorthand for <code>ind_from_phase(ab_phase(*args))</code>. This method is used rather than <code><a title="ltempy.simulate.B_from_mag" href="#ltempy.simulate.B_from_mag">B_from_mag()</a></code>
+because the integral over z can be done analytically.</p>
 <p><strong>Parameters</strong></p>
 <ul>
 <li>
@@ -1048,18 +1194,18 @@ Default is <code>thickness = 60e-9</code>.</p>
 </li>
 <li>
 <p><strong>p</strong> : <em>ndarray, optional</em> <br />
-A unit vector representing the direction of the electron's path. Shape should be (3,). <br />
+A unit vector representing the direction of the electron's path. Shape should be <code>(3,)</code>. <br />
 Default is <code>p = np.array([0,0,1])</code>.</p>
 </li>
 </ul>
 <p><strong>Returns</strong></p>
 <ul>
 <li>
-<p><strong>Bx</strong> : <em>ndarray</em> <br />
+<p><em>ndarray</em> <br />
 The x-component of the magnetic induction.</p>
 </li>
 <li>
-<p><strong>By</strong> : <em>ndarray</em> <br />
+<p><em>ndarray</em> <br />
 The y-component of the magnetic induction.</p>
 </li>
 </ul></div>
@@ -1068,9 +1214,10 @@ The y-component of the magnetic induction.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def ind_from_mag(mx, my, mz, dx=1, dy=1, thickness=60e-9, p = np.array([0,0,1])):
-        &#34;&#34;&#34;Calculate the magnetic induction imparted on a fast electron by a magnetized sample.
+        &#34;&#34;&#34;Calculate the integrated perpendicular magnetic field of a magnetized sample.
 
-        This is shorthand for `ind_from_phase(ab_phase(*args))`.
+        This is shorthand for `ind_from_phase(ab_phase(*args))`. This method is used rather than `B_from_mag`
+        because the integral over z can be done analytically.
 
         **Parameters**
 
@@ -1096,21 +1243,19 @@ The y-component of the magnetic induction.</p>
         Default is `thickness = 60e-9`.
 
         * **p** : _ndarray, optional_ &lt;br /&gt;
-        A unit vector representing the direction of the electron&#39;s path. Shape should be (3,). &lt;br /&gt;
+        A unit vector representing the direction of the electron&#39;s path. Shape should be `(3,)`. &lt;br /&gt;
         Default is `p = np.array([0,0,1])`.
 
         **Returns**
 
-        * **Bx** : _ndarray_ &lt;br /&gt;
+        * _ndarray_ &lt;br /&gt;
         The x-component of the magnetic induction.
 
-        * **By** : _ndarray_ &lt;br /&gt;
+        * _ndarray_ &lt;br /&gt;
         The y-component of the magnetic induction.
         &#34;&#34;&#34;
         phase = ab_phase(mx, my, mz, dx, dy, thickness, p)
-        if len(phase.shape) &gt; 2:
-                phase = np.sum(phase, axis=-1)
-        Bx, By = ind_from_phase(phase, thickness)
+        Bx, By = ind_from_phase(phase, dx, dy, thickness)
         return(np.array([Bx, By]))</code></pre>
 </details>
 </dd>
@@ -1163,15 +1308,15 @@ Default is <code>n = 1</code>.</p>
 <p><strong>Returns</strong></p>
 <ul>
 <li>
-<p><strong>mx</strong> : <em>ndarray</em> <br />
+<p><em>ndarray</em> <br />
 The x-component of magnetization. Shape will be the same as x and y.</p>
 </li>
 <li>
-<p><strong>my</strong> : <em>ndarray</em> <br />
+<p><em>ndarray</em> <br />
 The y-component of magnetization. Shape will be the same as x and y.</p>
 </li>
 <li>
-<p><strong>mz</strong> : <em>ndarray</em> <br />
+<p><em>ndarray</em> <br />
 The z-component of magnetization. Shape will be the same as x and y.</p>
 </li>
 </ul></div>
@@ -1217,13 +1362,13 @@ The z-component of magnetization. Shape will be the same as x and y.</p>
 
         **Returns**
 
-        * **mx** : _ndarray_ &lt;br /&gt;
+        * _ndarray_ &lt;br /&gt;
         The x-component of magnetization. Shape will be the same as x and y.
 
-        * **my** : _ndarray_ &lt;br /&gt;
+        * _ndarray_ &lt;br /&gt;
         The y-component of magnetization. Shape will be the same as x and y.
 
-        * **mz** : _ndarray_ &lt;br /&gt;
+        * _ndarray_ &lt;br /&gt;
         The z-component of magnetization. Shape will be the same as x and y.
         &#34;&#34;&#34;
         p = {   &#39;aa&#39;:5, &#39;ba&#39;:5, &#39;ca&#39;:0,
@@ -1251,7 +1396,7 @@ The z-component of magnetization. Shape will be the same as x and y.</p>
 </code></dt>
 <dd>
 <div class="desc"><p>Calculates the Lorentz image given the exit wave <span><span class="MathJax_Preview">\psi_0</span><script type="math/tex">\psi_0</script></span> and microscope transfer function <span><span class="MathJax_Preview">T(\mathbf{q}_{\perp})</span><script type="math/tex">T(\mathbf{q}_{\perp})</script></span>.</p>
-<p><span><span class="MathJax_Preview">\psi_f = \mathcal{F}^{-1}\left[\mathcal{F}\left[\psi_0\right] T(\mathbf{q}_{\perp}) \right]</span><script type="math/tex; mode=display">\psi_f = \mathcal{F}^{-1}\left[\mathcal{F}\left[\psi_0\right] T(\mathbf{q}_{\perp}) \right]</script></span>.</p>
+<p><span><span class="MathJax_Preview">\psi_f = \mathcal{F}^{-1}\left[\mathcal{F}\left[\psi_0\right] T(\mathbf{q}_{\perp}) \right]</span><script type="math/tex; mode=display">\psi_f = \mathcal{F}^{-1}\left[\mathcal{F}\left[\psi_0\right] T(\mathbf{q}_{\perp}) \right]</script></span></p>
 <p><strong>Parameters</strong></p>
 <ul>
 <li>
@@ -1296,9 +1441,9 @@ Extra arguments to be passed to the transfer function.</p>
 </ul>
 <p><strong>Returns</strong></p>
 <ul>
-<li><strong>psi_out</strong> : <em>complex ndarray</em> <br />
+<li><em>complex ndarray</em> <br />
 The transverse complex amplitude in the image plane. Output has the same
-shape as x, y, and cphase.</li>
+shape as x, y, and mode.</li>
 </ul></div>
 <details class="source">
 <summary>
@@ -1307,7 +1452,7 @@ shape as x, y, and cphase.</li>
 <pre><code class="python">def propagate(mode, dx = 1, dy = 1, T=T, **kwargs):
         r&#34;&#34;&#34;Calculates the Lorentz image given the exit wave \(\psi_0\) and microscope transfer function \(T(\mathbf{q}_{\perp})\).
 
-        \[\psi_f = \mathcal{F}^{-1}\left[\mathcal{F}\left[\psi_0\right] T(\mathbf{q}_{\perp}) \right]\].
+        \[\psi_f = \mathcal{F}^{-1}\left[\mathcal{F}\left[\psi_0\right] T(\mathbf{q}_{\perp}) \right]\]
 
         **Parameters**
 
@@ -1347,12 +1492,12 @@ shape as x, y, and cphase.</li>
 
         **Returns**
 
-        * **psi_out** : _complex ndarray_ &lt;br /&gt;
+        * _complex ndarray_ &lt;br /&gt;
         The transverse complex amplitude in the image plane. Output has the same
-        shape as x, y, and cphase.
+        shape as x, y, and mode.
         &#34;&#34;&#34;
-        U = np.fft.fftfreq(cphase.shape[1], dx)
-        V = np.fft.fftfreq(cphase.shape[0], dy)
+        U = np.fft.fftfreq(mode.shape[1], dx)
+        V = np.fft.fftfreq(mode.shape[0], dy)
         qx, qy = np.meshgrid(U, V)
         psi_q = np.fft.fft2(mode)
         psi_out = np.fft.ifft2(psi_q * T(qx, qy, **kwargs))
@@ -1370,6 +1515,11 @@ shape as x, y, and cphase.</li>
 <ul></ul>
 </div>
 <ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="ltempy" href="index.html">ltempy</a></code></li>
+</ul>
+</li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="two-column">
 <li><code><a title="ltempy.simulate.A_from_mag" href="#ltempy.simulate.A_from_mag">A_from_mag</a></code></li>
@@ -1386,7 +1536,7 @@ shape as x, y, and cphase.</li>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
 </footer>
 </body>
 </html>
