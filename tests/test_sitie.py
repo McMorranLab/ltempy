@@ -5,7 +5,7 @@ import pickle
 import ncempy.io.dm as dm
 
 # %%
-file = dm.dmReader('init_center.dm3')
+file = dm.dmReader('init_center.dm3', on_memory=False)
 img = lp.SITIEImage(file)
 
 # %%

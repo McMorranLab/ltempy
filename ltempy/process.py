@@ -249,19 +249,65 @@ class ndap(np.ndarray):
     The purpose of this class is just so you can write `myarray.high_pass().low_pass()`
     instead of `myarray = high_pass(low_pass(myarray))`.
 
+    If `x` and `y` are given, then `dx` and `dy` are calculated and stored. 
+    They will default to `dx = 1` and `dy = 1`, and will be used in `low_pass()`, 
+    `high_pass()`, etc, unless specified otherwise in the function call. 
+
     **Parameters**
 
     * **data** : _complex ndarray_ <br />
     Any type of ndarray - the methods are defined with a 2d array in mind.
+
+    * **x** : _ndarray_ <br />
+    The x coordinates associated with the array data. 
+    Must be a 1-dimensional ndarray with `len(x) == data.shape[1]`. 
+    Note that `x` is associated with the second axis, to match the 
+    convention of `meshgrid`.
+
+    * **y** : _ndarray_ <br />
+    The y coordinates associated with the array data. 
+    Must be a 1-dimensional ndarray with 'len(y) == data.shape[0]`. 
+    Note that `y` is associated with the first axis, to match the 
+    convention of `meshgrid`.
+
     """
-    def __new__(cls, data):
-        dummy = np.asarray(data, dtype=data.dtype).copy().view(cls)
-        return(dummy)
+    ## __new__ and __array_finalize__ are directly from numpy docs
+    ## their example is almost identical to this
+    ## subclassing numpy arrays
+    def __new__(cls, data, x=None, y=None):
+        obj = np.asarray(data, dtype=data.dtype).copy().view(cls)
+        if x is None:
+          obj.x = np.arange(data.shape[1])
+          obj.dx = obj.x[1] - obj.x[0]
+        else:
+          try: sel = obj.shape[1] != x.shape[0] or len(x.shape) != 1
+          except: raise Exception("x must be a 1-dimensional numpy.ndarray. ")
+          if sel:
+            raise Exception("x shape must match the data's 1st axis. ")
+          obj.x = x
+          obj.dx = x[1] - x[0]
+        if y is None:
+          obj.y = np.arange(data.shape[0])
+          obj.dy = obj.y[1] - obj.y[0]
+        else:
+          try: sel = obj.shape[0] != y.shape[0] or len(y.shape) != 1
+          except: raise Exception("y must be a 1-dimensional numpy.ndarray. ")
+          if sel:
+            raise Exception("y shape must match the data's 1st axis. ")
+          obj.y = y
+          obj.dy = y[1] - y[0]
+        obj.isComplex = np.iscomplexobj(data)
+        return obj
 
-    def __init__(self, data, x=None, y=None):
-        self.isComplex = np.iscomplexobj(data)
+    def __array_finalize__(self, obj):
+      if obj is None: return
+      self.x = getattr(obj, 'x', None)
+      self.y = getattr(obj, 'y', None)
+      self.dx = getattr(obj, 'dx', None)
+      self.dy = getattr(obj, 'dy', None)
+      self.isComplex = getattr(obj, 'isComplex', None)
 
-    def high_pass(self, cutoff=1 / 1024, dx=1, dy=1, gaussian=False):
+    def high_pass(self, cutoff=1 / 1024, dx=None, dy=None, gaussian=False):
         """Apply a high-pass filter to a 2d-array.
 
         **Parameters**
@@ -274,11 +320,11 @@ class ndap(np.ndarray):
 
         * **dx** : _number, optional_ <br />
         Pixel spacing. <br />
-        Default is `dx = 1`. 
+        Default is `dx = self.dx`. 
 
         * **dy** : _number, optional_ <br />
         Pixel spacing. <br />
-        Default is `dy = 1`. 
+        Default is `dy = self.dy`. 
 
         * **gaussian** : _boolean, optional_ <br />
         Note: this flag is being deprecated. For this functionality, use `scipy`'s butter function. 
@@ -289,6 +335,10 @@ class ndap(np.ndarray):
 
         * _ndap_ <br />
         """
+        if dx is None:
+          dx = self.dx
+        if dy is None:
+          dy = self.dy
         if self.isComplex:
             self[:, :] = high_pass(self, cutoff, dx, dy, gaussian)
         else:
@@ -308,11 +358,11 @@ class ndap(np.ndarray):
 
         * **dx** : _number, optional_ <br />
         Pixel spacing. <br />
-        Default is `dx = 1`. 
+        Default is `dx = self.dx`. 
 
         * **dy** : _number, optional_ <br />
         Pixel spacing. <br />
-        Default is `dy = 1`. 
+        Default is `dy = self.dy`. 
 
         * **gaussian** : _boolean, optional_ <br />
         Note: this flag is being deprecated. For a gaussian low-pass, use `gaussian_blur`. 
@@ -323,6 +373,10 @@ class ndap(np.ndarray):
 
         * _ndap_ <br />
         """
+        if dx is None:
+          dx = self.dx
+        if dy is None:
+          dy = self.dy
         if self.isComplex:
             self[:, :] = low_pass(self, cutoff, dx, dy, gaussian)
         else:

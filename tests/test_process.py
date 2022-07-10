@@ -1,8 +1,6 @@
 import ltempy as lp
 import numpy as np
 from pathlib import Path
-import os
-import shutil
 
 # %%
 
