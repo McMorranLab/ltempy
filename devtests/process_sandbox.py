@@ -118,36 +118,80 @@ plt.show()
 # %%
 class ndap(np.ndarray):
     def __new__(cls, data, x=None, y=None):
-        dummy = np.asarray(data, dtype=data.dtype).copy().view(cls)
-        return(dummy)
+        obj = np.asarray(data, dtype=data.dtype).copy().view(cls)
+        obj.x = x
+        obj.y = y
+        return(obj)
 
-    def __init__(self, data, x=None, y=None):
-        self.isComplex = np.iscomplexobj(data)
-        if not x is None:
-            try:
-                sel = data.shape[1] != x.shape[0] or len(x.shape) != 1
-            except:
-                raise Exception("x must be a 1-dimensional numpy.ndarray. ")
-            if sel:
-                raise Exception(
-                    "x shape must match the data's 1st axis. ")
-            self.x = x
-            self.dx = x[1] - x[0]
-        else:
-            self.dx = 1
-        if not y is None:
-            try:
-                sel = data.shape[0] != y.shape[0] or len(y.shape) != 1
-            except:
-                raise Exception("y must be a 1-dimensional numpy.ndarray. ")
-            if sel:
-                raise Exception(
-                    "y shape must match the data's 1st axis. ")
-            self.y = y
-            self.dy = y[1] - y[0]
-        else:
-            self.dy = 1
+    def __array_finalize__(self, obj):
+      if obj is None: return
+      self.x = getattr(self, 'x', None)
+      self.y = getattr(self, 'y', None)
+      self.isComplex = np.iscomplexobj(obj)
+      if not x is None:
+          try:
+              sel = obj.shape[1] != x.shape[0] or len(x.shape) != 1
+          except:
+              raise Exception("x must be a 1-dimensional numpy.ndarray. ")
+          if sel:
+              raise Exception(
+                  "x shape must match the data's 1st axis. ")
+          self.x = x
+          self.dx = x[1] - x[0]
+      else:
+          self.x = np.arange(obj.shape[1])
+          self.dx = 1
+      if not y is None:
+          try:
+              sel = obj.shape[0] != y.shape[0] or len(y.shape) != 1
+          except:
+              raise Exception("y must be a 1-dimensional numpy.ndarray. ")
+          if sel:
+              raise Exception(
+                  "y shape must match the data's 1st axis. ")
+          self.y = y
+          self.dy = y[1] - y[0]
+      else:
+          self.y = np.arange(obj.shape[0])
+          self.dy = 1
+    
+    def asdf(self):
+      self[:, :] = 40
+      return(self)
 
 
 # %%
-test = ndap(x, X, x)
+test = ndap(x, X, X)
+
+test = test**2
+print(test)
+
+test.asdf()
+
+print(test)
+
+
+# %%
+class RealisticInfoArray(np.ndarray):
+
+    def __new__(cls, input_array, info=None):
+        # Input array is an already formed ndarray instance
+        # We first cast to be our class type
+        obj = np.asarray(input_array).view(cls)
+        # add the new attribute to the created instance
+        if info is None:
+          info = "asdf"
+        obj.info = info
+        # Finally, we must return the newly created object:
+        return obj
+
+    def __array_finalize__(self, obj):
+        # see InfoArray.__array_finalize__ for comments
+        if obj is None: return
+        self.info = getattr(obj, 'info', None)
+
+# %%
+test = RealisticInfoArray(x)
+print(test.info)
+test = test**2
+print(test.info)
