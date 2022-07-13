@@ -15,9 +15,10 @@ def test_low_pass():
     assert(lp.low_pass(X).shape == (4, 4))
 
 
-def test_low_pass():
+def test_gaussian_blur():
     X = np.random.random((4, 4))
     assert(lp.gaussian_blur(X).shape == (4, 4))
+    assert(lp.gaussian_blur(X, padding=False).shape == (4, 4))
 
 
 def test_clip_data():

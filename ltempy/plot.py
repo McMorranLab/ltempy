@@ -331,7 +331,7 @@ class singleAx():
 		x, y, d = self._pre_plot(data, step)
 		d = d.astype(complex)
 		if origin == 'upper':
-			d.imag *= -1
+			d.imag = -1 * d.imag
 		return(self.ax.quiver(x, y, d.real, d.imag, **kwargs))
 
 	def cielab(self, data, step=1, brightness='intensity', alpha='uniform', **kwargs):
@@ -373,7 +373,7 @@ class singleAx():
 			extent = [x[0], x[-1], y[0], y[-1]]
 		elif imshowargs['origin'] == 'upper':
 			extent = [x[0], x[-1], y[-1], y[0]]
-			d.imag *= -1
+			d.imag = -1 * d.imag
 		imshowargs.update({'extent': extent})
 		imshowargs.update(kwargs)
 		im = self.ax.imshow(rgba(d, brightness=brightness, alpha=alpha), **imshowargs)

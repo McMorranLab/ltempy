@@ -146,10 +146,10 @@ class SITIEImage:
 			y_unit = x_unit
 		self.x_unit = x_unit
 		self.y_unit = y_unit
-		self.dx *= xr
-		self.dy *= yr
-		self.x *= xr
-		self.y *= yr
+		self.dx = self.dx * xr
+		self.dy = self.dy * yr
+		self.x = self.x * xr
+		self.y = self.y * yr
 		return(self)
 
 	def reconstruct(self, df = 1e-3, thickness = 60e-9, wavelength=1.97e-12):

@@ -44,6 +44,7 @@ blur_radius = 1  # cycles per pixel -> pixels per cycle
 high = lp.high_pass(data, cutoff=5 / 128)
 low = lp.low_pass(data, cutoff=0.4)
 gauss = lp.gaussian_blur(data, blur_radius=blur_radius)
+nopad_gauss = lp.gaussian_blur(data, blur_radius=blur_radius, padding=False)
 
 fig, [[ax1, ax2], [ax3, ax4]] = lp.subplots(22, dpi=150)
 ax1.set_title("input")
@@ -54,6 +55,13 @@ ax1.imshow(data)
 ax2.imshow(np.real(gauss))
 ax3.imshow(np.real(high))
 ax4.imshow(np.real(low))
+plt.show()
+
+fig, [[ax1, ax2]] = lp.subplots(12, dpi=150)
+ax1.set_title("gaussian blur")
+ax2.set_title("gaussian blur no padding")
+ax1.imshow(np.real(gauss))
+ax2.imshow(np.real(nopad_gauss))
 plt.show()
 
 X = np.arange(-128, 128)

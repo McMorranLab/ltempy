@@ -128,7 +128,7 @@ def low_pass(data, cutoff=1 / 4, dx=1, dy=1, gaussian=False):
     return(FFdata)
 
 
-def gaussian_blur(data, blur_radius=1):
+def gaussian_blur(data, blur_radius=1, padding = True):
     """Apply a Gaussian blur to the data. 
 
     **Parameters**
@@ -143,7 +143,10 @@ def gaussian_blur(data, blur_radius=1):
     * _complex ndarray_ <br />
     """
     ds0, ds1 = data.shape[0], data.shape[1]
-    bdata = _extend_and_fill_mirror(data)
+    if padding:
+        bdata = _extend_and_fill_mirror(data)
+    else:
+        bdata = data
     X = np.fft.fftfreq(bdata.shape[1], 1)
     Y = np.fft.fftfreq(bdata.shape[0], 1)
     x, y = np.meshgrid(X, Y)
@@ -152,7 +155,10 @@ def gaussian_blur(data, blur_radius=1):
 
     Fdata = np.fft.fft2(bdata)
     FFdata = np.fft.ifft2(g * Fdata)
-    return(FFdata[ds0:2*ds0, ds1:2*ds1])
+    if padding:
+        return(FFdata[ds0:2*ds0, ds1:2*ds1])
+    else:
+        return(FFdata)
 
 
 def clip_data(data, sigma=5):

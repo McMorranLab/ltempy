@@ -100,7 +100,7 @@ def G(p, sig, z_hat, ts_mag):
     sum1 = np.einsum('i,i...->...', p, sig)
     sum2 = np.einsum('i,i...->...', p, z_hat)
     out = 1 / (sum1**2 + sum2**2)[np.newaxis, ...]
-    out *= np.sinc(ts_mag * sum1 / sum2)
+    out = out * np.sinc(ts_mag * sum1 / sum2)
     return(out)
 
 
