@@ -75,11 +75,11 @@ class SITIEImage:
 	def __init__(self, datafile):
 		self.data = process.ndap(datafile.get('data'))
 		self.dx = datafile.get('pixelSize')[0]
-		self.dy = datafile.get('pixelSize')[1]
+		self.dy = -datafile.get('pixelSize')[1]
 		self.x_unit = datafile.get('pixelUnit')[0]
 		self.y_unit = datafile.get('pixelUnit')[1]
 		self.x = np.arange(0,self.data.shape[1]) * self.dx
-		self.y = np.arange(0,self.data.shape[0]) * self.dy
+		self.y = np.arange(0,self.data.shape[0], -1) * self.dy
 		self.phase = None
 		self.Bx, self.By = None, None
 		self.fix_units()
