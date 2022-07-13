@@ -94,7 +94,7 @@ class singleAx():
 	"""
 	def __init__(self, ax):
 		self.ax = ax
-		self.origin = 'lower'
+		self.origin = 'upper'
 		self.x = None
 		self.y = None
 		self.xmin = None
@@ -316,7 +316,7 @@ class singleAx():
 
 		* **origin** : _string_ <br />
 		Either 'upper' or 'lower'. <br />
-		Default is `self.origin`, whose default is 'lower'.
+		Default is `self.origin`, whose default is 'upper'.
 
 		* ****kwargs** <br />
 		All other kwargs are passed on to `matplotlib.axes.Axes.quiver`.
