@@ -187,9 +187,9 @@ def rgba(mode, cmap = None, brightness = &#39;intensity&#39;, alpha = &#39;unifo
         colormap = plt.cm.ScalarMappable(cmap=cmap)
         out = colormap.to_rgba(np.angle(mode))
         out[...,-1] = vals[alpha](mode)
-        out[...,0] *= vals[brightness](mode)
-        out[...,1] *= vals[brightness](mode)
-        out[...,2] *= vals[brightness](mode)
+        out[...,0] = out[...,0] * vals[brightness](mode)
+        out[...,1] = out[...,1] * vals[brightness](mode)
+        out[...,2] = out[...,2] * vals[brightness](mode)
         return(out.astype(np.uint8))</code></pre>
 </details>
 </section>
@@ -421,9 +421,9 @@ shape NxN, the output array will have shape NxNx4.</li>
         colormap = plt.cm.ScalarMappable(cmap=cmap)
         out = colormap.to_rgba(np.angle(mode))
         out[...,-1] = vals[alpha](mode)
-        out[...,0] *= vals[brightness](mode)
-        out[...,1] *= vals[brightness](mode)
-        out[...,2] *= vals[brightness](mode)
+        out[...,0] = out[...,0] * vals[brightness](mode)
+        out[...,1] = out[...,1] * vals[brightness](mode)
+        out[...,2] = out[...,2] * vals[brightness](mode)
         return(out.astype(np.uint8))</code></pre>
 </details>
 </dd>

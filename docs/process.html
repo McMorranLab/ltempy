@@ -158,7 +158,7 @@ def low_pass(data, cutoff=1 / 4, dx=1, dy=1, gaussian=False):
     return(FFdata)
 
 
-def gaussian_blur(data, blur_radius=1):
+def gaussian_blur(data, blur_radius=1, padding = True):
     &#34;&#34;&#34;Apply a Gaussian blur to the data. 
 
     **Parameters**
@@ -173,7 +173,10 @@ def gaussian_blur(data, blur_radius=1):
     * _complex ndarray_ &lt;br /&gt;
     &#34;&#34;&#34;
     ds0, ds1 = data.shape[0], data.shape[1]
-    bdata = _extend_and_fill_mirror(data)
+    if padding:
+        bdata = _extend_and_fill_mirror(data)
+    else:
+        bdata = data
     X = np.fft.fftfreq(bdata.shape[1], 1)
     Y = np.fft.fftfreq(bdata.shape[0], 1)
     x, y = np.meshgrid(X, Y)
@@ -182,7 +185,10 @@ def gaussian_blur(data, blur_radius=1):
 
     Fdata = np.fft.fft2(bdata)
     FFdata = np.fft.ifft2(g * Fdata)
-    return(FFdata[ds0:2*ds0, ds1:2*ds1])
+    if padding:
+        return(FFdata[ds0:2*ds0, ds1:2*ds1])
+    else:
+        return(FFdata)
 
 
 def clip_data(data, sigma=5):
@@ -520,7 +526,7 @@ Default is <code>sigma = 5</code>.</p>
 </details>
 </dd>
 <dt id="ltempy.process.gaussian_blur"><code class="name flex">
-<span>def <span class="ident">gaussian_blur</span></span>(<span>data, blur_radius=1)</span>
+<span>def <span class="ident">gaussian_blur</span></span>(<span>data, blur_radius=1, padding=True)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Apply a Gaussian blur to the data. </p>
@@ -542,7 +548,7 @@ The standard deviation of the Gaussian kernel, measured in pixels. <br /></p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def gaussian_blur(data, blur_radius=1):
+<pre><code class="python">def gaussian_blur(data, blur_radius=1, padding = True):
     &#34;&#34;&#34;Apply a Gaussian blur to the data. 
 
     **Parameters**
@@ -557,7 +563,10 @@ The standard deviation of the Gaussian kernel, measured in pixels. <br /></p>
     * _complex ndarray_ &lt;br /&gt;
     &#34;&#34;&#34;
     ds0, ds1 = data.shape[0], data.shape[1]
-    bdata = _extend_and_fill_mirror(data)
+    if padding:
+        bdata = _extend_and_fill_mirror(data)
+    else:
+        bdata = data
     X = np.fft.fftfreq(bdata.shape[1], 1)
     Y = np.fft.fftfreq(bdata.shape[0], 1)
     x, y = np.meshgrid(X, Y)
@@ -566,7 +575,10 @@ The standard deviation of the Gaussian kernel, measured in pixels. <br /></p>
 
     Fdata = np.fft.fft2(bdata)
     FFdata = np.fft.ifft2(g * Fdata)
-    return(FFdata[ds0:2*ds0, ds1:2*ds1])</code></pre>
+    if padding:
+        return(FFdata[ds0:2*ds0, ds1:2*ds1])
+    else:
+        return(FFdata)</code></pre>
 </details>
 </dd>
 <dt id="ltempy.process.high_pass"><code class="name flex">

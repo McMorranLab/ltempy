@@ -122,7 +122,7 @@ class SITIEImage:
                 &lt;/ul&gt;
         &#34;&#34;&#34;
         def __init__(self, datafile):
-                self.data = process.ndap(datafile.get(&#39;data&#39;))
+                self.data = process.ndap(datafile.get(&#39;data&#39;)[::-1, :])
                 self.dx = datafile.get(&#39;pixelSize&#39;)[0]
                 self.dy = datafile.get(&#39;pixelSize&#39;)[1]
                 self.x_unit = datafile.get(&#39;pixelUnit&#39;)[0]
@@ -195,10 +195,10 @@ class SITIEImage:
                         y_unit = x_unit
                 self.x_unit = x_unit
                 self.y_unit = y_unit
-                self.dx *= xr
-                self.dy *= yr
-                self.x *= xr
-                self.y *= yr
+                self.dx = self.dx * xr
+                self.dy = self.dy * yr
+                self.x = self.x * xr
+                self.y = self.y * yr
                 return(self)
 
         def reconstruct(self, df = 1e-3, thickness = 60e-9, wavelength=1.97e-12):
@@ -568,7 +568,7 @@ Allowed values are <code>"pm"</code>, <code>"nm"</code>, <code>"µm"</code>, <co
                 &lt;/ul&gt;
         &#34;&#34;&#34;
         def __init__(self, datafile):
-                self.data = process.ndap(datafile.get(&#39;data&#39;))
+                self.data = process.ndap(datafile.get(&#39;data&#39;)[::-1, :])
                 self.dx = datafile.get(&#39;pixelSize&#39;)[0]
                 self.dy = datafile.get(&#39;pixelSize&#39;)[1]
                 self.x_unit = datafile.get(&#39;pixelUnit&#39;)[0]
@@ -641,10 +641,10 @@ Allowed values are <code>"pm"</code>, <code>"nm"</code>, <code>"µm"</code>, <co
                         y_unit = x_unit
                 self.x_unit = x_unit
                 self.y_unit = y_unit
-                self.dx *= xr
-                self.dy *= yr
-                self.x *= xr
-                self.y *= yr
+                self.dx = self.dx * xr
+                self.dy = self.dy * yr
+                self.x = self.x * xr
+                self.y = self.y * yr
                 return(self)
 
         def reconstruct(self, df = 1e-3, thickness = 60e-9, wavelength=1.97e-12):
@@ -879,10 +879,10 @@ Default is <code>y_unit = None</code>.</p>
                 y_unit = x_unit
         self.x_unit = x_unit
         self.y_unit = y_unit
-        self.dx *= xr
-        self.dy *= yr
-        self.x *= xr
-        self.y *= yr
+        self.dx = self.dx * xr
+        self.dy = self.dy * yr
+        self.x = self.x * xr
+        self.y = self.y * yr
         return(self)</code></pre>
 </details>
 </dd>
