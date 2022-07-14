@@ -93,7 +93,7 @@ def cielab_rgba(data, brightness = 'intensity', alpha = 'uniform'):
 	if not alpha in vals.keys():
 		raise ValueError("Invalid alpha value; should be one of {}".format(list(vals.keys())))
 
-	data /= np.max(np.abs(data))
+	data = data / np.max(np.abs(data))
 	rgba_image_components = np.zeros(np.append(data.shape, 4),dtype=np.uint8)
 	bvalue = vals[brightness](data)
 	avalue = vals[alpha](data)
@@ -149,7 +149,7 @@ def rgba(mode, cmap = None, brightness = 'intensity', alpha = 'uniform'):
 		raise ValueError("Invalid alpha value; should be one of {}".format(list(vals.keys())))
 	if cmap is None:
 		return(cielab_rgba(mode, brightness, alpha))
-	mode /= np.max(np.absolute(mode))
+	mode = mode / np.max(np.absolute(mode))
 	colormap = plt.cm.ScalarMappable(cmap=cmap)
 	out = colormap.to_rgba(np.angle(mode))
 	out[...,-1] = vals[alpha](mode)

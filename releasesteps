@@ -3,6 +3,7 @@ cd tests
 pytest
 cd ../devtests
 bash devtests.sh
+cd ..
 
 ###################### Update version #########
 update version in: setup.py, setup.cfg
