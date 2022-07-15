@@ -167,6 +167,11 @@ def gaussian_blur(data, blur_radius=1, padding = True):
 
     * **blur_radius** : _number, optional_ &lt;br /&gt;
     The standard deviation of the Gaussian kernel, measured in pixels. &lt;br /&gt;
+    Default is `blur_radius = 1`.
+
+    * **padding** : _boolean, optional_ &lt;br /&gt;
+    Whether to zero-pad the input. Will use mirror padding if True. &lt;br /&gt;
+    Default is `padding = True`.
 
     **Returns**
 
@@ -419,7 +424,7 @@ class ndap(np.ndarray):
             self[:, :] = np.real(low_pass(self, cutoff, dx, dy, gaussian))
         return(self)
 
-    def gaussian_blur(self, blur_radius=1):
+    def gaussian_blur(self, blur_radius=1, padding=True):
         &#34;&#34;&#34;Apply a Gaussian blur to the data. 
 
         **Parameters**
@@ -428,15 +433,20 @@ class ndap(np.ndarray):
 
         * **blur_radius** : _number, optional_ &lt;br /&gt;
         The standard deviation of the Gaussian kernel, measured in pixels. &lt;br /&gt;
+        Default is `blur_radius = 1`.
+
+        * **padding** : _boolean, optional_ &lt;br /&gt;
+        Whether to zero-pad the input. Uses mirror padding if True. &lt;br /&gt;
+        Default is `padding = False`.
 
         **Returns**
 
         * _ndap_ &lt;br /&gt;
         &#34;&#34;&#34;
         if self.isComplex:
-            self[:, :] = gaussian_blur(self, blur_radius)
+            self[:, :] = gaussian_blur(self, blur_radius, padding)
         else:
-            self[:, :] = np.real(gaussian_blur(self, blur_radius))
+            self[:, :] = np.real(gaussian_blur(self, blur_radius, padding))
         return(self)
 
     def clip_data(self, sigma=5):
@@ -537,7 +547,13 @@ Default is <code>sigma = 5</code>.</p>
 </li>
 <li>
 <p><strong>blur_radius</strong> : <em>number, optional</em> <br />
-The standard deviation of the Gaussian kernel, measured in pixels. <br /></p>
+The standard deviation of the Gaussian kernel, measured in pixels. <br />
+Default is <code>blur_radius = 1</code>.</p>
+</li>
+<li>
+<p><strong>padding</strong> : <em>boolean, optional</em> <br />
+Whether to zero-pad the input. Will use mirror padding if True. <br />
+Default is <code>padding = True</code>.</p>
 </li>
 </ul>
 <p><strong>Returns</strong></p>
@@ -557,6 +573,11 @@ The standard deviation of the Gaussian kernel, measured in pixels. <br /></p>
 
     * **blur_radius** : _number, optional_ &lt;br /&gt;
     The standard deviation of the Gaussian kernel, measured in pixels. &lt;br /&gt;
+    Default is `blur_radius = 1`.
+
+    * **padding** : _boolean, optional_ &lt;br /&gt;
+    Whether to zero-pad the input. Will use mirror padding if True. &lt;br /&gt;
+    Default is `padding = True`.
 
     **Returns**
 
@@ -1069,7 +1090,7 @@ convention of <code>meshgrid</code>.</p>
             self[:, :] = np.real(low_pass(self, cutoff, dx, dy, gaussian))
         return(self)
 
-    def gaussian_blur(self, blur_radius=1):
+    def gaussian_blur(self, blur_radius=1, padding=True):
         &#34;&#34;&#34;Apply a Gaussian blur to the data. 
 
         **Parameters**
@@ -1078,15 +1099,20 @@ convention of <code>meshgrid</code>.</p>
 
         * **blur_radius** : _number, optional_ &lt;br /&gt;
         The standard deviation of the Gaussian kernel, measured in pixels. &lt;br /&gt;
+        Default is `blur_radius = 1`.
+
+        * **padding** : _boolean, optional_ &lt;br /&gt;
+        Whether to zero-pad the input. Uses mirror padding if True. &lt;br /&gt;
+        Default is `padding = False`.
 
         **Returns**
 
         * _ndap_ &lt;br /&gt;
         &#34;&#34;&#34;
         if self.isComplex:
-            self[:, :] = gaussian_blur(self, blur_radius)
+            self[:, :] = gaussian_blur(self, blur_radius, padding)
         else:
-            self[:, :] = np.real(gaussian_blur(self, blur_radius))
+            self[:, :] = np.real(gaussian_blur(self, blur_radius, padding))
         return(self)
 
     def clip_data(self, sigma=5):
@@ -1161,7 +1187,7 @@ Default is <code>sigma = 5</code>.</li>
 </details>
 </dd>
 <dt id="ltempy.process.ndap.gaussian_blur"><code class="name flex">
-<span>def <span class="ident">gaussian_blur</span></span>(<span>self, blur_radius=1)</span>
+<span>def <span class="ident">gaussian_blur</span></span>(<span>self, blur_radius=1, padding=True)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Apply a Gaussian blur to the data. </p>
@@ -1172,7 +1198,13 @@ Default is <code>sigma = 5</code>.</li>
 </li>
 <li>
 <p><strong>blur_radius</strong> : <em>number, optional</em> <br />
-The standard deviation of the Gaussian kernel, measured in pixels. <br /></p>
+The standard deviation of the Gaussian kernel, measured in pixels. <br />
+Default is <code>blur_radius = 1</code>.</p>
+</li>
+<li>
+<p><strong>padding</strong> : <em>boolean, optional</em> <br />
+Whether to zero-pad the input. Uses mirror padding if True. <br />
+Default is <code>padding = False</code>.</p>
 </li>
 </ul>
 <p><strong>Returns</strong></p>
@@ -1183,7 +1215,7 @@ The standard deviation of the Gaussian kernel, measured in pixels. <br /></p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def gaussian_blur(self, blur_radius=1):
+<pre><code class="python">def gaussian_blur(self, blur_radius=1, padding=True):
     &#34;&#34;&#34;Apply a Gaussian blur to the data. 
 
     **Parameters**
@@ -1192,15 +1224,20 @@ The standard deviation of the Gaussian kernel, measured in pixels. <br /></p>
 
     * **blur_radius** : _number, optional_ &lt;br /&gt;
     The standard deviation of the Gaussian kernel, measured in pixels. &lt;br /&gt;
+    Default is `blur_radius = 1`.
+
+    * **padding** : _boolean, optional_ &lt;br /&gt;
+    Whether to zero-pad the input. Uses mirror padding if True. &lt;br /&gt;
+    Default is `padding = False`.
 
     **Returns**
 
     * _ndap_ &lt;br /&gt;
     &#34;&#34;&#34;
     if self.isComplex:
-        self[:, :] = gaussian_blur(self, blur_radius)
+        self[:, :] = gaussian_blur(self, blur_radius, padding)
     else:
-        self[:, :] = np.real(gaussian_blur(self, blur_radius))
+        self[:, :] = np.real(gaussian_blur(self, blur_radius, padding))
     return(self)</code></pre>
 </details>
 </dd>

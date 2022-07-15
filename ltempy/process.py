@@ -137,6 +137,11 @@ def gaussian_blur(data, blur_radius=1, padding = True):
 
     * **blur_radius** : _number, optional_ <br />
     The standard deviation of the Gaussian kernel, measured in pixels. <br />
+    Default is `blur_radius = 1`.
+
+    * **padding** : _boolean, optional_ <br />
+    Whether to zero-pad the input. Will use mirror padding if True. <br />
+    Default is `padding = True`.
 
     **Returns**
 
@@ -389,7 +394,7 @@ class ndap(np.ndarray):
             self[:, :] = np.real(low_pass(self, cutoff, dx, dy, gaussian))
         return(self)
 
-    def gaussian_blur(self, blur_radius=1):
+    def gaussian_blur(self, blur_radius=1, padding=True):
         """Apply a Gaussian blur to the data. 
 
         **Parameters**
@@ -398,15 +403,20 @@ class ndap(np.ndarray):
 
         * **blur_radius** : _number, optional_ <br />
         The standard deviation of the Gaussian kernel, measured in pixels. <br />
+        Default is `blur_radius = 1`.
+
+        * **padding** : _boolean, optional_ <br />
+        Whether to zero-pad the input. Uses mirror padding if True. <br />
+        Default is `padding = False`.
 
         **Returns**
 
         * _ndap_ <br />
         """
         if self.isComplex:
-            self[:, :] = gaussian_blur(self, blur_radius)
+            self[:, :] = gaussian_blur(self, blur_radius, padding)
         else:
-            self[:, :] = np.real(gaussian_blur(self, blur_radius))
+            self[:, :] = np.real(gaussian_blur(self, blur_radius, padding))
         return(self)
 
     def clip_data(self, sigma=5):
