@@ -28,7 +28,7 @@ __all__ = ['high_pass', 'low_pass', 'gaussian_blur',
            'clip_data', 'shift_pos', 'outpath', 'ndap']
 
 
-def high_pass(data, cutoff=1 / 1024, dx=1, dy=1, gaussian=False):
+def high_pass(data, cutoff=1 / 1024, dx=1, dy=1, padding=False):
     """Apply a high-pass filter to a 2d-array.
 
     **Parameters**
@@ -49,36 +49,35 @@ def high_pass(data, cutoff=1 / 1024, dx=1, dy=1, gaussian=False):
     Pixel spacing. <br />
     Default is `dy = 1`. 
 
-    * **gaussian** : _boolean, optional_ <br />
-    Note: this flag is being deprecated. For this functionality, use `scipy`'s butter function. 
-    If true, a gaussian filter is used instead of a tophat. <br />
-    Default is `gaussian = False`.
+    * **padding** : _boolean, optional_ <br />
+    Whether to zero-pad the input. Will use mirror padding if True. <br />
+    Default is `padding = True`.
 
     **Returns**
 
     * _complex ndarray_ <br />
     """
-    X = np.fft.fftfreq(data.shape[1], dx)
-    Y = np.fft.fftfreq(data.shape[0], dy)
+    ds0, ds1 = data.shape[0], data.shape[1]
+    if padding:
+        bdata = _extend_and_fill_mirror(data)
+    else:
+        bdata = data
+    X = np.fft.fftfreq(bdata.shape[1], 1)
+    Y = np.fft.fftfreq(bdata.shape[0], 1)
     x, y = np.meshgrid(X, Y)
 
-    g = 1 - np.exp(-(x**2+y**2)/2/cutoff**2)
-    if not gaussian:
-        g[x**2 + y**2 > cutoff**2] = 1
-        g[x**2 + y**2 <= cutoff**2] = 0
-    else:
-        warn(
-            "Gaussian high-pass is being deprecated and will be removed in a future version of ltempy",
-            DeprecationWarning,
-            stacklevel=2
-        )
+    g = np.zeros_like(x)
 
-    Fdata = np.fft.fft2(data)
+    g[x**2 + y**2 > cutoff**2] = 1
+    g[x**2 + y**2 <= cutoff**2] = 0
+    Fdata = np.fft.fft2(bdata)
     FFdata = np.fft.ifft2(g * Fdata)
-    return(FFdata)
+    if padding:
+        return(FFdata[ds0:2*ds0, ds1:2*ds1])
+    else:
+        return(FFdata)
 
-
-def low_pass(data, cutoff=1 / 4, dx=1, dy=1, gaussian=False):
+def low_pass(data, cutoff=1 / 4, dx=1, dy=1, padding=False):
     """Apply a low-pass filter to a 2d-array.
 
     **Parameters**
@@ -99,34 +98,33 @@ def low_pass(data, cutoff=1 / 4, dx=1, dy=1, gaussian=False):
     Pixel spacing. <br />
     Default is `dy = 1`. 
 
-    * **gaussian** : _boolean, optional_ <br />
-    Note: this flag is being deprecated. For a gaussian low-pass, use `gaussian_blur`. 
-    If true, a gaussian filter is used instead of a tophat. <br />
-    Default is `gaussian = False`.
+    * **padding** : _boolean, optional_ <br />
+    Whether to zero-pad the input. Will use mirror padding if True. <br />
+    Default is `padding = True`.
 
     **Returns**
 
     * _complex ndarray_ <br />
     """
-    X = np.fft.fftfreq(data.shape[1], dx)
-    Y = np.fft.fftfreq(data.shape[0], dy)
+    ds0, ds1 = data.shape[0], data.shape[1]
+    if padding:
+        bdata = _extend_and_fill_mirror(data)
+    else:
+        bdata = data
+    X = np.fft.fftfreq(bdata.shape[1], 1)
+    Y = np.fft.fftfreq(bdata.shape[0], 1)
     x, y = np.meshgrid(X, Y)
 
-    g = np.exp(-(x**2+y**2)/2/cutoff**2)
-    if not gaussian:
-        g[x**2 + y**2 < cutoff**2] = 1
-        g[x**2 + y**2 >= cutoff**2] = 0
-    else:
-        warn(
-            "Gaussian low-pass is being deprecated and will be removed in a future version of ltempy. Use `gaussian_blur` instead.",
-            DeprecationWarning,
-            stacklevel=2
-        )
+    g = np.zeros_like(x)
 
-    Fdata = np.fft.fft2(data)
+    g[x**2 + y**2 < cutoff**2] = 1
+    g[x**2 + y**2 >= cutoff**2] = 0
+    Fdata = np.fft.fft2(bdata)
     FFdata = np.fft.ifft2(g * Fdata)
-    return(FFdata)
-
+    if padding:
+        return(FFdata[ds0:2*ds0, ds1:2*ds1])
+    else:
+        return(FFdata)
 
 def gaussian_blur(data, blur_radius=1, padding = True):
     """Apply a Gaussian blur to the data. 
@@ -318,7 +316,7 @@ class ndap(np.ndarray):
       self.dy = getattr(obj, 'dy', None)
       self.isComplex = getattr(obj, 'isComplex', None)
 
-    def high_pass(self, cutoff=1 / 1024, dx=None, dy=None, gaussian=False):
+    def high_pass(self, cutoff=1 / 1024, dx=None, dy=None, padding=False):
         """Apply a high-pass filter to a 2d-array.
 
         **Parameters**
@@ -337,10 +335,9 @@ class ndap(np.ndarray):
         Pixel spacing. <br />
         Default is `dy = self.dy`. 
 
-        * **gaussian** : _boolean, optional_ <br />
-        Note: this flag is being deprecated. For this functionality, use `scipy`'s butter function. 
-        If true, a gaussian filter is used instead of a tophat. <br />
-        Default is `gaussian = False`.
+        * **padding** : _boolean, optional_ <br />
+        Whether to zero-pad the input. Uses mirror padding if True. <br />
+        Default is `padding = False`.
 
         **Returns**
 
@@ -351,12 +348,12 @@ class ndap(np.ndarray):
         if dy is None:
           dy = self.dy
         if self.isComplex:
-            self[:, :] = high_pass(self, cutoff, dx, dy, gaussian)
+            self[:, :] = high_pass(self, cutoff, dx, dy, padding)
         else:
-            self[:, :] = np.real(high_pass(self, cutoff, dx, dy, gaussian))
+            self[:, :] = np.real(high_pass(self, cutoff, dx, dy, padding))
         return(self)
 
-    def low_pass(self, cutoff=1 / 4, dx=1, dy=1, gaussian=False):
+    def low_pass(self, cutoff=1 / 4, dx=1, dy=1, padding=False):
         """Apply a low-pass filter to a 2d-array.
 
         **Parameters**
@@ -375,10 +372,9 @@ class ndap(np.ndarray):
         Pixel spacing. <br />
         Default is `dy = self.dy`. 
 
-        * **gaussian** : _boolean, optional_ <br />
-        Note: this flag is being deprecated. For a gaussian low-pass, use `gaussian_blur`. 
-        If true, a gaussian filter is used instead of a tophat. <br />
-        Default is `gaussian = False`.
+        * **padding** : _boolean, optional_ <br />
+        Whether to zero-pad the input. Uses mirror padding if True. <br />
+        Default is `padding = False`.
 
         **Returns**
 
@@ -389,9 +385,9 @@ class ndap(np.ndarray):
         if dy is None:
           dy = self.dy
         if self.isComplex:
-            self[:, :] = low_pass(self, cutoff, dx, dy, gaussian)
+            self[:, :] = low_pass(self, cutoff, dx, dy, padding)
         else:
-            self[:, :] = np.real(low_pass(self, cutoff, dx, dy, gaussian))
+            self[:, :] = np.real(low_pass(self, cutoff, dx, dy, padding))
         return(self)
 
     def gaussian_blur(self, blur_radius=1, padding=True):
