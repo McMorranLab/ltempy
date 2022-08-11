@@ -41,8 +41,8 @@ def test_outpath():
 class TestNDAP:
     def test_get_window(self):
       X = lp.ndap(np.random.random((8, 8)))
-      x, y, out = X.get_window([2, 6, 2, 6])
-      assert(out.shape[0] == 4 and out.shape[1] == 4)
+      out = X.get_window([2, 6, 2, 6])
+      assert(out.shape[0] == 4 and out.x.shape[0] == 4)
 
     def test_ndap(self):
         X = np.random.random((4, 4)) + 0j

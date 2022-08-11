@@ -9,15 +9,19 @@ rng = np.random.default_rng()
 ####################
 X = np.linspace(-10, 10, 512)
 x, y = np.meshgrid(X, X)
-data = lp.ndap(10 * np.cos(10 * y))
+data = lp.ndap(10 * np.cos(10 * y), x=X, y=X)
 
-window = [100, 200, 100, 200]
+window = [-3, -2, 3, 4]
 fig, [[ax1, ax2]] = lp.subplots(12)
 ax1.set_axes(data.x, data.y)
 ax1.inset(window)
 ax1.imshow(data)
 ax2.imshow(data.get_window(window)[2])
 plt.show()
+
+
+newx, newy, newdata = data.get_window(window)
+print(newy.shape, newx.shape, newdata.shape)
 
 #########################
 

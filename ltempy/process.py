@@ -426,27 +426,17 @@ class ndap(np.ndarray):
 
       **Returns**
 
-      * _ndarray_ <br />
-      A 1d array with the windowed x coordinates.
-
-      * _ndarray_ <br />
-      A 1d array with the windowed y coordinates. 
-
-      * _ndarray_ <br />
-      A 2d array with the windowed data. 
+      * _ndap_ <br />
+      A 2d ndap with the windowed data and new axes.
       """
-      if self.x is None:
-        self.x = np.linspace(0, 100, self.shape[1])
-      if self.y is None:
-        self.y = np.linspace(0, 100, self.shape[0])
       argxmin = np.argmin(np.abs(self.x - window[0]))
       argxmax = np.argmin(np.abs(self.x - window[1]))
       argymin = np.argmin(np.abs(self.y - window[2]))
       argymax = np.argmin(np.abs(self.y - window[3]))
-      dout = self[argymin:argymax:step, argxmin:argxmax:step].copy()
       xout = self.x[argxmin:argxmax:step].copy()
       yout = self.y[argymin:argymax:step].copy()
-      return(xout, yout, dout)
+      dout = ndap(self[argymin:argymax:step, argxmin:argxmax:step].copy(), x=xout, y=yout)
+      return(dout)
 
     def clip_data(self, sigma=5):
         """Clip data to a certain number of standard deviations from its average.

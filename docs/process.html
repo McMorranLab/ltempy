@@ -456,27 +456,17 @@ class ndap(np.ndarray):
 
       **Returns**
 
-      * _ndarray_ &lt;br /&gt;
-      A 1d array with the windowed x coordinates.
-
-      * _ndarray_ &lt;br /&gt;
-      A 1d array with the windowed y coordinates. 
-
-      * _ndarray_ &lt;br /&gt;
-      A 2d array with the windowed data. 
+      * _ndap_ &lt;br /&gt;
+      A 2d ndap with the windowed data and new axes.
       &#34;&#34;&#34;
-      if self.x is None:
-        self.x = np.linspace(0, 100, self.shape[1])
-      if self.y is None:
-        self.y = np.linspace(0, 100, self.shape[0])
       argxmin = np.argmin(np.abs(self.x - window[0]))
       argxmax = np.argmin(np.abs(self.x - window[1]))
       argymin = np.argmin(np.abs(self.y - window[2]))
       argymax = np.argmin(np.abs(self.y - window[3]))
-      dout = self[argymin:argymax:step, argxmin:argxmax:step].copy()
       xout = self.x[argxmin:argxmax:step].copy()
       yout = self.y[argymin:argymax:step].copy()
-      return(xout, yout, dout)
+      dout = ndap(self[argymin:argymax:step, argxmin:argxmax:step].copy(), x=xout, y=yout)
+      return(dout)
 
     def clip_data(self, sigma=5):
         &#34;&#34;&#34;Clip data to a certain number of standard deviations from its average.
@@ -1151,27 +1141,17 @@ convention of <code>meshgrid</code>.</p>
 
       **Returns**
 
-      * _ndarray_ &lt;br /&gt;
-      A 1d array with the windowed x coordinates.
-
-      * _ndarray_ &lt;br /&gt;
-      A 1d array with the windowed y coordinates. 
-
-      * _ndarray_ &lt;br /&gt;
-      A 2d array with the windowed data. 
+      * _ndap_ &lt;br /&gt;
+      A 2d ndap with the windowed data and new axes.
       &#34;&#34;&#34;
-      if self.x is None:
-        self.x = np.linspace(0, 100, self.shape[1])
-      if self.y is None:
-        self.y = np.linspace(0, 100, self.shape[0])
       argxmin = np.argmin(np.abs(self.x - window[0]))
       argxmax = np.argmin(np.abs(self.x - window[1]))
       argymin = np.argmin(np.abs(self.y - window[2]))
       argymax = np.argmin(np.abs(self.y - window[3]))
-      dout = self[argymin:argymax:step, argxmin:argxmax:step].copy()
       xout = self.x[argxmin:argxmax:step].copy()
       yout = self.y[argymin:argymax:step].copy()
-      return(xout, yout, dout)
+      dout = ndap(self[argymin:argymax:step, argxmin:argxmax:step].copy(), x=xout, y=yout)
+      return(dout)
 
     def clip_data(self, sigma=5):
         &#34;&#34;&#34;Clip data to a certain number of standard deviations from its average.
@@ -1312,18 +1292,8 @@ Also note that the default x and y attributes of the ndap object are just its in
 </ul>
 <p><strong>Returns</strong></p>
 <ul>
-<li>
-<p><em>ndarray</em> <br />
-A 1d array with the windowed x coordinates.</p>
-</li>
-<li>
-<p><em>ndarray</em> <br />
-A 1d array with the windowed y coordinates. </p>
-</li>
-<li>
-<p><em>ndarray</em> <br />
-A 2d array with the windowed data.</p>
-</li>
+<li><em>ndap</em> <br />
+A 2d ndap with the windowed data and new axes.</li>
 </ul></div>
 <details class="source">
 <summary>
@@ -1340,27 +1310,17 @@ A 2d array with the windowed data.</p>
 
   **Returns**
 
-  * _ndarray_ &lt;br /&gt;
-  A 1d array with the windowed x coordinates.
-
-  * _ndarray_ &lt;br /&gt;
-  A 1d array with the windowed y coordinates. 
-
-  * _ndarray_ &lt;br /&gt;
-  A 2d array with the windowed data. 
+  * _ndap_ &lt;br /&gt;
+  A 2d ndap with the windowed data and new axes.
   &#34;&#34;&#34;
-  if self.x is None:
-    self.x = np.linspace(0, 100, self.shape[1])
-  if self.y is None:
-    self.y = np.linspace(0, 100, self.shape[0])
   argxmin = np.argmin(np.abs(self.x - window[0]))
   argxmax = np.argmin(np.abs(self.x - window[1]))
   argymin = np.argmin(np.abs(self.y - window[2]))
   argymax = np.argmin(np.abs(self.y - window[3]))
-  dout = self[argymin:argymax:step, argxmin:argxmax:step].copy()
   xout = self.x[argxmin:argxmax:step].copy()
   yout = self.y[argymin:argymax:step].copy()
-  return(xout, yout, dout)</code></pre>
+  dout = ndap(self[argymin:argymax:step, argxmin:argxmax:step].copy(), x=xout, y=yout)
+  return(dout)</code></pre>
 </details>
 </dd>
 <dt id="ltempy.process.ndap.high_pass"><code class="name flex">
