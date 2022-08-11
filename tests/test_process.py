@@ -4,7 +4,6 @@ from pathlib import Path
 
 # %%
 
-
 def test_high_pass():
     X = np.random.random((4, 4))
     assert(lp.high_pass(X).shape == (4, 4))
@@ -40,6 +39,11 @@ def test_outpath():
 
 
 class TestNDAP:
+    def test_get_window(self):
+      X = lp.ndap(np.random.random((8, 8)))
+      x, y, out = X.get_window([2, 6, 2, 6])
+      assert(out.shape[0] == 4 and out.shape[1] == 4)
+
     def test_ndap(self):
         X = np.random.random((4, 4)) + 0j
         assert(type(lp.ndap(X)) == lp.ndap)

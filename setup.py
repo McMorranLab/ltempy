@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
 	name = 'ltempy',
 	packages = find_packages(),
-	version = '1.3.1',
+	version = '1.3.2',
 	author = 'William S. Parker',
 	author_email = 'will.parker0@gmail.com',
 	description = 'Utilities for Lorentz TEM data analysis and simulation.',

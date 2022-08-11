@@ -5,6 +5,20 @@ from pathlib import Path
 
 rng = np.random.default_rng()
 
+
+####################
+X = np.linspace(-10, 10, 512)
+x, y = np.meshgrid(X, X)
+data = lp.ndap(10 * np.cos(10 * y))
+
+window = [100, 200, 100, 200]
+fig, [[ax1, ax2]] = lp.subplots(12)
+ax1.set_axes(data.x, data.y)
+ax1.inset(window)
+ax1.imshow(data)
+ax2.imshow(data.get_window(window)[2])
+plt.show()
+
 #########################
 
 datadir = Path("asdf/data")

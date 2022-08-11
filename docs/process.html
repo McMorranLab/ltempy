@@ -444,6 +444,39 @@ class ndap(np.ndarray):
         else:
             self[:, :] = np.real(gaussian_blur(self, blur_radius, padding))
         return(self)
+      
+    def get_window(self, window, step=1):
+      &#34;&#34;&#34;Get a windowed section of data. 
+
+      **Parameters**
+
+      * **window** : _tuple_ &lt;br /&gt;
+      [xmin, xmax, ymin, ymax]. Note that these are the x and y values, not their indices. 
+      Also note that the default x and y attributes of the ndap object are just its indices. 
+
+      **Returns**
+
+      * _ndarray_ &lt;br /&gt;
+      A 1d array with the windowed x coordinates.
+
+      * _ndarray_ &lt;br /&gt;
+      A 1d array with the windowed y coordinates. 
+
+      * _ndarray_ &lt;br /&gt;
+      A 2d array with the windowed data. 
+      &#34;&#34;&#34;
+      if self.x is None:
+        self.x = np.linspace(0, 100, self.shape[1])
+      if self.y is None:
+        self.y = np.linspace(0, 100, self.shape[0])
+      argxmin = np.argmin(np.abs(self.x - window[0]))
+      argxmax = np.argmin(np.abs(self.x - window[1]))
+      argymin = np.argmin(np.abs(self.y - window[2]))
+      argymax = np.argmin(np.abs(self.y - window[3]))
+      dout = self[argymin:argymax:step, argxmin:argxmax:step].copy()
+      xout = self.x[argxmin:argxmax:step].copy()
+      yout = self.y[argymin:argymax:step].copy()
+      return(xout, yout, dout)
 
     def clip_data(self, sigma=5):
         &#34;&#34;&#34;Clip data to a certain number of standard deviations from its average.
@@ -1106,6 +1139,39 @@ convention of <code>meshgrid</code>.</p>
         else:
             self[:, :] = np.real(gaussian_blur(self, blur_radius, padding))
         return(self)
+      
+    def get_window(self, window, step=1):
+      &#34;&#34;&#34;Get a windowed section of data. 
+
+      **Parameters**
+
+      * **window** : _tuple_ &lt;br /&gt;
+      [xmin, xmax, ymin, ymax]. Note that these are the x and y values, not their indices. 
+      Also note that the default x and y attributes of the ndap object are just its indices. 
+
+      **Returns**
+
+      * _ndarray_ &lt;br /&gt;
+      A 1d array with the windowed x coordinates.
+
+      * _ndarray_ &lt;br /&gt;
+      A 1d array with the windowed y coordinates. 
+
+      * _ndarray_ &lt;br /&gt;
+      A 2d array with the windowed data. 
+      &#34;&#34;&#34;
+      if self.x is None:
+        self.x = np.linspace(0, 100, self.shape[1])
+      if self.y is None:
+        self.y = np.linspace(0, 100, self.shape[0])
+      argxmin = np.argmin(np.abs(self.x - window[0]))
+      argxmax = np.argmin(np.abs(self.x - window[1]))
+      argymin = np.argmin(np.abs(self.y - window[2]))
+      argymax = np.argmin(np.abs(self.y - window[3]))
+      dout = self[argymin:argymax:step, argxmin:argxmax:step].copy()
+      xout = self.x[argxmin:argxmax:step].copy()
+      yout = self.y[argymin:argymax:step].copy()
+      return(xout, yout, dout)
 
     def clip_data(self, sigma=5):
         &#34;&#34;&#34;Clip data to a certain number of standard deviations from its average.
@@ -1231,6 +1297,70 @@ Default is <code>padding = False</code>.</p>
     else:
         self[:, :] = np.real(gaussian_blur(self, blur_radius, padding))
     return(self)</code></pre>
+</details>
+</dd>
+<dt id="ltempy.process.ndap.get_window"><code class="name flex">
+<span>def <span class="ident">get_window</span></span>(<span>self, window, step=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get a windowed section of data. </p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><strong>window</strong> : <em>tuple</em> <br />
+[xmin, xmax, ymin, ymax]. Note that these are the x and y values, not their indices.
+Also note that the default x and y attributes of the ndap object are just its indices. </li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li>
+<p><em>ndarray</em> <br />
+A 1d array with the windowed x coordinates.</p>
+</li>
+<li>
+<p><em>ndarray</em> <br />
+A 1d array with the windowed y coordinates. </p>
+</li>
+<li>
+<p><em>ndarray</em> <br />
+A 2d array with the windowed data.</p>
+</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_window(self, window, step=1):
+  &#34;&#34;&#34;Get a windowed section of data. 
+
+  **Parameters**
+
+  * **window** : _tuple_ &lt;br /&gt;
+  [xmin, xmax, ymin, ymax]. Note that these are the x and y values, not their indices. 
+  Also note that the default x and y attributes of the ndap object are just its indices. 
+
+  **Returns**
+
+  * _ndarray_ &lt;br /&gt;
+  A 1d array with the windowed x coordinates.
+
+  * _ndarray_ &lt;br /&gt;
+  A 1d array with the windowed y coordinates. 
+
+  * _ndarray_ &lt;br /&gt;
+  A 2d array with the windowed data. 
+  &#34;&#34;&#34;
+  if self.x is None:
+    self.x = np.linspace(0, 100, self.shape[1])
+  if self.y is None:
+    self.y = np.linspace(0, 100, self.shape[0])
+  argxmin = np.argmin(np.abs(self.x - window[0]))
+  argxmax = np.argmin(np.abs(self.x - window[1]))
+  argymin = np.argmin(np.abs(self.y - window[2]))
+  argymax = np.argmin(np.abs(self.y - window[3]))
+  dout = self[argymin:argymax:step, argxmin:argxmax:step].copy()
+  xout = self.x[argxmin:argxmax:step].copy()
+  yout = self.y[argymin:argymax:step].copy()
+  return(xout, yout, dout)</code></pre>
 </details>
 </dd>
 <dt id="ltempy.process.ndap.high_pass"><code class="name flex">
@@ -1442,9 +1572,10 @@ Default is <code>padding = False</code>.</p>
 <ul>
 <li>
 <h4><code><a title="ltempy.process.ndap" href="#ltempy.process.ndap">ndap</a></code></h4>
-<ul class="">
+<ul class="two-column">
 <li><code><a title="ltempy.process.ndap.clip_data" href="#ltempy.process.ndap.clip_data">clip_data</a></code></li>
 <li><code><a title="ltempy.process.ndap.gaussian_blur" href="#ltempy.process.ndap.gaussian_blur">gaussian_blur</a></code></li>
+<li><code><a title="ltempy.process.ndap.get_window" href="#ltempy.process.ndap.get_window">get_window</a></code></li>
 <li><code><a title="ltempy.process.ndap.high_pass" href="#ltempy.process.ndap.high_pass">high_pass</a></code></li>
 <li><code><a title="ltempy.process.ndap.low_pass" href="#ltempy.process.ndap.low_pass">low_pass</a></code></li>
 <li><code><a title="ltempy.process.ndap.shift_pos" href="#ltempy.process.ndap.shift_pos">shift_pos</a></code></li>
