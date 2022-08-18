@@ -55,7 +55,7 @@ from ._utils import _extend_and_fill_mirror
 from warnings import warn
 
 __all__ = [&#39;high_pass&#39;, &#39;low_pass&#39;, &#39;gaussian_blur&#39;,
-           &#39;clip_data&#39;, &#39;shift_pos&#39;, &#39;outpath&#39;, &#39;ndap&#39;]
+           &#39;clip_data&#39;, &#39;shift_pos&#39;, &#39;outpath&#39;, &#39;multi&#39;, &#39;ndap&#39;]
 
 
 def high_pass(data, cutoff=1 / 1024, dx=1, dy=1, padding=False):
@@ -92,8 +92,8 @@ def high_pass(data, cutoff=1 / 1024, dx=1, dy=1, padding=False):
         bdata = _extend_and_fill_mirror(data)
     else:
         bdata = data
-    X = np.fft.fftfreq(bdata.shape[1], 1)
-    Y = np.fft.fftfreq(bdata.shape[0], 1)
+    X = np.fft.fftfreq(bdata.shape[1], dx)
+    Y = np.fft.fftfreq(bdata.shape[0], dy)
     x, y = np.meshgrid(X, Y)
 
     g = np.zeros_like(x)
@@ -141,8 +141,8 @@ def low_pass(data, cutoff=1 / 4, dx=1, dy=1, padding=False):
         bdata = _extend_and_fill_mirror(data)
     else:
         bdata = data
-    X = np.fft.fftfreq(bdata.shape[1], 1)
-    Y = np.fft.fftfreq(bdata.shape[0], 1)
+    X = np.fft.fftfreq(bdata.shape[1], dx)
+    Y = np.fft.fftfreq(bdata.shape[0], dy)
     x, y = np.meshgrid(X, Y)
 
     g = np.zeros_like(x)
@@ -194,6 +194,57 @@ def gaussian_blur(data, blur_radius=1, padding = True):
         return(FFdata)
 
 
+def multi(data, opts, dx=1, dy=1):
+    &#34;&#34;&#34;Perform multiple filters at once, but only performs one Fourier / inverse Fourier transform. 
+    
+    **Parameters**
+
+    * **data** : _complex ndarray_ &lt;br /&gt;
+
+    * **opts** : _dictionary_ &lt;br /&gt;
+    A dictionary containing the processing to perform. Format is 
+    ```
+    {
+      &#39;gaussian_blur&#39;: {&#39;blur_radius&#39;: n},
+      &#39;high_pass&#39;: {&#39;cutoff&#39;: m},
+      &#39;low_pass&#39;: {&#39;cutoff&#39;: l}
+    }
+    ```
+    Include a filter simply by including it as a key. If a filter is included, 
+    its parameters must match the format above. 
+
+    * **dx** : _float, optional_ &lt;br /&gt;
+    Pixel spacing. &lt;br /&gt;
+    Default is `dx = 1`.
+
+    * **dy** : _float, optional_ &lt;br /&gt;
+    Pixel spacing. &lt;br /&gt;
+    Default is `dy = 1`.
+
+    **Returns**
+
+    * _complex ndarray_ &lt;br /&gt;
+    
+    &#34;&#34;&#34;
+    ds0, ds1 = data.shape[0], data.shape[1]
+    bdata = _extend_and_fill_mirror(data)
+    X = np.fft.fftfreq(bdata.shape[1], dx)
+    Y = np.fft.fftfreq(bdata.shape[0], dy)
+    x, y = np.meshgrid(X, Y)
+    Fdata = np.fft.fft2(bdata)
+    g = np.ones_like(Fdata)
+    if &#34;gaussian_blur&#34; in opts:
+      g = g * np.exp(-2 * np.pi**2 * opts[&#39;gaussian_blur&#39;][&#39;blur_radius&#39;]**2 * (x**2 + y**2))
+    if &#34;high_pass&#34; in opts:
+      g[x**2 + y**2 &lt;= opts[&#39;high_pass&#39;][&#39;cutoff&#39;]**2] = 0
+    if &#34;low_pass&#34; in opts:
+      g[x**2 + y**2 &gt;= opts[&#39;low_pass&#39;][&#39;cutoff&#39;]**2] = 0
+    FFdata = np.fft.ifft2(g * Fdata)
+    return(FFdata[ds0:2*ds0, ds1:2*ds1])
+
+        
+
+
 def clip_data(data, sigma=5):
     &#34;&#34;&#34;Clip data to a certain number of standard deviations from its average.
 
@@ -217,7 +268,6 @@ def clip_data(data, sigma=5):
     out[out &lt; vmin] = vmin
     out[out &gt; vmax] = vmax
     return(out)
-
 
 def shift_pos(data):
     &#34;&#34;&#34;Shift data to be positive.
@@ -383,7 +433,7 @@ class ndap(np.ndarray):
             self[:, :] = np.real(high_pass(self, cutoff, dx, dy, padding))
         return(self)
 
-    def low_pass(self, cutoff=1 / 4, dx=1, dy=1, padding=False):
+    def low_pass(self, cutoff=1 / 4, dx=None, dy=None, padding=False):
         &#34;&#34;&#34;Apply a low-pass filter to a 2d-array.
 
         **Parameters**
@@ -418,6 +468,48 @@ class ndap(np.ndarray):
             self[:, :] = low_pass(self, cutoff, dx, dy, padding)
         else:
             self[:, :] = np.real(low_pass(self, cutoff, dx, dy, padding))
+        return(self)
+    
+
+    def multi(self, opts, dx=None, dy=None):
+        &#34;&#34;&#34;Perform multiple filters at once. Only performs one Fourier / inverse Fourier transform. 
+        
+        **Parameters**
+
+        * **data** : _complex ndarray_ &lt;br /&gt;
+
+        * **opts** : _dictionary_ &lt;br /&gt;
+        A dictionary containing the processing to perform. Format is 
+        ```
+        {
+          &#39;gaussian_blur&#39;: {&#39;blur_radius&#39;: n},
+          &#39;high_pass&#39;: {&#39;cutoff&#39;: m},
+          &#39;low_pass&#39;: {&#39;cutoff&#39;: l}
+        }
+        ```
+        . Include a filter simply by including it as a key. If a filter is included, 
+        its parameters must match the format above. 
+
+        * **dx** : _float, optional_ &lt;br /&gt;
+        Pixel spacing. &lt;br /&gt;
+        Default is `dx = self.dx`.
+
+        * **dy** : _float, optional_ &lt;br /&gt;
+        Pixel spacing. &lt;br /&gt;
+        Default is `dy = self.dy`.
+
+        **Returns**
+
+        * _complex ndarray_ &lt;br /&gt;
+        &#34;&#34;&#34; 
+        if dx is None:
+          dx = self.dx
+        if dy is None:
+          dy = self.dy
+        if self.isComplex:
+          self[:, :] = multi(self, opts, dx, dy)
+        else:
+          self[:, :] = np.real(multi(self, opts, dx, dy))
         return(self)
 
     def gaussian_blur(self, blur_radius=1, padding=True):
@@ -696,8 +788,8 @@ Default is <code>padding = True</code>.</p>
         bdata = _extend_and_fill_mirror(data)
     else:
         bdata = data
-    X = np.fft.fftfreq(bdata.shape[1], 1)
-    Y = np.fft.fftfreq(bdata.shape[0], 1)
+    X = np.fft.fftfreq(bdata.shape[1], dx)
+    Y = np.fft.fftfreq(bdata.shape[0], dy)
     x, y = np.meshgrid(X, Y)
 
     g = np.zeros_like(x)
@@ -787,8 +879,8 @@ Default is <code>padding = True</code>.</p>
         bdata = _extend_and_fill_mirror(data)
     else:
         bdata = data
-    X = np.fft.fftfreq(bdata.shape[1], 1)
-    Y = np.fft.fftfreq(bdata.shape[0], 1)
+    X = np.fft.fftfreq(bdata.shape[1], dx)
+    Y = np.fft.fftfreq(bdata.shape[0], dy)
     x, y = np.meshgrid(X, Y)
 
     g = np.zeros_like(x)
@@ -801,6 +893,98 @@ Default is <code>padding = True</code>.</p>
         return(FFdata[ds0:2*ds0, ds1:2*ds1])
     else:
         return(FFdata)</code></pre>
+</details>
+</dd>
+<dt id="ltempy.process.multi"><code class="name flex">
+<span>def <span class="ident">multi</span></span>(<span>data, opts, dx=1, dy=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Perform multiple filters at once, but only performs one Fourier / inverse Fourier transform. </p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li>
+<p><strong>data</strong> : <em>complex ndarray</em> <br /></p>
+</li>
+<li>
+<p><strong>opts</strong> : <em>dictionary</em> <br />
+A dictionary containing the processing to perform. Format is </p>
+</li>
+</ul>
+<pre><code>{
+  'gaussian_blur': {'blur_radius': n},
+  'high_pass': {'cutoff': m},
+  'low_pass': {'cutoff': l}
+}
+</code></pre>
+<p>Include a filter simply by including it as a key. If a filter is included,
+its parameters must match the format above. </p>
+<ul>
+<li>
+<p><strong>dx</strong> : <em>float, optional</em> <br />
+Pixel spacing. <br />
+Default is <code>dx = 1</code>.</p>
+</li>
+<li>
+<p><strong>dy</strong> : <em>float, optional</em> <br />
+Pixel spacing. <br />
+Default is <code>dy = 1</code>.</p>
+</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><em>complex ndarray</em> <br /></li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def multi(data, opts, dx=1, dy=1):
+    &#34;&#34;&#34;Perform multiple filters at once, but only performs one Fourier / inverse Fourier transform. 
+    
+    **Parameters**
+
+    * **data** : _complex ndarray_ &lt;br /&gt;
+
+    * **opts** : _dictionary_ &lt;br /&gt;
+    A dictionary containing the processing to perform. Format is 
+    ```
+    {
+      &#39;gaussian_blur&#39;: {&#39;blur_radius&#39;: n},
+      &#39;high_pass&#39;: {&#39;cutoff&#39;: m},
+      &#39;low_pass&#39;: {&#39;cutoff&#39;: l}
+    }
+    ```
+    Include a filter simply by including it as a key. If a filter is included, 
+    its parameters must match the format above. 
+
+    * **dx** : _float, optional_ &lt;br /&gt;
+    Pixel spacing. &lt;br /&gt;
+    Default is `dx = 1`.
+
+    * **dy** : _float, optional_ &lt;br /&gt;
+    Pixel spacing. &lt;br /&gt;
+    Default is `dy = 1`.
+
+    **Returns**
+
+    * _complex ndarray_ &lt;br /&gt;
+    
+    &#34;&#34;&#34;
+    ds0, ds1 = data.shape[0], data.shape[1]
+    bdata = _extend_and_fill_mirror(data)
+    X = np.fft.fftfreq(bdata.shape[1], dx)
+    Y = np.fft.fftfreq(bdata.shape[0], dy)
+    x, y = np.meshgrid(X, Y)
+    Fdata = np.fft.fft2(bdata)
+    g = np.ones_like(Fdata)
+    if &#34;gaussian_blur&#34; in opts:
+      g = g * np.exp(-2 * np.pi**2 * opts[&#39;gaussian_blur&#39;][&#39;blur_radius&#39;]**2 * (x**2 + y**2))
+    if &#34;high_pass&#34; in opts:
+      g[x**2 + y**2 &lt;= opts[&#39;high_pass&#39;][&#39;cutoff&#39;]**2] = 0
+    if &#34;low_pass&#34; in opts:
+      g[x**2 + y**2 &gt;= opts[&#39;low_pass&#39;][&#39;cutoff&#39;]**2] = 0
+    FFdata = np.fft.ifft2(g * Fdata)
+    return(FFdata[ds0:2*ds0, ds1:2*ds1])</code></pre>
 </details>
 </dd>
 <dt id="ltempy.process.outpath"><code class="name flex">
@@ -1068,7 +1252,7 @@ convention of <code>meshgrid</code>.</p>
             self[:, :] = np.real(high_pass(self, cutoff, dx, dy, padding))
         return(self)
 
-    def low_pass(self, cutoff=1 / 4, dx=1, dy=1, padding=False):
+    def low_pass(self, cutoff=1 / 4, dx=None, dy=None, padding=False):
         &#34;&#34;&#34;Apply a low-pass filter to a 2d-array.
 
         **Parameters**
@@ -1103,6 +1287,48 @@ convention of <code>meshgrid</code>.</p>
             self[:, :] = low_pass(self, cutoff, dx, dy, padding)
         else:
             self[:, :] = np.real(low_pass(self, cutoff, dx, dy, padding))
+        return(self)
+    
+
+    def multi(self, opts, dx=None, dy=None):
+        &#34;&#34;&#34;Perform multiple filters at once. Only performs one Fourier / inverse Fourier transform. 
+        
+        **Parameters**
+
+        * **data** : _complex ndarray_ &lt;br /&gt;
+
+        * **opts** : _dictionary_ &lt;br /&gt;
+        A dictionary containing the processing to perform. Format is 
+        ```
+        {
+          &#39;gaussian_blur&#39;: {&#39;blur_radius&#39;: n},
+          &#39;high_pass&#39;: {&#39;cutoff&#39;: m},
+          &#39;low_pass&#39;: {&#39;cutoff&#39;: l}
+        }
+        ```
+        . Include a filter simply by including it as a key. If a filter is included, 
+        its parameters must match the format above. 
+
+        * **dx** : _float, optional_ &lt;br /&gt;
+        Pixel spacing. &lt;br /&gt;
+        Default is `dx = self.dx`.
+
+        * **dy** : _float, optional_ &lt;br /&gt;
+        Pixel spacing. &lt;br /&gt;
+        Default is `dy = self.dy`.
+
+        **Returns**
+
+        * _complex ndarray_ &lt;br /&gt;
+        &#34;&#34;&#34; 
+        if dx is None:
+          dx = self.dx
+        if dy is None:
+          dy = self.dy
+        if self.isComplex:
+          self[:, :] = multi(self, opts, dx, dy)
+        else:
+          self[:, :] = np.real(multi(self, opts, dx, dy))
         return(self)
 
     def gaussian_blur(self, blur_radius=1, padding=True):
@@ -1400,7 +1626,7 @@ Default is <code>padding = False</code>.</p>
 </details>
 </dd>
 <dt id="ltempy.process.ndap.low_pass"><code class="name flex">
-<span>def <span class="ident">low_pass</span></span>(<span>self, cutoff=0.25, dx=1, dy=1, padding=False)</span>
+<span>def <span class="ident">low_pass</span></span>(<span>self, cutoff=0.25, dx=None, dy=None, padding=False)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Apply a low-pass filter to a 2d-array.</p>
@@ -1437,7 +1663,7 @@ Default is <code>padding = False</code>.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def low_pass(self, cutoff=1 / 4, dx=1, dy=1, padding=False):
+<pre><code class="python">def low_pass(self, cutoff=1 / 4, dx=None, dy=None, padding=False):
     &#34;&#34;&#34;Apply a low-pass filter to a 2d-array.
 
     **Parameters**
@@ -1472,6 +1698,91 @@ Default is <code>padding = False</code>.</p>
         self[:, :] = low_pass(self, cutoff, dx, dy, padding)
     else:
         self[:, :] = np.real(low_pass(self, cutoff, dx, dy, padding))
+    return(self)</code></pre>
+</details>
+</dd>
+<dt id="ltempy.process.ndap.multi"><code class="name flex">
+<span>def <span class="ident">multi</span></span>(<span>self, opts, dx=None, dy=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Perform multiple filters at once. Only performs one Fourier / inverse Fourier transform. </p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li>
+<p><strong>data</strong> : <em>complex ndarray</em> <br /></p>
+</li>
+<li>
+<p><strong>opts</strong> : <em>dictionary</em> <br />
+A dictionary containing the processing to perform. Format is </p>
+</li>
+</ul>
+<pre><code>{
+  'gaussian_blur': {'blur_radius': n},
+  'high_pass': {'cutoff': m},
+  'low_pass': {'cutoff': l}
+}
+</code></pre>
+<p>. Include a filter simply by including it as a key. If a filter is included,
+its parameters must match the format above. </p>
+<ul>
+<li>
+<p><strong>dx</strong> : <em>float, optional</em> <br />
+Pixel spacing. <br />
+Default is <code>dx = self.dx</code>.</p>
+</li>
+<li>
+<p><strong>dy</strong> : <em>float, optional</em> <br />
+Pixel spacing. <br />
+Default is <code>dy = self.dy</code>.</p>
+</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li><em>complex ndarray</em> <br /></li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def multi(self, opts, dx=None, dy=None):
+    &#34;&#34;&#34;Perform multiple filters at once. Only performs one Fourier / inverse Fourier transform. 
+    
+    **Parameters**
+
+    * **data** : _complex ndarray_ &lt;br /&gt;
+
+    * **opts** : _dictionary_ &lt;br /&gt;
+    A dictionary containing the processing to perform. Format is 
+    ```
+    {
+      &#39;gaussian_blur&#39;: {&#39;blur_radius&#39;: n},
+      &#39;high_pass&#39;: {&#39;cutoff&#39;: m},
+      &#39;low_pass&#39;: {&#39;cutoff&#39;: l}
+    }
+    ```
+    . Include a filter simply by including it as a key. If a filter is included, 
+    its parameters must match the format above. 
+
+    * **dx** : _float, optional_ &lt;br /&gt;
+    Pixel spacing. &lt;br /&gt;
+    Default is `dx = self.dx`.
+
+    * **dy** : _float, optional_ &lt;br /&gt;
+    Pixel spacing. &lt;br /&gt;
+    Default is `dy = self.dy`.
+
+    **Returns**
+
+    * _complex ndarray_ &lt;br /&gt;
+    &#34;&#34;&#34; 
+    if dx is None:
+      dx = self.dx
+    if dy is None:
+      dy = self.dy
+    if self.isComplex:
+      self[:, :] = multi(self, opts, dx, dy)
+    else:
+      self[:, :] = np.real(multi(self, opts, dx, dy))
     return(self)</code></pre>
 </details>
 </dd>
@@ -1524,6 +1835,7 @@ Default is <code>padding = False</code>.</p>
 <li><code><a title="ltempy.process.gaussian_blur" href="#ltempy.process.gaussian_blur">gaussian_blur</a></code></li>
 <li><code><a title="ltempy.process.high_pass" href="#ltempy.process.high_pass">high_pass</a></code></li>
 <li><code><a title="ltempy.process.low_pass" href="#ltempy.process.low_pass">low_pass</a></code></li>
+<li><code><a title="ltempy.process.multi" href="#ltempy.process.multi">multi</a></code></li>
 <li><code><a title="ltempy.process.outpath" href="#ltempy.process.outpath">outpath</a></code></li>
 <li><code><a title="ltempy.process.shift_pos" href="#ltempy.process.shift_pos">shift_pos</a></code></li>
 </ul>
@@ -1538,6 +1850,7 @@ Default is <code>padding = False</code>.</p>
 <li><code><a title="ltempy.process.ndap.get_window" href="#ltempy.process.ndap.get_window">get_window</a></code></li>
 <li><code><a title="ltempy.process.ndap.high_pass" href="#ltempy.process.ndap.high_pass">high_pass</a></code></li>
 <li><code><a title="ltempy.process.ndap.low_pass" href="#ltempy.process.ndap.low_pass">low_pass</a></code></li>
+<li><code><a title="ltempy.process.ndap.multi" href="#ltempy.process.ndap.multi">multi</a></code></li>
 <li><code><a title="ltempy.process.ndap.shift_pos" href="#ltempy.process.ndap.shift_pos">shift_pos</a></code></li>
 </ul>
 </li>

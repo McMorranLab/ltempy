@@ -16,12 +16,11 @@ fig, [[ax1, ax2]] = lp.subplots(12)
 ax1.set_axes(data.x, data.y)
 ax1.inset(window)
 ax1.imshow(data)
-ax2.imshow(data.get_window(window)[2])
+ax2.imshow(data.get_window(window))
 plt.show()
 
 
-newx, newy, newdata = data.get_window(window)
-print(newy.shape, newx.shape, newdata.shape)
+newdata = data.get_window(window)
 
 #########################
 
@@ -59,6 +58,16 @@ data += np.random.random((128, 128))
 
 blur_radius = 1  # cycles per pixel -> pixels per cycle
 
+multi_dummy = lp.low_pass(lp.high_pass(lp.gaussian_blur(data,blur_radius=1, padding=True), cutoff=5/128, padding=True), cutoff=0.4, padding=True)
+multi = lp.multi(data, {'gaussian_blur': {'blur_radius': 1}, 'high_pass': {'cutoff': 5/128}, 'low_pass': {'cutoff': 0.4}})
+
+fig, [[ax1, ax2]] = lp.subplots(12, dpi=150, figsize=(8, 4))
+ax1.set_title("multi")
+ax2.set_title("difference")
+ax1.imshow(np.real(multi), colorbar=True)
+ax2.imshow(np.real(multi - multi_dummy), colorbar=True)
+plt.show()
+
 high = lp.high_pass(data, cutoff=5 / 128)
 low = lp.low_pass(data, cutoff=0.4)
 gauss = lp.gaussian_blur(data, blur_radius=blur_radius)
@@ -73,6 +82,14 @@ ax1.imshow(data)
 ax2.imshow(np.real(gauss))
 ax3.imshow(np.real(high))
 ax4.imshow(np.real(low))
+plt.show()
+
+high2 = lp.high_pass(data, cutoff = 10 / 128, dx = 0.5, dy = 0.5)
+fig, [[ax1, ax2]] = lp.subplots(12, figsize=(8, 4))
+ax1.set_title("default dx")
+ax2.set_title("dx halved, cutoff doubled")
+ax1.imshow(high.real, colorbar=True)
+ax2.imshow(high2.real, colorbar=True)
 plt.show()
 
 fig, [[ax1, ax2]] = lp.subplots(12, dpi=150)

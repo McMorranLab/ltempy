@@ -19,6 +19,9 @@ def test_gaussian_blur():
     assert(lp.gaussian_blur(X).shape == (4, 4))
     assert(lp.gaussian_blur(X, padding=False).shape == (4, 4))
 
+def test_multi():
+    X = np.random.random((4, 4))
+    assert(lp.multi(X, {'gaussian_blur': {'blur_radius': 5}}).shape == (4, 4))
 
 def test_clip_data():
     X = np.random.random((4, 4))
@@ -65,6 +68,13 @@ class TestNDAP:
         Y = lp.ndap(X)
         Y.gaussian_blur()
         assert(np.allclose(Y, lp.gaussian_blur(X)))
+
+    def test_ndap_multi(self):
+        X = np.ones((4, 4)) + 1j
+        Y = lp.ndap(X)
+        opts = {}
+        Y.multi(opts)
+        assert(np.allclose(Y, lp.multi(X, opts)))
 
     def test_ndap_clip_data(self):
         X = np.random.random((4, 4)) + 0j

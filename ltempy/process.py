@@ -25,7 +25,7 @@ from ._utils import _extend_and_fill_mirror
 from warnings import warn
 
 __all__ = ['high_pass', 'low_pass', 'gaussian_blur',
-           'clip_data', 'shift_pos', 'outpath', 'ndap']
+           'clip_data', 'shift_pos', 'outpath', 'multi', 'ndap']
 
 
 def high_pass(data, cutoff=1 / 1024, dx=1, dy=1, padding=False):
@@ -62,8 +62,8 @@ def high_pass(data, cutoff=1 / 1024, dx=1, dy=1, padding=False):
         bdata = _extend_and_fill_mirror(data)
     else:
         bdata = data
-    X = np.fft.fftfreq(bdata.shape[1], 1)
-    Y = np.fft.fftfreq(bdata.shape[0], 1)
+    X = np.fft.fftfreq(bdata.shape[1], dx)
+    Y = np.fft.fftfreq(bdata.shape[0], dy)
     x, y = np.meshgrid(X, Y)
 
     g = np.zeros_like(x)
@@ -111,8 +111,8 @@ def low_pass(data, cutoff=1 / 4, dx=1, dy=1, padding=False):
         bdata = _extend_and_fill_mirror(data)
     else:
         bdata = data
-    X = np.fft.fftfreq(bdata.shape[1], 1)
-    Y = np.fft.fftfreq(bdata.shape[0], 1)
+    X = np.fft.fftfreq(bdata.shape[1], dx)
+    Y = np.fft.fftfreq(bdata.shape[0], dy)
     x, y = np.meshgrid(X, Y)
 
     g = np.zeros_like(x)
@@ -164,6 +164,57 @@ def gaussian_blur(data, blur_radius=1, padding = True):
         return(FFdata)
 
 
+def multi(data, opts, dx=1, dy=1):
+    """Perform multiple filters at once, but only performs one Fourier / inverse Fourier transform. 
+    
+    **Parameters**
+
+    * **data** : _complex ndarray_ <br />
+
+    * **opts** : _dictionary_ <br />
+    A dictionary containing the processing to perform. Format is 
+    ```
+    {
+      'gaussian_blur': {'blur_radius': n},
+      'high_pass': {'cutoff': m},
+      'low_pass': {'cutoff': l}
+    }
+    ```
+    Include a filter simply by including it as a key. If a filter is included, 
+    its parameters must match the format above. 
+
+    * **dx** : _float, optional_ <br />
+    Pixel spacing. <br />
+    Default is `dx = 1`.
+
+    * **dy** : _float, optional_ <br />
+    Pixel spacing. <br />
+    Default is `dy = 1`.
+
+    **Returns**
+
+    * _complex ndarray_ <br />
+    
+    """
+    ds0, ds1 = data.shape[0], data.shape[1]
+    bdata = _extend_and_fill_mirror(data)
+    X = np.fft.fftfreq(bdata.shape[1], dx)
+    Y = np.fft.fftfreq(bdata.shape[0], dy)
+    x, y = np.meshgrid(X, Y)
+    Fdata = np.fft.fft2(bdata)
+    g = np.ones_like(Fdata)
+    if "gaussian_blur" in opts:
+      g = g * np.exp(-2 * np.pi**2 * opts['gaussian_blur']['blur_radius']**2 * (x**2 + y**2))
+    if "high_pass" in opts:
+      g[x**2 + y**2 <= opts['high_pass']['cutoff']**2] = 0
+    if "low_pass" in opts:
+      g[x**2 + y**2 >= opts['low_pass']['cutoff']**2] = 0
+    FFdata = np.fft.ifft2(g * Fdata)
+    return(FFdata[ds0:2*ds0, ds1:2*ds1])
+
+        
+
+
 def clip_data(data, sigma=5):
     """Clip data to a certain number of standard deviations from its average.
 
@@ -187,7 +238,6 @@ def clip_data(data, sigma=5):
     out[out < vmin] = vmin
     out[out > vmax] = vmax
     return(out)
-
 
 def shift_pos(data):
     """Shift data to be positive.
@@ -353,7 +403,7 @@ class ndap(np.ndarray):
             self[:, :] = np.real(high_pass(self, cutoff, dx, dy, padding))
         return(self)
 
-    def low_pass(self, cutoff=1 / 4, dx=1, dy=1, padding=False):
+    def low_pass(self, cutoff=1 / 4, dx=None, dy=None, padding=False):
         """Apply a low-pass filter to a 2d-array.
 
         **Parameters**
@@ -388,6 +438,48 @@ class ndap(np.ndarray):
             self[:, :] = low_pass(self, cutoff, dx, dy, padding)
         else:
             self[:, :] = np.real(low_pass(self, cutoff, dx, dy, padding))
+        return(self)
+    
+
+    def multi(self, opts, dx=None, dy=None):
+        """Perform multiple filters at once. Only performs one Fourier / inverse Fourier transform. 
+        
+        **Parameters**
+
+        * **data** : _complex ndarray_ <br />
+
+        * **opts** : _dictionary_ <br />
+        A dictionary containing the processing to perform. Format is 
+        ```
+        {
+          'gaussian_blur': {'blur_radius': n},
+          'high_pass': {'cutoff': m},
+          'low_pass': {'cutoff': l}
+        }
+        ```
+        . Include a filter simply by including it as a key. If a filter is included, 
+        its parameters must match the format above. 
+
+        * **dx** : _float, optional_ <br />
+        Pixel spacing. <br />
+        Default is `dx = self.dx`.
+
+        * **dy** : _float, optional_ <br />
+        Pixel spacing. <br />
+        Default is `dy = self.dy`.
+
+        **Returns**
+
+        * _complex ndarray_ <br />
+        """ 
+        if dx is None:
+          dx = self.dx
+        if dy is None:
+          dy = self.dy
+        if self.isComplex:
+          self[:, :] = multi(self, opts, dx, dy)
+        else:
+          self[:, :] = np.real(multi(self, opts, dx, dy))
         return(self)
 
     def gaussian_blur(self, blur_radius=1, padding=True):
