@@ -149,6 +149,7 @@ class singleAx():
   def __init__(self, ax):
     self.ax = ax
     self.origin = &#39;lower&#39;
+    self.shift = 0
     self.x = None
     self.y = None
     self.xmin = None
@@ -430,7 +431,7 @@ class singleAx():
       d.imag = -1 * d.imag
     imshowargs.update({&#39;extent&#39;: extent})
     imshowargs.update(kwargs)
-    im = self.ax.imshow(rgba(d, brightness=brightness, alpha=alpha), **imshowargs)
+    im = self.ax.imshow(rgba(d, brightness=brightness, alpha=alpha, shift=self.shift), **imshowargs)
     return(im)
 
   def colorbar(self, axesImage, position=&#39;right&#39;, size=&#39;5%&#39;, pad=0.05, **kwargs):
@@ -548,7 +549,7 @@ class singleAx():
     z = x + 1j*y
     sel = np.abs(z) &gt; 1
     z[sel] = 0
-    colors = rgba(z, brightness=brightness, alpha=alpha, cmap=cmap)
+    colors = rgba(z, brightness=brightness, alpha=alpha, cmap=cmap, shift=self.shift)
     colors[:,:,0][sel] = 0
     colors[:,:,1][sel] = 0
     colors[:,:,2][sel] = 0
@@ -771,6 +772,7 @@ plt.show()
   def __init__(self, ax):
     self.ax = ax
     self.origin = &#39;lower&#39;
+    self.shift = 0
     self.x = None
     self.y = None
     self.xmin = None
@@ -1052,7 +1054,7 @@ plt.show()
       d.imag = -1 * d.imag
     imshowargs.update({&#39;extent&#39;: extent})
     imshowargs.update(kwargs)
-    im = self.ax.imshow(rgba(d, brightness=brightness, alpha=alpha), **imshowargs)
+    im = self.ax.imshow(rgba(d, brightness=brightness, alpha=alpha, shift=self.shift), **imshowargs)
     return(im)
 
   def colorbar(self, axesImage, position=&#39;right&#39;, size=&#39;5%&#39;, pad=0.05, **kwargs):
@@ -1170,7 +1172,7 @@ plt.show()
     z = x + 1j*y
     sel = np.abs(z) &gt; 1
     z[sel] = 0
-    colors = rgba(z, brightness=brightness, alpha=alpha, cmap=cmap)
+    colors = rgba(z, brightness=brightness, alpha=alpha, cmap=cmap, shift=self.shift)
     colors[:,:,0][sel] = 0
     colors[:,:,1][sel] = 0
     colors[:,:,2][sel] = 0
@@ -1279,7 +1281,7 @@ Returns the 'AxesImage' returned by <code>matplotlib.axes.Axes.imshow()</code>.<
     d.imag = -1 * d.imag
   imshowargs.update({&#39;extent&#39;: extent})
   imshowargs.update(kwargs)
-  im = self.ax.imshow(rgba(d, brightness=brightness, alpha=alpha), **imshowargs)
+  im = self.ax.imshow(rgba(d, brightness=brightness, alpha=alpha, shift=self.shift), **imshowargs)
   return(im)</code></pre>
 </details>
 </dd>
@@ -1461,7 +1463,7 @@ All other kwargs are passed on to <code>matplotlib.axes.Axes.imshow</code>.</p>
   z = x + 1j*y
   sel = np.abs(z) &gt; 1
   z[sel] = 0
-  colors = rgba(z, brightness=brightness, alpha=alpha, cmap=cmap)
+  colors = rgba(z, brightness=brightness, alpha=alpha, cmap=cmap, shift=self.shift)
   colors[:,:,0][sel] = 0
   colors[:,:,1][sel] = 0
   colors[:,:,2][sel] = 0

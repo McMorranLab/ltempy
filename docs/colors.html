@@ -63,134 +63,134 @@ import matplotlib.pyplot as plt
 from . import constants as _
 
 __all__ = [&#39;cielab_rgba&#39;,
-                        &#39;rgba&#39;,
-                        &#39;cielab_cmap&#39;]
+            &#39;rgba&#39;,
+            &#39;cielab_cmap&#39;]
 
 def cielab_cmap(samples=256):
-        &#34;&#34;&#34;Creates a `matplotlib.colors.ListedColormap` of the CIELAB color space.
+    &#34;&#34;&#34;Creates a `matplotlib.colors.ListedColormap` of the CIELAB color space.
 
-        **Parameters**
+    **Parameters**
 
-        * **samples** : _integer, optional_ &lt;br /&gt;
-        The number of samples. Any additional values will be nearest-neighbor interpolated by matplotlib. &lt;br /&gt;
-        Default is `samples = 256`.
+    * **samples** : _integer, optional_ &lt;br /&gt;
+    The number of samples. Any additional values will be nearest-neighbor interpolated by matplotlib. &lt;br /&gt;
+    Default is `samples = 256`.
 
-        **Returns**
+    **Returns**
 
-        * _ListedColormap_ &lt;br /&gt;
-        A colormap. Many `matplotlib` functions that accept strings for the cmap argument
-        also accept a `ListedColormap`: `plt.imshow(data, cmap=cmap)`.
-        &#34;&#34;&#34;
-        angles = np.linspace(0,2*_.pi,samples)
-        cvals = np.exp(1j*angles).reshape(1, samples)
-        rgbavals = cielab_rgba(cvals).squeeze()/255
-        cmap = ListedColormap(rgbavals)
-        return(cmap)
+    * _ListedColormap_ &lt;br /&gt;
+    A colormap. Many `matplotlib` functions that accept strings for the cmap argument
+    also accept a `ListedColormap`: `plt.imshow(data, cmap=cmap)`.
+    &#34;&#34;&#34;
+    angles = np.linspace(0,2*_.pi,samples)
+    cvals = np.exp(1j*angles).reshape(1, samples)
+    rgbavals = cielab_rgba(cvals).squeeze()/255
+    cmap = ListedColormap(rgbavals)
+    return(cmap)
 
-def cielab_rgba(data, brightness = &#39;intensity&#39;, alpha = &#39;uniform&#39;):
-        &#34;&#34;&#34;Convert complex values to rgba values based on the CIELAB color space.
+def cielab_rgba(data, brightness = &#39;intensity&#39;, alpha = &#39;uniform&#39;, shift=0):
+    &#34;&#34;&#34;Convert complex values to rgba values based on the CIELAB color space.
 
-        Color represents the complex phase, while brightness may represent amplitude,
-        intensity (amplituded squared) or be uniform.
+    Color represents the complex phase, while brightness may represent amplitude,
+    intensity (amplituded squared) or be uniform.
 
-        The CIELAB color space is designed to be perceptually uniform - none of the
-        colors appear brighter or darker than the others.
+    The CIELAB color space is designed to be perceptually uniform - none of the
+    colors appear brighter or darker than the others.
 
-        **Parameters**
+    **Parameters**
 
-        * **data** : _ndarray_ &lt;br /&gt;
-        An array with the data to convert. Dtype may be complex or real - if real,
-        the color will be uniform, and values will be represented by brightness. Does not need to be normalized.
+    * **data** : _ndarray_ &lt;br /&gt;
+    An array with the data to convert. Dtype may be complex or real - if real,
+    the color will be uniform, and values will be represented by brightness. Does not need to be normalized.
 
-        * **brightness** : _string, optional_ &lt;br /&gt;
-        Allowed values: `&#39;intensity&#39;`, `&#39;amplitude&#39;`, `&#39;uniform&#39;`. &lt;br /&gt;
-        Default is `brightness = &#39;intensity&#39;`.
+    * **brightness** : _string, optional_ &lt;br /&gt;
+    Allowed values: `&#39;intensity&#39;`, `&#39;amplitude&#39;`, `&#39;uniform&#39;`. &lt;br /&gt;
+    Default is `brightness = &#39;intensity&#39;`.
 
-        * **alpha** : _string, optional_ &lt;br /&gt;
-        Allowed values: `&#39;intensity&#39;`, `&#39;amplitude&#39;`, `&#39;uniform&#39;`. Determines the alpha
-        component of the rgba value. &lt;br /&gt;
-        Default is `alpha = &#39;uniform&#39;`.
+    * **alpha** : _string, optional_ &lt;br /&gt;
+    Allowed values: `&#39;intensity&#39;`, `&#39;amplitude&#39;`, `&#39;uniform&#39;`. Determines the alpha
+    component of the rgba value. &lt;br /&gt;
+    Default is `alpha = &#39;uniform&#39;`.
 
-        **Returns**
+    **Returns**
 
-        * _ndarray_ &lt;br /&gt;
-        The calculated rgba components. If the input array has
-        shape MxN, the output array will have shape MxNx4.
-        &#34;&#34;&#34;
-        vals = {
-                &#39;uniform&#39;: lambda data: 255,
-                &#39;amplitude&#39;: lambda data: np.absolute(data) * 255,
-                &#39;intensity&#39;: lambda data: np.absolute(data)**2 * 255
-                }
-        if not brightness in vals.keys():
-                raise ValueError(&#34;Invalid brightness value; should be one of {}&#34;.format(list(vals.keys())))
-        if not alpha in vals.keys():
-                raise ValueError(&#34;Invalid alpha value; should be one of {}&#34;.format(list(vals.keys())))
+    * _ndarray_ &lt;br /&gt;
+    The calculated rgba components. If the input array has
+    shape MxN, the output array will have shape MxNx4.
+    &#34;&#34;&#34;
+    vals = {
+        &#39;uniform&#39;: lambda data: 255,
+        &#39;amplitude&#39;: lambda data: np.absolute(data) * 255,
+        &#39;intensity&#39;: lambda data: np.absolute(data)**2 * 255
+        }
+    if not brightness in vals.keys():
+        raise ValueError(&#34;Invalid brightness value; should be one of {}&#34;.format(list(vals.keys())))
+    if not alpha in vals.keys():
+        raise ValueError(&#34;Invalid alpha value; should be one of {}&#34;.format(list(vals.keys())))
 
-        data = data / np.max(np.abs(data))
-        rgba_image_components = np.zeros(np.append(data.shape, 4),dtype=np.uint8)
-        bvalue = vals[brightness](data)
-        avalue = vals[alpha](data)
-        hue = (np.angle(data) + np.pi) / 2
-        pi6 = np.pi/6
-        def sin2(array, offset):
-                return(np.sin(array-offset)**2)
-        r = sin2(hue, .15*pi6) + 0.35 * sin2(hue, 3.15 * pi6)
-        b = sin2(hue, 4.25 * pi6)
-        g = .6*sin2(hue, 2*pi6) + 0.065 * sin2(hue, 5.05 * pi6) + 0.445*b + 0.33*r
-        rgba_image_components[...,0] = (r * bvalue).astype(np.uint8)
-        rgba_image_components[...,1] = (g * bvalue).astype(np.uint8)
-        rgba_image_components[...,2] = (b * bvalue).astype(np.uint8)
-        rgba_image_components[...,3] = np.full(data.shape, fill_value=avalue, dtype=np.uint8)
-        return(rgba_image_components)
+    data = data / np.max(np.abs(data))
+    rgba_image_components = np.zeros(np.append(data.shape, 4),dtype=np.uint8)
+    bvalue = vals[brightness](data)
+    avalue = vals[alpha](data)
+    hue = (np.angle(data) + np.pi - shift) / 2
+    pi6 = np.pi/6
+    def sin2(array, offset):
+        return(np.sin(array-offset)**2)
+    r = sin2(hue, .15*pi6) + 0.35 * sin2(hue, 3.15 * pi6)
+    b = sin2(hue, 4.25 * pi6)
+    g = .6*sin2(hue, 2*pi6) + 0.065 * sin2(hue, 5.05 * pi6) + 0.445*b + 0.33*r
+    rgba_image_components[...,0] = (r * bvalue).astype(np.uint8)
+    rgba_image_components[...,1] = (g * bvalue).astype(np.uint8)
+    rgba_image_components[...,2] = (b * bvalue).astype(np.uint8)
+    rgba_image_components[...,3] = np.full(data.shape, fill_value=avalue, dtype=np.uint8)
+    return(rgba_image_components)
 
-def rgba(mode, cmap = None, brightness = &#39;intensity&#39;, alpha = &#39;uniform&#39;):
-        &#34;&#34;&#34;Converts a 2d complex array to rgba data.
+def rgba(mode, cmap = None, brightness = &#39;intensity&#39;, alpha = &#39;uniform&#39;, shift=0):
+    &#34;&#34;&#34;Converts a 2d complex array to rgba data.
 
-        **Parameters**
+    **Parameters**
 
-        * **mode** : _complex ndarray_ &lt;br /&gt;
-        An array with the data to represent. Dtype may be complex or real.
+    * **mode** : _complex ndarray_ &lt;br /&gt;
+    An array with the data to represent. Dtype may be complex or real.
 
-        * **cmap** : _string, optional_ &lt;br /&gt;
-        A `matplotlib` ScalarMappable to use for colors. If left blank,
-        the CIELAB color space will be used instead. &lt;br /&gt;
-        Default is `cmap = None`.
+    * **cmap** : _string, optional_ &lt;br /&gt;
+    A `matplotlib` ScalarMappable to use for colors. If left blank,
+    the CIELAB color space will be used instead. &lt;br /&gt;
+    Default is `cmap = None`.
 
-        * **brightness** : _string, optional_ &lt;br /&gt;
-        Allowed values: `&#39;intensity&#39;`, `&#39;amplitude&#39;`, `&#39;uniform&#39;`. &lt;br /&gt;
-        Default is `brightness = &#39;intensity&#39;`.
+    * **brightness** : _string, optional_ &lt;br /&gt;
+    Allowed values: `&#39;intensity&#39;`, `&#39;amplitude&#39;`, `&#39;uniform&#39;`. &lt;br /&gt;
+    Default is `brightness = &#39;intensity&#39;`.
 
-        * **alpha** : _string, optional_ &lt;br /&gt;
-        Allowed values: `&#39;intensity&#39;`, `&#39;amplitude&#39;`, `&#39;uniform&#39;`. Determines the alpha (opacity)
-        component of the rgba value. &lt;br /&gt;
-        Default is `alpha = &#39;uniform&#39;`.
+    * **alpha** : _string, optional_ &lt;br /&gt;
+    Allowed values: `&#39;intensity&#39;`, `&#39;amplitude&#39;`, `&#39;uniform&#39;`. Determines the alpha (opacity)
+    component of the rgba value. &lt;br /&gt;
+    Default is `alpha = &#39;uniform&#39;`.
 
-        **Returns**
+    **Returns**
 
-        * _ndarray_ &lt;br /&gt;
-        The calculated rgba components. If the input array has
-        shape NxN, the output array will have shape NxNx4.
-        &#34;&#34;&#34;
-        vals = {
-                &#39;uniform&#39;: lambda data: 255,
-                &#39;amplitude&#39;: lambda data: 255 * np.absolute(data),
-                &#39;intensity&#39;: lambda data: 255 * np.absolute(data)**2
-                }
-        if not brightness in vals.keys():
-                raise ValueError(&#34;Invalid brightness value; should be one of {}&#34;.format(list(vals.keys())))
-        if not alpha in vals.keys():
-                raise ValueError(&#34;Invalid alpha value; should be one of {}&#34;.format(list(vals.keys())))
-        if cmap is None:
-                return(cielab_rgba(mode, brightness, alpha))
-        mode = mode / np.max(np.absolute(mode))
-        colormap = plt.cm.ScalarMappable(cmap=cmap)
-        out = colormap.to_rgba(np.angle(mode))
-        out[...,-1] = vals[alpha](mode)
-        out[...,0] = out[...,0] * vals[brightness](mode)
-        out[...,1] = out[...,1] * vals[brightness](mode)
-        out[...,2] = out[...,2] * vals[brightness](mode)
-        return(out.astype(np.uint8))</code></pre>
+    * _ndarray_ &lt;br /&gt;
+    The calculated rgba components. If the input array has
+    shape NxN, the output array will have shape NxNx4.
+    &#34;&#34;&#34;
+    vals = {
+        &#39;uniform&#39;: lambda data: 255,
+        &#39;amplitude&#39;: lambda data: 255 * np.absolute(data),
+        &#39;intensity&#39;: lambda data: 255 * np.absolute(data)**2
+        }
+    if not brightness in vals.keys():
+        raise ValueError(&#34;Invalid brightness value; should be one of {}&#34;.format(list(vals.keys())))
+    if not alpha in vals.keys():
+        raise ValueError(&#34;Invalid alpha value; should be one of {}&#34;.format(list(vals.keys())))
+    if cmap is None:
+        return(cielab_rgba(mode, brightness, alpha, shift))
+    mode = mode / np.max(np.absolute(mode))
+    colormap = plt.cm.ScalarMappable(cmap=cmap)
+    out = colormap.to_rgba(np.angle(mode) + shift)
+    out[...,-1] = vals[alpha](mode)
+    out[...,0] = out[...,0] * vals[brightness](mode)
+    out[...,1] = out[...,1] * vals[brightness](mode)
+    out[...,2] = out[...,2] * vals[brightness](mode)
+    return(out.astype(np.uint8))</code></pre>
 </details>
 </section>
 <section>
@@ -222,29 +222,29 @@ also accept a <code>ListedColormap</code>: <code>plt.imshow(data, cmap=cmap)</co
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def cielab_cmap(samples=256):
-        &#34;&#34;&#34;Creates a `matplotlib.colors.ListedColormap` of the CIELAB color space.
+    &#34;&#34;&#34;Creates a `matplotlib.colors.ListedColormap` of the CIELAB color space.
 
-        **Parameters**
+    **Parameters**
 
-        * **samples** : _integer, optional_ &lt;br /&gt;
-        The number of samples. Any additional values will be nearest-neighbor interpolated by matplotlib. &lt;br /&gt;
-        Default is `samples = 256`.
+    * **samples** : _integer, optional_ &lt;br /&gt;
+    The number of samples. Any additional values will be nearest-neighbor interpolated by matplotlib. &lt;br /&gt;
+    Default is `samples = 256`.
 
-        **Returns**
+    **Returns**
 
-        * _ListedColormap_ &lt;br /&gt;
-        A colormap. Many `matplotlib` functions that accept strings for the cmap argument
-        also accept a `ListedColormap`: `plt.imshow(data, cmap=cmap)`.
-        &#34;&#34;&#34;
-        angles = np.linspace(0,2*_.pi,samples)
-        cvals = np.exp(1j*angles).reshape(1, samples)
-        rgbavals = cielab_rgba(cvals).squeeze()/255
-        cmap = ListedColormap(rgbavals)
-        return(cmap)</code></pre>
+    * _ListedColormap_ &lt;br /&gt;
+    A colormap. Many `matplotlib` functions that accept strings for the cmap argument
+    also accept a `ListedColormap`: `plt.imshow(data, cmap=cmap)`.
+    &#34;&#34;&#34;
+    angles = np.linspace(0,2*_.pi,samples)
+    cvals = np.exp(1j*angles).reshape(1, samples)
+    rgbavals = cielab_rgba(cvals).squeeze()/255
+    cmap = ListedColormap(rgbavals)
+    return(cmap)</code></pre>
 </details>
 </dd>
 <dt id="ltempy.colors.cielab_rgba"><code class="name flex">
-<span>def <span class="ident">cielab_rgba</span></span>(<span>data, brightness='intensity', alpha='uniform')</span>
+<span>def <span class="ident">cielab_rgba</span></span>(<span>data, brightness='intensity', alpha='uniform', shift=0)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Convert complex values to rgba values based on the CIELAB color space.</p>
@@ -281,66 +281,66 @@ shape MxN, the output array will have shape MxNx4.</li>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def cielab_rgba(data, brightness = &#39;intensity&#39;, alpha = &#39;uniform&#39;):
-        &#34;&#34;&#34;Convert complex values to rgba values based on the CIELAB color space.
+<pre><code class="python">def cielab_rgba(data, brightness = &#39;intensity&#39;, alpha = &#39;uniform&#39;, shift=0):
+    &#34;&#34;&#34;Convert complex values to rgba values based on the CIELAB color space.
 
-        Color represents the complex phase, while brightness may represent amplitude,
-        intensity (amplituded squared) or be uniform.
+    Color represents the complex phase, while brightness may represent amplitude,
+    intensity (amplituded squared) or be uniform.
 
-        The CIELAB color space is designed to be perceptually uniform - none of the
-        colors appear brighter or darker than the others.
+    The CIELAB color space is designed to be perceptually uniform - none of the
+    colors appear brighter or darker than the others.
 
-        **Parameters**
+    **Parameters**
 
-        * **data** : _ndarray_ &lt;br /&gt;
-        An array with the data to convert. Dtype may be complex or real - if real,
-        the color will be uniform, and values will be represented by brightness. Does not need to be normalized.
+    * **data** : _ndarray_ &lt;br /&gt;
+    An array with the data to convert. Dtype may be complex or real - if real,
+    the color will be uniform, and values will be represented by brightness. Does not need to be normalized.
 
-        * **brightness** : _string, optional_ &lt;br /&gt;
-        Allowed values: `&#39;intensity&#39;`, `&#39;amplitude&#39;`, `&#39;uniform&#39;`. &lt;br /&gt;
-        Default is `brightness = &#39;intensity&#39;`.
+    * **brightness** : _string, optional_ &lt;br /&gt;
+    Allowed values: `&#39;intensity&#39;`, `&#39;amplitude&#39;`, `&#39;uniform&#39;`. &lt;br /&gt;
+    Default is `brightness = &#39;intensity&#39;`.
 
-        * **alpha** : _string, optional_ &lt;br /&gt;
-        Allowed values: `&#39;intensity&#39;`, `&#39;amplitude&#39;`, `&#39;uniform&#39;`. Determines the alpha
-        component of the rgba value. &lt;br /&gt;
-        Default is `alpha = &#39;uniform&#39;`.
+    * **alpha** : _string, optional_ &lt;br /&gt;
+    Allowed values: `&#39;intensity&#39;`, `&#39;amplitude&#39;`, `&#39;uniform&#39;`. Determines the alpha
+    component of the rgba value. &lt;br /&gt;
+    Default is `alpha = &#39;uniform&#39;`.
 
-        **Returns**
+    **Returns**
 
-        * _ndarray_ &lt;br /&gt;
-        The calculated rgba components. If the input array has
-        shape MxN, the output array will have shape MxNx4.
-        &#34;&#34;&#34;
-        vals = {
-                &#39;uniform&#39;: lambda data: 255,
-                &#39;amplitude&#39;: lambda data: np.absolute(data) * 255,
-                &#39;intensity&#39;: lambda data: np.absolute(data)**2 * 255
-                }
-        if not brightness in vals.keys():
-                raise ValueError(&#34;Invalid brightness value; should be one of {}&#34;.format(list(vals.keys())))
-        if not alpha in vals.keys():
-                raise ValueError(&#34;Invalid alpha value; should be one of {}&#34;.format(list(vals.keys())))
+    * _ndarray_ &lt;br /&gt;
+    The calculated rgba components. If the input array has
+    shape MxN, the output array will have shape MxNx4.
+    &#34;&#34;&#34;
+    vals = {
+        &#39;uniform&#39;: lambda data: 255,
+        &#39;amplitude&#39;: lambda data: np.absolute(data) * 255,
+        &#39;intensity&#39;: lambda data: np.absolute(data)**2 * 255
+        }
+    if not brightness in vals.keys():
+        raise ValueError(&#34;Invalid brightness value; should be one of {}&#34;.format(list(vals.keys())))
+    if not alpha in vals.keys():
+        raise ValueError(&#34;Invalid alpha value; should be one of {}&#34;.format(list(vals.keys())))
 
-        data = data / np.max(np.abs(data))
-        rgba_image_components = np.zeros(np.append(data.shape, 4),dtype=np.uint8)
-        bvalue = vals[brightness](data)
-        avalue = vals[alpha](data)
-        hue = (np.angle(data) + np.pi) / 2
-        pi6 = np.pi/6
-        def sin2(array, offset):
-                return(np.sin(array-offset)**2)
-        r = sin2(hue, .15*pi6) + 0.35 * sin2(hue, 3.15 * pi6)
-        b = sin2(hue, 4.25 * pi6)
-        g = .6*sin2(hue, 2*pi6) + 0.065 * sin2(hue, 5.05 * pi6) + 0.445*b + 0.33*r
-        rgba_image_components[...,0] = (r * bvalue).astype(np.uint8)
-        rgba_image_components[...,1] = (g * bvalue).astype(np.uint8)
-        rgba_image_components[...,2] = (b * bvalue).astype(np.uint8)
-        rgba_image_components[...,3] = np.full(data.shape, fill_value=avalue, dtype=np.uint8)
-        return(rgba_image_components)</code></pre>
+    data = data / np.max(np.abs(data))
+    rgba_image_components = np.zeros(np.append(data.shape, 4),dtype=np.uint8)
+    bvalue = vals[brightness](data)
+    avalue = vals[alpha](data)
+    hue = (np.angle(data) + np.pi - shift) / 2
+    pi6 = np.pi/6
+    def sin2(array, offset):
+        return(np.sin(array-offset)**2)
+    r = sin2(hue, .15*pi6) + 0.35 * sin2(hue, 3.15 * pi6)
+    b = sin2(hue, 4.25 * pi6)
+    g = .6*sin2(hue, 2*pi6) + 0.065 * sin2(hue, 5.05 * pi6) + 0.445*b + 0.33*r
+    rgba_image_components[...,0] = (r * bvalue).astype(np.uint8)
+    rgba_image_components[...,1] = (g * bvalue).astype(np.uint8)
+    rgba_image_components[...,2] = (b * bvalue).astype(np.uint8)
+    rgba_image_components[...,3] = np.full(data.shape, fill_value=avalue, dtype=np.uint8)
+    return(rgba_image_components)</code></pre>
 </details>
 </dd>
 <dt id="ltempy.colors.rgba"><code class="name flex">
-<span>def <span class="ident">rgba</span></span>(<span>mode, cmap=None, brightness='intensity', alpha='uniform')</span>
+<span>def <span class="ident">rgba</span></span>(<span>mode, cmap=None, brightness='intensity', alpha='uniform', shift=0)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Converts a 2d complex array to rgba data.</p>
@@ -378,53 +378,53 @@ shape NxN, the output array will have shape NxNx4.</li>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def rgba(mode, cmap = None, brightness = &#39;intensity&#39;, alpha = &#39;uniform&#39;):
-        &#34;&#34;&#34;Converts a 2d complex array to rgba data.
+<pre><code class="python">def rgba(mode, cmap = None, brightness = &#39;intensity&#39;, alpha = &#39;uniform&#39;, shift=0):
+    &#34;&#34;&#34;Converts a 2d complex array to rgba data.
 
-        **Parameters**
+    **Parameters**
 
-        * **mode** : _complex ndarray_ &lt;br /&gt;
-        An array with the data to represent. Dtype may be complex or real.
+    * **mode** : _complex ndarray_ &lt;br /&gt;
+    An array with the data to represent. Dtype may be complex or real.
 
-        * **cmap** : _string, optional_ &lt;br /&gt;
-        A `matplotlib` ScalarMappable to use for colors. If left blank,
-        the CIELAB color space will be used instead. &lt;br /&gt;
-        Default is `cmap = None`.
+    * **cmap** : _string, optional_ &lt;br /&gt;
+    A `matplotlib` ScalarMappable to use for colors. If left blank,
+    the CIELAB color space will be used instead. &lt;br /&gt;
+    Default is `cmap = None`.
 
-        * **brightness** : _string, optional_ &lt;br /&gt;
-        Allowed values: `&#39;intensity&#39;`, `&#39;amplitude&#39;`, `&#39;uniform&#39;`. &lt;br /&gt;
-        Default is `brightness = &#39;intensity&#39;`.
+    * **brightness** : _string, optional_ &lt;br /&gt;
+    Allowed values: `&#39;intensity&#39;`, `&#39;amplitude&#39;`, `&#39;uniform&#39;`. &lt;br /&gt;
+    Default is `brightness = &#39;intensity&#39;`.
 
-        * **alpha** : _string, optional_ &lt;br /&gt;
-        Allowed values: `&#39;intensity&#39;`, `&#39;amplitude&#39;`, `&#39;uniform&#39;`. Determines the alpha (opacity)
-        component of the rgba value. &lt;br /&gt;
-        Default is `alpha = &#39;uniform&#39;`.
+    * **alpha** : _string, optional_ &lt;br /&gt;
+    Allowed values: `&#39;intensity&#39;`, `&#39;amplitude&#39;`, `&#39;uniform&#39;`. Determines the alpha (opacity)
+    component of the rgba value. &lt;br /&gt;
+    Default is `alpha = &#39;uniform&#39;`.
 
-        **Returns**
+    **Returns**
 
-        * _ndarray_ &lt;br /&gt;
-        The calculated rgba components. If the input array has
-        shape NxN, the output array will have shape NxNx4.
-        &#34;&#34;&#34;
-        vals = {
-                &#39;uniform&#39;: lambda data: 255,
-                &#39;amplitude&#39;: lambda data: 255 * np.absolute(data),
-                &#39;intensity&#39;: lambda data: 255 * np.absolute(data)**2
-                }
-        if not brightness in vals.keys():
-                raise ValueError(&#34;Invalid brightness value; should be one of {}&#34;.format(list(vals.keys())))
-        if not alpha in vals.keys():
-                raise ValueError(&#34;Invalid alpha value; should be one of {}&#34;.format(list(vals.keys())))
-        if cmap is None:
-                return(cielab_rgba(mode, brightness, alpha))
-        mode = mode / np.max(np.absolute(mode))
-        colormap = plt.cm.ScalarMappable(cmap=cmap)
-        out = colormap.to_rgba(np.angle(mode))
-        out[...,-1] = vals[alpha](mode)
-        out[...,0] = out[...,0] * vals[brightness](mode)
-        out[...,1] = out[...,1] * vals[brightness](mode)
-        out[...,2] = out[...,2] * vals[brightness](mode)
-        return(out.astype(np.uint8))</code></pre>
+    * _ndarray_ &lt;br /&gt;
+    The calculated rgba components. If the input array has
+    shape NxN, the output array will have shape NxNx4.
+    &#34;&#34;&#34;
+    vals = {
+        &#39;uniform&#39;: lambda data: 255,
+        &#39;amplitude&#39;: lambda data: 255 * np.absolute(data),
+        &#39;intensity&#39;: lambda data: 255 * np.absolute(data)**2
+        }
+    if not brightness in vals.keys():
+        raise ValueError(&#34;Invalid brightness value; should be one of {}&#34;.format(list(vals.keys())))
+    if not alpha in vals.keys():
+        raise ValueError(&#34;Invalid alpha value; should be one of {}&#34;.format(list(vals.keys())))
+    if cmap is None:
+        return(cielab_rgba(mode, brightness, alpha, shift))
+    mode = mode / np.max(np.absolute(mode))
+    colormap = plt.cm.ScalarMappable(cmap=cmap)
+    out = colormap.to_rgba(np.angle(mode) + shift)
+    out[...,-1] = vals[alpha](mode)
+    out[...,0] = out[...,0] * vals[brightness](mode)
+    out[...,1] = out[...,1] * vals[brightness](mode)
+    out[...,2] = out[...,2] * vals[brightness](mode)
+    return(out.astype(np.uint8))</code></pre>
 </details>
 </dd>
 </dl>

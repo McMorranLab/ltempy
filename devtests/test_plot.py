@@ -18,9 +18,12 @@ fig, [[ax1, ax2]] = ltempy.subplots(12)
 ax1.set_axes(X, Y)
 ax1.inset(window)
 ax1.imshow(numpy.abs(f)**2)
+ax1.colorwheel()
+ax2.shift = np.pi / 2
 ax2.set_axes(ax1.x, ax1.y)
 ax2.set_window(window)
 ax2.cielab(f)
+ax2.colorwheel()
 ax2.quiver(f, step=4)
 plt.show()
 

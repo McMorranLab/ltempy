@@ -95,6 +95,7 @@ class singleAx():
   def __init__(self, ax):
     self.ax = ax
     self.origin = 'lower'
+    self.shift = 0
     self.x = None
     self.y = None
     self.xmin = None
@@ -376,7 +377,7 @@ class singleAx():
       d.imag = -1 * d.imag
     imshowargs.update({'extent': extent})
     imshowargs.update(kwargs)
-    im = self.ax.imshow(rgba(d, brightness=brightness, alpha=alpha), **imshowargs)
+    im = self.ax.imshow(rgba(d, brightness=brightness, alpha=alpha, shift=self.shift), **imshowargs)
     return(im)
 
   def colorbar(self, axesImage, position='right', size='5%', pad=0.05, **kwargs):
@@ -494,7 +495,7 @@ class singleAx():
     z = x + 1j*y
     sel = np.abs(z) > 1
     z[sel] = 0
-    colors = rgba(z, brightness=brightness, alpha=alpha, cmap=cmap)
+    colors = rgba(z, brightness=brightness, alpha=alpha, cmap=cmap, shift=self.shift)
     colors[:,:,0][sel] = 0
     colors[:,:,1][sel] = 0
     colors[:,:,2][sel] = 0

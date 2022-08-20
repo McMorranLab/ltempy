@@ -25,7 +25,7 @@ git push origin
 rm -rf build dist *.egg-info
 pip install --upgrade build twine
 python -m build
-python -m twine upload (--repository testpypi) dist/*
+python -m twine upload dist/*
 
 ################### Check the install from PyPi #######
 python -m venv ivenv
