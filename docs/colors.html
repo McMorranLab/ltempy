@@ -111,6 +111,10 @@ def cielab_rgba(data, brightness = &#39;intensity&#39;, alpha = &#39;uniform&#39
     component of the rgba value. &lt;br /&gt;
     Default is `alpha = &#39;uniform&#39;`.
 
+    * **shift** : _number, optional_ &lt;br /&gt;
+    Angle by which to shift the colors. Does not modify the angle of the data. &lt;br /&gt;
+    Default is `shift = 0`.  
+
     **Returns**
 
     * _ndarray_ &lt;br /&gt;
@@ -166,6 +170,10 @@ def rgba(mode, cmap = None, brightness = &#39;intensity&#39;, alpha = &#39;unifo
     component of the rgba value. &lt;br /&gt;
     Default is `alpha = &#39;uniform&#39;`.
 
+    * **shift** : _number, optional_ &lt;br /&gt;
+    Angle by which to shift the colors. Does not modify the angle of the data. &lt;br /&gt;
+    Default is `shift = 0`.  
+
     **Returns**
 
     * _ndarray_ &lt;br /&gt;
@@ -185,7 +193,7 @@ def rgba(mode, cmap = None, brightness = &#39;intensity&#39;, alpha = &#39;unifo
         return(cielab_rgba(mode, brightness, alpha, shift))
     mode = mode / np.max(np.absolute(mode))
     colormap = plt.cm.ScalarMappable(cmap=cmap)
-    out = colormap.to_rgba(np.angle(mode) + shift)
+    out = colormap.to_rgba((np.angle(mode) - shift)%(2 * np.pi))
     out[...,-1] = vals[alpha](mode)
     out[...,0] = out[...,0] * vals[brightness](mode)
     out[...,1] = out[...,1] * vals[brightness](mode)
@@ -270,6 +278,12 @@ Allowed values: <code>'intensity'</code>, <code>'amplitude'</code>, <code>'unifo
 component of the rgba value. <br />
 Default is <code>alpha = 'uniform'</code>.</p>
 </li>
+<li>
+<p><strong>shift</strong> : <em>number, optional</em> <br />
+Angle by which to shift the colors. Does not modify the angle of the data. <br />
+Default is <code>shift = 0</code>.
+</p>
+</li>
 </ul>
 <p><strong>Returns</strong></p>
 <ul>
@@ -304,6 +318,10 @@ shape MxN, the output array will have shape MxNx4.</li>
     Allowed values: `&#39;intensity&#39;`, `&#39;amplitude&#39;`, `&#39;uniform&#39;`. Determines the alpha
     component of the rgba value. &lt;br /&gt;
     Default is `alpha = &#39;uniform&#39;`.
+
+    * **shift** : _number, optional_ &lt;br /&gt;
+    Angle by which to shift the colors. Does not modify the angle of the data. &lt;br /&gt;
+    Default is `shift = 0`.  
 
     **Returns**
 
@@ -367,6 +385,12 @@ Allowed values: <code>'intensity'</code>, <code>'amplitude'</code>, <code>'unifo
 component of the rgba value. <br />
 Default is <code>alpha = 'uniform'</code>.</p>
 </li>
+<li>
+<p><strong>shift</strong> : <em>number, optional</em> <br />
+Angle by which to shift the colors. Does not modify the angle of the data. <br />
+Default is <code>shift = 0</code>.
+</p>
+</li>
 </ul>
 <p><strong>Returns</strong></p>
 <ul>
@@ -400,6 +424,10 @@ shape NxN, the output array will have shape NxNx4.</li>
     component of the rgba value. &lt;br /&gt;
     Default is `alpha = &#39;uniform&#39;`.
 
+    * **shift** : _number, optional_ &lt;br /&gt;
+    Angle by which to shift the colors. Does not modify the angle of the data. &lt;br /&gt;
+    Default is `shift = 0`.  
+
     **Returns**
 
     * _ndarray_ &lt;br /&gt;
@@ -419,7 +447,7 @@ shape NxN, the output array will have shape NxNx4.</li>
         return(cielab_rgba(mode, brightness, alpha, shift))
     mode = mode / np.max(np.absolute(mode))
     colormap = plt.cm.ScalarMappable(cmap=cmap)
-    out = colormap.to_rgba(np.angle(mode) + shift)
+    out = colormap.to_rgba((np.angle(mode) - shift)%(2 * np.pi))
     out[...,-1] = vals[alpha](mode)
     out[...,0] = out[...,0] * vals[brightness](mode)
     out[...,1] = out[...,1] * vals[brightness](mode)

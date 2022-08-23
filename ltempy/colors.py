@@ -77,6 +77,10 @@ def cielab_rgba(data, brightness = 'intensity', alpha = 'uniform', shift=0):
     component of the rgba value. <br />
     Default is `alpha = 'uniform'`.
 
+    * **shift** : _number, optional_ <br />
+    Angle by which to shift the colors. Does not modify the angle of the data. <br />
+    Default is `shift = 0`.  
+
     **Returns**
 
     * _ndarray_ <br />
@@ -131,6 +135,10 @@ def rgba(mode, cmap = None, brightness = 'intensity', alpha = 'uniform', shift=0
     Allowed values: `'intensity'`, `'amplitude'`, `'uniform'`. Determines the alpha (opacity)
     component of the rgba value. <br />
     Default is `alpha = 'uniform'`.
+
+    * **shift** : _number, optional_ <br />
+    Angle by which to shift the colors. Does not modify the angle of the data. <br />
+    Default is `shift = 0`.  
 
     **Returns**
 

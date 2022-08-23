@@ -12,10 +12,6 @@ ax[0, 0].imshow(lp.rgba(z, cmap='viridis', brightness='uniform'))
 ax[0, 1].imshow(lp.rgba(z, cmap='viridis', brightness='uniform', shift=np.pi / 2))
 plt.show()
 
-raise Exception
-
-
-# rgba(mode, cmap = None, brightness = 'intensity', alpha = 'uniform')
 print("testing rgba()")
 opts = ['uniform', 'amplitude', 'intensity']
 for brightness in opts:
