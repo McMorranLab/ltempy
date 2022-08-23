@@ -151,7 +151,7 @@ def rgba(mode, cmap = None, brightness = 'intensity', alpha = 'uniform', shift=0
         return(cielab_rgba(mode, brightness, alpha, shift))
     mode = mode / np.max(np.absolute(mode))
     colormap = plt.cm.ScalarMappable(cmap=cmap)
-    out = colormap.to_rgba(np.angle(mode) + shift)
+    out = colormap.to_rgba((np.angle(mode) - shift)%(2 * np.pi))
     out[...,-1] = vals[alpha](mode)
     out[...,0] = out[...,0] * vals[brightness](mode)
     out[...,1] = out[...,1] * vals[brightness](mode)

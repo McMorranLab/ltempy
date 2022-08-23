@@ -7,6 +7,14 @@ Y = np.linspace(-0.5, 0.5, 50)
 x, y = np.meshgrid(X, Y)
 z = x + 1j * y
 
+fig, ax = lp.subplots(12)
+ax[0, 0].imshow(lp.rgba(z, cmap='viridis', brightness='uniform'))
+ax[0, 1].imshow(lp.rgba(z, cmap='viridis', brightness='uniform', shift=np.pi / 2))
+plt.show()
+
+raise Exception
+
+
 # rgba(mode, cmap = None, brightness = 'intensity', alpha = 'uniform')
 print("testing rgba()")
 opts = ['uniform', 'amplitude', 'intensity']
