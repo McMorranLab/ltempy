@@ -11,6 +11,14 @@ dx = X[1] - X[0]
 dy = X[1] - X[0]
 
 # %%
+def test_dSk2():
+	m2 = lp.dSk(x2, y2, z=0, n=1)
+	assert(m2[0].shape == (16, 16))
+
+def test_dSk3():
+	m3 = lp.dSk(x3, y3, z3, n=1)
+	assert(m3[0].shape == (16, 16, 5))
+
 def test_jchessmodel2():
 	m2 = lp.jchessmodel(x2, y2, z=0, n=1)
 	assert(m2[0].shape == (16, 16))

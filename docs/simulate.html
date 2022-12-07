@@ -121,6 +121,7 @@ __all__ = [
             &#39;A_from_mag&#39;,
             &#39;img_from_mag&#39;,
             &#39;img_from_phase&#39;,
+            &#39;dSk&#39;,
             &#39;jchessmodel&#39;,
             &#39;ind_from_mag&#39;,
             &#39;propagate&#39;]
@@ -522,6 +523,162 @@ def propagate(mode, dx = 1, dy = 1, T=T, padding=True, **kwargs):
         return(psi_out[ds0:2*ds0, ds1:2*ds1])
     else:
         return(psi_out)
+
+def dSk(x, y, z, **kwargs):
+    r&#34;&#34;&#34;Calculates the magnetization of a dipole skyrmion based on Jordan Chess&#39; model.
+
+    The model is based on a unit sphere parameterization of the magnetization in 
+    cylindrical coordinates, \(\mathbf{m}: (\rho, \varphi, z) \rightarrow \mathbb{S}^2\)
+
+    \[
+        \mathbf{m} = 
+        \begin{pmatrix}
+            \sin[\Theta(\rho, z)]\cos[n\varphi + \alpha(z) + \pi]\\
+            \sin[\Theta(\rho, z)]\sin[n\varphi + \alpha(z) + \pi]\\
+            \cos[\Theta(\rho, z)]
+        \end{pmatrix}
+    \]
+
+    In this way, \(\Theta(\rho, z)\) determines the polarity \(p=\pm 1\) of the skyrmion, 
+    \(n\) is the winding number, and \(\alpha(z)\) is the chirality of the domain wall. 
+
+    The polarity corresponds to the magnetization direction at \(r=0\), and
+    the skyrmion number is then \(S_k = pn\). Skyrmions are then described by \(n&gt;0\), 
+    while antiskyrmions have \(n&lt;0\) (and trivial textures have \(n=0\)). 
+
+    \(\alpha(z)\), the chirality of the domain wall, is the angle between the gradient 
+    of \(m_z\) and the in-plane component of magnetization. 
+
+    The \(z\)-dependence of the skyrmion is encapsulated in \(\Theta(\rho, z)\) and \(\alpha(z)\),
+    with \(\Theta(\rho, z)\) determining the polarity, core width, and domain wall width, 
+    and \(\alpha(z)\) determining the domain wall chirality. 
+
+    \[
+        \alpha(z) = (c_{\alpha}-a_{\alpha})\tanh\left(z / b_{\alpha}\right) + a_{\alpha}
+    \]
+
+    such that \(a_{\alpha}=\alpha(0)\) and \(c_{\alpha}=\alpha(\infty)\). Likewise
+    \[
+        \begin{align}
+        \Theta(\rho, z) &amp;= 2 \arctan\left(\left(\frac{\rho}{k(z)}\right)^{\frac{1}{\omega(z)}}\right) + \frac{\pi}{2} (1 - p)
+        \\
+        k(z) &amp;= (a_{k}-c_{k})\exp\left(-z^2/2b_k^2\right) + c_{k}
+        \\
+        \omega(z) &amp;= (a_{\omega}-c_{\omega})\exp\left(-z^2/2b_\omega^2\right) + c_{\omega}
+        \end{align}
+    \]
+
+    Here, \(k(z)\) determines the width of the core, via \(m_z=0\) at \(\rho = k(z)\). 
+    Analogous to the parameters in \(\alpha\), we have \(a_k = k(0)\), and \(c_k = k(\infty)\). 
+    Meanwhile, \(\omega(z)\in [0, 1)\) determines the width of the domain wall, via 
+    \(m_z = 1/2 m_z(\rho=0)\) at \(\rho = (1/\sqrt{3})^{\omega}k\). 
+
+    **Parameters**
+
+    * **x** : _number, ndarray_ &lt;br /&gt;
+    The x-coordinates over which to calculate magnetization.
+
+    * **y** : _number, ndarray_ &lt;br /&gt;
+    The y-coordinates over which to calculate magnetization.
+
+    * **z** : _number, ndarray, optional_ &lt;br /&gt;
+    The z-coordinates over which to calculate magnetization. Note, if z is an
+    ndarray, it should have the same shape as x and y, rather than relying
+    on array broadcasting. &lt;br /&gt;
+    Default is `z = 0`.
+
+    * **n** : _number, optional_ &lt;br /&gt;
+    The winding number of the skyrmion. &lt;br /&gt;
+    Default is `n = 1`. 
+
+    * **p** : _number, optional_ &lt;br /&gt;
+    The polarity of the skyrmion. &lt;br /&gt;
+    Default is `p = 1`. 
+
+    * **aa** : _number, optional_ &lt;br /&gt;
+    The DW chirality at \(z=0\). &lt;br /&gt;
+    Default is `aa = np.pi / 2`.
+
+    * **ba** : _number, optional_ &lt;br /&gt;
+    Sets how rapidly the chirality varies in \(z\). The chirality is about halfway between 
+    its value at infinity and its value at zero when \(z = b / 2\). &lt;br /&gt;
+    Default is `ba = 1`. 
+
+    * **ca** : _number, optional_ &lt;br /&gt;
+    The DW chirality at \(z=\infty\). &lt;br /&gt;
+    Default is `ca = np.pi`. 
+
+    * **aw** : _number, optional_ &lt;br /&gt;
+    The DW width at \(z=0\). &lt;br /&gt;
+    Default is `aw = 1/2`. 
+
+    * **bw** : _number, optional_ &lt;br /&gt;
+    Sets how rapidly the DW width varies in \(z\). `bw` is the standard deviation of the 
+    gaussian that defines DW width. &lt;br /&gt;
+    Default is `bw = 1`. 
+
+    * **cw** : _number, optional_ &lt;br /&gt;
+    The DW width at \(z=\infty\). &lt;br /&gt;
+    Default is `cw = 1/2`.
+
+    * **ak** : _number, optional_ &lt;br /&gt;
+    The core width at \(z=0\). &lt;br /&gt;
+    Default is `ak = 1`.
+
+    * **bk** : _number, optional_ &lt;br /&gt;
+    Sets how rapidly the core width varies in \(z\). `bk` is the standard deviation of the 
+    gaussian that defines core width. &lt;br /&gt;
+    Default is `bk = 1`. 
+
+    * **ck** : _number, optional_ &lt;br /&gt;
+    The core width at \(z = \infty\). &lt;br /&gt;
+    Default is `ck = 1`. 
+
+
+    **Returns**
+
+    * _ndarray_ &lt;br /&gt;
+    The x-component of magnetization. Shape will be the same as x and y.
+
+    * _ndarray_ &lt;br /&gt;
+    The y-component of magnetization. Shape will be the same as x and y.
+
+    * _ndarray_ &lt;br /&gt;
+    The z-component of magnetization. Shape will be the same as x and y. 
+    &#34;&#34;&#34;
+    p = {
+        &#39;n&#39;: 1, &#39;pol&#39;: 1,
+        &#39;aw&#39;: 1/2, &#39;bw&#39;: 1, &#39;cw&#39;: 1/2,
+        &#39;ak&#39;: 1, &#39;bk&#39;: 1, &#39;ck&#39;: 1,
+        &#39;aa&#39;: np.pi / 2, &#39;ba&#39;: 1, &#39;ca&#39;: np.pi
+    }
+    for key in kwargs.keys():
+        if not key in p.keys():
+            return(&#34;Error: {:} is not a kwarg.&#34;.format(key))
+    p.update(kwargs)
+
+    r, phi = np.sqrt(x**2+y**2), np.arctan2(y, x)
+
+    # k_z = core radius
+    # ak=k(0), bk=stdev, ck=k(inf)
+    k_z = (p[&#39;ak&#39;] - p[&#39;ck&#39;]) * np.exp(-z**2 / (2 * p[&#39;bk&#39;]**2)) + p[&#39;ck&#39;]
+
+    # w_z \propto DW width
+    # aw=w_z(0), bw=stdev, cw=w_z(inf)
+    w_z = (p[&#39;aw&#39;] - p[&#39;cw&#39;]) * np.exp(-z**2 / (2 * p[&#39;bw&#39;]**2)) + p[&#39;cw&#39;]
+
+    # alpha_z = DW chirality
+    # aa=alpha_z(0), ba = FWHM(?), ca=alpha_z(inf)
+    p[&#39;ca&#39;] = p[&#39;ca&#39;] % (2 * np.pi)
+    p[&#39;aa&#39;] = p[&#39;aa&#39;] % (2 * np.pi)
+    alpha_z = (p[&#39;ca&#39;] - p[&#39;aa&#39;]) * np.tanh(z / p[&#39;ba&#39;]) + p[&#39;aa&#39;]
+    theta_rz = 2 * np.arctan2((r / k_z)**(1 / w_z), 1)
+    theta_rz += np.pi / 2 * (1 - p[&#39;pol&#39;])
+
+    mx = np.cos(p[&#39;n&#39;]*phi + alpha_z + np.pi) * np.sin(theta_rz)
+    my = np.sin(p[&#39;n&#39;]*phi + alpha_z + np.pi) * np.sin(theta_rz)
+    mz = np.cos(theta_rz)
+    return(np.array([mx, my, mz]))
 
 # Miscellaneous
 def jchessmodel(x, y, z=0, **kwargs):
@@ -937,6 +1094,317 @@ The Aharonov-Bohm phase imparted on the electron by the magnetization. Shape wil
     # old versions of numpy don&#39;t have the `norm = &#39;backward&#39;` option
     phase = w.shape[1] * w.shape[2] * np.fft.ifft2(w, axes=(1,2))
     return(np.squeeze(phase.real))</code></pre>
+</details>
+</dd>
+<dt id="ltempy.simulate.dSk"><code class="name flex">
+<span>def <span class="ident">dSk</span></span>(<span>x, y, z, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the magnetization of a dipole skyrmion based on Jordan Chess' model.</p>
+<p>The model is based on a unit sphere parameterization of the magnetization in
+cylindrical coordinates, <span><span class="MathJax_Preview">\mathbf{m}: (\rho, \varphi, z) \rightarrow \mathbb{S}^2</span><script type="math/tex">\mathbf{m}: (\rho, \varphi, z) \rightarrow \mathbb{S}^2</script></span></p>
+<p><span><span class="MathJax_Preview">
+\mathbf{m} =
+\begin{pmatrix}
+\sin[\Theta(\rho, z)]\cos[n\varphi + \alpha(z) + \pi]\\
+\sin[\Theta(\rho, z)]\sin[n\varphi + \alpha(z) + \pi]\\
+\cos[\Theta(\rho, z)]
+\end{pmatrix}
+</span><script type="math/tex; mode=display">
+\mathbf{m} =
+\begin{pmatrix}
+\sin[\Theta(\rho, z)]\cos[n\varphi + \alpha(z) + \pi]\\
+\sin[\Theta(\rho, z)]\sin[n\varphi + \alpha(z) + \pi]\\
+\cos[\Theta(\rho, z)]
+\end{pmatrix}
+</script></span></p>
+<p>In this way, <span><span class="MathJax_Preview">\Theta(\rho, z)</span><script type="math/tex">\Theta(\rho, z)</script></span> determines the polarity <span><span class="MathJax_Preview">p=\pm 1</span><script type="math/tex">p=\pm 1</script></span> of the skyrmion,
+<span><span class="MathJax_Preview">n</span><script type="math/tex">n</script></span> is the winding number, and <span><span class="MathJax_Preview">\alpha(z)</span><script type="math/tex">\alpha(z)</script></span> is the chirality of the domain wall. </p>
+<p>The polarity corresponds to the magnetization direction at <span><span class="MathJax_Preview">r=0</span><script type="math/tex">r=0</script></span>, and
+the skyrmion number is then <span><span class="MathJax_Preview">S_k = pn</span><script type="math/tex">S_k = pn</script></span>. Skyrmions are then described by <span><span class="MathJax_Preview">n&gt;0</span><script type="math/tex">n>0</script></span>,
+while antiskyrmions have <span><span class="MathJax_Preview">n&lt;0</span><script type="math/tex">n<0</script></span> (and trivial textures have <span><span class="MathJax_Preview">n=0</span><script type="math/tex">n=0</script></span>). </p>
+<p><span><span class="MathJax_Preview">\alpha(z)</span><script type="math/tex">\alpha(z)</script></span>, the chirality of the domain wall, is the angle between the gradient
+of <span><span class="MathJax_Preview">m_z</span><script type="math/tex">m_z</script></span> and the in-plane component of magnetization. </p>
+<p>The <span><span class="MathJax_Preview">z</span><script type="math/tex">z</script></span>-dependence of the skyrmion is encapsulated in <span><span class="MathJax_Preview">\Theta(\rho, z)</span><script type="math/tex">\Theta(\rho, z)</script></span> and <span><span class="MathJax_Preview">\alpha(z)</span><script type="math/tex">\alpha(z)</script></span>,
+with <span><span class="MathJax_Preview">\Theta(\rho, z)</span><script type="math/tex">\Theta(\rho, z)</script></span> determining the polarity, core width, and domain wall width,
+and <span><span class="MathJax_Preview">\alpha(z)</span><script type="math/tex">\alpha(z)</script></span> determining the domain wall chirality. </p>
+<p><span><span class="MathJax_Preview">
+\alpha(z) = (c_{\alpha}-a_{\alpha})\tanh\left(z / b_{\alpha}\right) + a_{\alpha}
+</span><script type="math/tex; mode=display">
+\alpha(z) = (c_{\alpha}-a_{\alpha})\tanh\left(z / b_{\alpha}\right) + a_{\alpha}
+</script></span></p>
+<p>such that <span><span class="MathJax_Preview">a_{\alpha}=\alpha(0)</span><script type="math/tex">a_{\alpha}=\alpha(0)</script></span> and <span><span class="MathJax_Preview">c_{\alpha}=\alpha(\infty)</span><script type="math/tex">c_{\alpha}=\alpha(\infty)</script></span>. Likewise
+<span><span class="MathJax_Preview">
+\begin{align}
+\Theta(\rho, z) &amp;= 2 \arctan\left(\left(\frac{\rho}{k(z)}\right)^{\frac{1}{\omega(z)}}\right) + \frac{\pi}{2} (1 - p)
+\\
+k(z) &amp;= (a_{k}-c_{k})\exp\left(-z^2/2b_k^2\right) + c_{k}
+\\
+\omega(z) &amp;= (a_{\omega}-c_{\omega})\exp\left(-z^2/2b_\omega^2\right) + c_{\omega}
+\end{align}
+</span><script type="math/tex; mode=display">
+\begin{align}
+\Theta(\rho, z) &= 2 \arctan\left(\left(\frac{\rho}{k(z)}\right)^{\frac{1}{\omega(z)}}\right) + \frac{\pi}{2} (1 - p)
+\\
+k(z) &= (a_{k}-c_{k})\exp\left(-z^2/2b_k^2\right) + c_{k}
+\\
+\omega(z) &= (a_{\omega}-c_{\omega})\exp\left(-z^2/2b_\omega^2\right) + c_{\omega}
+\end{align}
+</script></span></p>
+<p>Here, <span><span class="MathJax_Preview">k(z)</span><script type="math/tex">k(z)</script></span> determines the width of the core, via <span><span class="MathJax_Preview">m_z=0</span><script type="math/tex">m_z=0</script></span> at <span><span class="MathJax_Preview">\rho = k(z)</span><script type="math/tex">\rho = k(z)</script></span>.
+Analogous to the parameters in <span><span class="MathJax_Preview">\alpha</span><script type="math/tex">\alpha</script></span>, we have <span><span class="MathJax_Preview">a_k = k(0)</span><script type="math/tex">a_k = k(0)</script></span>, and <span><span class="MathJax_Preview">c_k = k(\infty)</span><script type="math/tex">c_k = k(\infty)</script></span>.
+Meanwhile, <span><span class="MathJax_Preview">\omega(z)\in [0, 1)</span><script type="math/tex">\omega(z)\in [0, 1)</script></span> determines the width of the domain wall, via
+<span><span class="MathJax_Preview">m_z = 1/2 m_z(\rho=0)</span><script type="math/tex">m_z = 1/2 m_z(\rho=0)</script></span> at <span><span class="MathJax_Preview">\rho = (1/\sqrt{3})^{\omega}k</span><script type="math/tex">\rho = (1/\sqrt{3})^{\omega}k</script></span>. </p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li>
+<p><strong>x</strong> : <em>number, ndarray</em> <br />
+The x-coordinates over which to calculate magnetization.</p>
+</li>
+<li>
+<p><strong>y</strong> : <em>number, ndarray</em> <br />
+The y-coordinates over which to calculate magnetization.</p>
+</li>
+<li>
+<p><strong>z</strong> : <em>number, ndarray, optional</em> <br />
+The z-coordinates over which to calculate magnetization. Note, if z is an
+ndarray, it should have the same shape as x and y, rather than relying
+on array broadcasting. <br />
+Default is <code>z = 0</code>.</p>
+</li>
+<li>
+<p><strong>n</strong> : <em>number, optional</em> <br />
+The winding number of the skyrmion. <br />
+Default is <code>n = 1</code>. </p>
+</li>
+<li>
+<p><strong>p</strong> : <em>number, optional</em> <br />
+The polarity of the skyrmion. <br />
+Default is <code>p = 1</code>. </p>
+</li>
+<li>
+<p><strong>aa</strong> : <em>number, optional</em> <br />
+The DW chirality at <span><span class="MathJax_Preview">z=0</span><script type="math/tex">z=0</script></span>. <br />
+Default is <code>aa = np.pi / 2</code>.</p>
+</li>
+<li>
+<p><strong>ba</strong> : <em>number, optional</em> <br />
+Sets how rapidly the chirality varies in <span><span class="MathJax_Preview">z</span><script type="math/tex">z</script></span>. The chirality is about halfway between
+its value at infinity and its value at zero when <span><span class="MathJax_Preview">z = b / 2</span><script type="math/tex">z = b / 2</script></span>. <br />
+Default is <code>ba = 1</code>. </p>
+</li>
+<li>
+<p><strong>ca</strong> : <em>number, optional</em> <br />
+The DW chirality at <span><span class="MathJax_Preview">z=\infty</span><script type="math/tex">z=\infty</script></span>. <br />
+Default is <code>ca = np.pi</code>. </p>
+</li>
+<li>
+<p><strong>aw</strong> : <em>number, optional</em> <br />
+The DW width at <span><span class="MathJax_Preview">z=0</span><script type="math/tex">z=0</script></span>. <br />
+Default is <code>aw = 1/2</code>. </p>
+</li>
+<li>
+<p><strong>bw</strong> : <em>number, optional</em> <br />
+Sets how rapidly the DW width varies in <span><span class="MathJax_Preview">z</span><script type="math/tex">z</script></span>. <code>bw</code> is the standard deviation of the
+gaussian that defines DW width. <br />
+Default is <code>bw = 1</code>. </p>
+</li>
+<li>
+<p><strong>cw</strong> : <em>number, optional</em> <br />
+The DW width at <span><span class="MathJax_Preview">z=\infty</span><script type="math/tex">z=\infty</script></span>. <br />
+Default is <code>cw = 1/2</code>.</p>
+</li>
+<li>
+<p><strong>ak</strong> : <em>number, optional</em> <br />
+The core width at <span><span class="MathJax_Preview">z=0</span><script type="math/tex">z=0</script></span>. <br />
+Default is <code>ak = 1</code>.</p>
+</li>
+<li>
+<p><strong>bk</strong> : <em>number, optional</em> <br />
+Sets how rapidly the core width varies in <span><span class="MathJax_Preview">z</span><script type="math/tex">z</script></span>. <code>bk</code> is the standard deviation of the
+gaussian that defines core width. <br />
+Default is <code>bk = 1</code>. </p>
+</li>
+<li>
+<p><strong>ck</strong> : <em>number, optional</em> <br />
+The core width at <span><span class="MathJax_Preview">z = \infty</span><script type="math/tex">z = \infty</script></span>. <br />
+Default is <code>ck = 1</code>. </p>
+</li>
+</ul>
+<p><strong>Returns</strong></p>
+<ul>
+<li>
+<p><em>ndarray</em> <br />
+The x-component of magnetization. Shape will be the same as x and y.</p>
+</li>
+<li>
+<p><em>ndarray</em> <br />
+The y-component of magnetization. Shape will be the same as x and y.</p>
+</li>
+<li>
+<p><em>ndarray</em> <br />
+The z-component of magnetization. Shape will be the same as x and y.</p>
+</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def dSk(x, y, z, **kwargs):
+    r&#34;&#34;&#34;Calculates the magnetization of a dipole skyrmion based on Jordan Chess&#39; model.
+
+    The model is based on a unit sphere parameterization of the magnetization in 
+    cylindrical coordinates, \(\mathbf{m}: (\rho, \varphi, z) \rightarrow \mathbb{S}^2\)
+
+    \[
+        \mathbf{m} = 
+        \begin{pmatrix}
+            \sin[\Theta(\rho, z)]\cos[n\varphi + \alpha(z) + \pi]\\
+            \sin[\Theta(\rho, z)]\sin[n\varphi + \alpha(z) + \pi]\\
+            \cos[\Theta(\rho, z)]
+        \end{pmatrix}
+    \]
+
+    In this way, \(\Theta(\rho, z)\) determines the polarity \(p=\pm 1\) of the skyrmion, 
+    \(n\) is the winding number, and \(\alpha(z)\) is the chirality of the domain wall. 
+
+    The polarity corresponds to the magnetization direction at \(r=0\), and
+    the skyrmion number is then \(S_k = pn\). Skyrmions are then described by \(n&gt;0\), 
+    while antiskyrmions have \(n&lt;0\) (and trivial textures have \(n=0\)). 
+
+    \(\alpha(z)\), the chirality of the domain wall, is the angle between the gradient 
+    of \(m_z\) and the in-plane component of magnetization. 
+
+    The \(z\)-dependence of the skyrmion is encapsulated in \(\Theta(\rho, z)\) and \(\alpha(z)\),
+    with \(\Theta(\rho, z)\) determining the polarity, core width, and domain wall width, 
+    and \(\alpha(z)\) determining the domain wall chirality. 
+
+    \[
+        \alpha(z) = (c_{\alpha}-a_{\alpha})\tanh\left(z / b_{\alpha}\right) + a_{\alpha}
+    \]
+
+    such that \(a_{\alpha}=\alpha(0)\) and \(c_{\alpha}=\alpha(\infty)\). Likewise
+    \[
+        \begin{align}
+        \Theta(\rho, z) &amp;= 2 \arctan\left(\left(\frac{\rho}{k(z)}\right)^{\frac{1}{\omega(z)}}\right) + \frac{\pi}{2} (1 - p)
+        \\
+        k(z) &amp;= (a_{k}-c_{k})\exp\left(-z^2/2b_k^2\right) + c_{k}
+        \\
+        \omega(z) &amp;= (a_{\omega}-c_{\omega})\exp\left(-z^2/2b_\omega^2\right) + c_{\omega}
+        \end{align}
+    \]
+
+    Here, \(k(z)\) determines the width of the core, via \(m_z=0\) at \(\rho = k(z)\). 
+    Analogous to the parameters in \(\alpha\), we have \(a_k = k(0)\), and \(c_k = k(\infty)\). 
+    Meanwhile, \(\omega(z)\in [0, 1)\) determines the width of the domain wall, via 
+    \(m_z = 1/2 m_z(\rho=0)\) at \(\rho = (1/\sqrt{3})^{\omega}k\). 
+
+    **Parameters**
+
+    * **x** : _number, ndarray_ &lt;br /&gt;
+    The x-coordinates over which to calculate magnetization.
+
+    * **y** : _number, ndarray_ &lt;br /&gt;
+    The y-coordinates over which to calculate magnetization.
+
+    * **z** : _number, ndarray, optional_ &lt;br /&gt;
+    The z-coordinates over which to calculate magnetization. Note, if z is an
+    ndarray, it should have the same shape as x and y, rather than relying
+    on array broadcasting. &lt;br /&gt;
+    Default is `z = 0`.
+
+    * **n** : _number, optional_ &lt;br /&gt;
+    The winding number of the skyrmion. &lt;br /&gt;
+    Default is `n = 1`. 
+
+    * **p** : _number, optional_ &lt;br /&gt;
+    The polarity of the skyrmion. &lt;br /&gt;
+    Default is `p = 1`. 
+
+    * **aa** : _number, optional_ &lt;br /&gt;
+    The DW chirality at \(z=0\). &lt;br /&gt;
+    Default is `aa = np.pi / 2`.
+
+    * **ba** : _number, optional_ &lt;br /&gt;
+    Sets how rapidly the chirality varies in \(z\). The chirality is about halfway between 
+    its value at infinity and its value at zero when \(z = b / 2\). &lt;br /&gt;
+    Default is `ba = 1`. 
+
+    * **ca** : _number, optional_ &lt;br /&gt;
+    The DW chirality at \(z=\infty\). &lt;br /&gt;
+    Default is `ca = np.pi`. 
+
+    * **aw** : _number, optional_ &lt;br /&gt;
+    The DW width at \(z=0\). &lt;br /&gt;
+    Default is `aw = 1/2`. 
+
+    * **bw** : _number, optional_ &lt;br /&gt;
+    Sets how rapidly the DW width varies in \(z\). `bw` is the standard deviation of the 
+    gaussian that defines DW width. &lt;br /&gt;
+    Default is `bw = 1`. 
+
+    * **cw** : _number, optional_ &lt;br /&gt;
+    The DW width at \(z=\infty\). &lt;br /&gt;
+    Default is `cw = 1/2`.
+
+    * **ak** : _number, optional_ &lt;br /&gt;
+    The core width at \(z=0\). &lt;br /&gt;
+    Default is `ak = 1`.
+
+    * **bk** : _number, optional_ &lt;br /&gt;
+    Sets how rapidly the core width varies in \(z\). `bk` is the standard deviation of the 
+    gaussian that defines core width. &lt;br /&gt;
+    Default is `bk = 1`. 
+
+    * **ck** : _number, optional_ &lt;br /&gt;
+    The core width at \(z = \infty\). &lt;br /&gt;
+    Default is `ck = 1`. 
+
+
+    **Returns**
+
+    * _ndarray_ &lt;br /&gt;
+    The x-component of magnetization. Shape will be the same as x and y.
+
+    * _ndarray_ &lt;br /&gt;
+    The y-component of magnetization. Shape will be the same as x and y.
+
+    * _ndarray_ &lt;br /&gt;
+    The z-component of magnetization. Shape will be the same as x and y. 
+    &#34;&#34;&#34;
+    p = {
+        &#39;n&#39;: 1, &#39;pol&#39;: 1,
+        &#39;aw&#39;: 1/2, &#39;bw&#39;: 1, &#39;cw&#39;: 1/2,
+        &#39;ak&#39;: 1, &#39;bk&#39;: 1, &#39;ck&#39;: 1,
+        &#39;aa&#39;: np.pi / 2, &#39;ba&#39;: 1, &#39;ca&#39;: np.pi
+    }
+    for key in kwargs.keys():
+        if not key in p.keys():
+            return(&#34;Error: {:} is not a kwarg.&#34;.format(key))
+    p.update(kwargs)
+
+    r, phi = np.sqrt(x**2+y**2), np.arctan2(y, x)
+
+    # k_z = core radius
+    # ak=k(0), bk=stdev, ck=k(inf)
+    k_z = (p[&#39;ak&#39;] - p[&#39;ck&#39;]) * np.exp(-z**2 / (2 * p[&#39;bk&#39;]**2)) + p[&#39;ck&#39;]
+
+    # w_z \propto DW width
+    # aw=w_z(0), bw=stdev, cw=w_z(inf)
+    w_z = (p[&#39;aw&#39;] - p[&#39;cw&#39;]) * np.exp(-z**2 / (2 * p[&#39;bw&#39;]**2)) + p[&#39;cw&#39;]
+
+    # alpha_z = DW chirality
+    # aa=alpha_z(0), ba = FWHM(?), ca=alpha_z(inf)
+    p[&#39;ca&#39;] = p[&#39;ca&#39;] % (2 * np.pi)
+    p[&#39;aa&#39;] = p[&#39;aa&#39;] % (2 * np.pi)
+    alpha_z = (p[&#39;ca&#39;] - p[&#39;aa&#39;]) * np.tanh(z / p[&#39;ba&#39;]) + p[&#39;aa&#39;]
+    theta_rz = 2 * np.arctan2((r / k_z)**(1 / w_z), 1)
+    theta_rz += np.pi / 2 * (1 - p[&#39;pol&#39;])
+
+    mx = np.cos(p[&#39;n&#39;]*phi + alpha_z + np.pi) * np.sin(theta_rz)
+    my = np.sin(p[&#39;n&#39;]*phi + alpha_z + np.pi) * np.sin(theta_rz)
+    mz = np.cos(theta_rz)
+    return(np.array([mx, my, mz]))</code></pre>
 </details>
 </dd>
 <dt id="ltempy.simulate.img_from_mag"><code class="name flex">
@@ -1542,6 +2010,7 @@ shape as x, y, and mode.</li>
 <li><code><a title="ltempy.simulate.A_from_mag" href="#ltempy.simulate.A_from_mag">A_from_mag</a></code></li>
 <li><code><a title="ltempy.simulate.B_from_mag" href="#ltempy.simulate.B_from_mag">B_from_mag</a></code></li>
 <li><code><a title="ltempy.simulate.ab_phase" href="#ltempy.simulate.ab_phase">ab_phase</a></code></li>
+<li><code><a title="ltempy.simulate.dSk" href="#ltempy.simulate.dSk">dSk</a></code></li>
 <li><code><a title="ltempy.simulate.img_from_mag" href="#ltempy.simulate.img_from_mag">img_from_mag</a></code></li>
 <li><code><a title="ltempy.simulate.img_from_phase" href="#ltempy.simulate.img_from_phase">img_from_phase</a></code></li>
 <li><code><a title="ltempy.simulate.ind_from_mag" href="#ltempy.simulate.ind_from_mag">ind_from_mag</a></code></li>

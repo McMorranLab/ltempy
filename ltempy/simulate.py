@@ -60,6 +60,7 @@ __all__ = [
             'A_from_mag',
             'img_from_mag',
             'img_from_phase',
+            'dSk',
             'jchessmodel',
             'ind_from_mag',
             'propagate']
@@ -461,6 +462,162 @@ def propagate(mode, dx = 1, dy = 1, T=T, padding=True, **kwargs):
         return(psi_out[ds0:2*ds0, ds1:2*ds1])
     else:
         return(psi_out)
+
+def dSk(x, y, z, **kwargs):
+    r"""Calculates the magnetization of a dipole skyrmion based on Jordan Chess' model.
+
+    The model is based on a unit sphere parameterization of the magnetization in 
+    cylindrical coordinates, \(\mathbf{m}: (\rho, \varphi, z) \rightarrow \mathbb{S}^2\)
+
+    \[
+        \mathbf{m} = 
+        \begin{pmatrix}
+            \sin[\Theta(\rho, z)]\cos[n\varphi + \alpha(z) + \pi]\\
+            \sin[\Theta(\rho, z)]\sin[n\varphi + \alpha(z) + \pi]\\
+            \cos[\Theta(\rho, z)]
+        \end{pmatrix}
+    \]
+
+    In this way, \(\Theta(\rho, z)\) determines the polarity \(p=\pm 1\) of the skyrmion, 
+    \(n\) is the winding number, and \(\alpha(z)\) is the chirality of the domain wall. 
+
+    The polarity corresponds to the magnetization direction at \(r=0\), and
+    the skyrmion number is then \(S_k = pn\). Skyrmions are then described by \(n>0\), 
+    while antiskyrmions have \(n<0\) (and trivial textures have \(n=0\)). 
+
+    \(\alpha(z)\), the chirality of the domain wall, is the angle between the gradient 
+    of \(m_z\) and the in-plane component of magnetization. 
+
+    The \(z\)-dependence of the skyrmion is encapsulated in \(\Theta(\rho, z)\) and \(\alpha(z)\),
+    with \(\Theta(\rho, z)\) determining the polarity, core width, and domain wall width, 
+    and \(\alpha(z)\) determining the domain wall chirality. 
+
+    \[
+        \alpha(z) = (c_{\alpha}-a_{\alpha})\tanh\left(z / b_{\alpha}\right) + a_{\alpha}
+    \]
+
+    such that \(a_{\alpha}=\alpha(0)\) and \(c_{\alpha}=\alpha(\infty)\). Likewise
+    \[
+        \begin{align}
+        \Theta(\rho, z) &= 2 \arctan\left(\left(\frac{\rho}{k(z)}\right)^{\frac{1}{\omega(z)}}\right) + \frac{\pi}{2} (1 - p)
+        \\
+        k(z) &= (a_{k}-c_{k})\exp\left(-z^2/2b_k^2\right) + c_{k}
+        \\
+        \omega(z) &= (a_{\omega}-c_{\omega})\exp\left(-z^2/2b_\omega^2\right) + c_{\omega}
+        \end{align}
+    \]
+
+    Here, \(k(z)\) determines the width of the core, via \(m_z=0\) at \(\rho = k(z)\). 
+    Analogous to the parameters in \(\alpha\), we have \(a_k = k(0)\), and \(c_k = k(\infty)\). 
+    Meanwhile, \(\omega(z)\in [0, 1)\) determines the width of the domain wall, via 
+    \(m_z = 1/2 m_z(\rho=0)\) at \(\rho = (1/\sqrt{3})^{\omega}k\). 
+
+    **Parameters**
+
+    * **x** : _number, ndarray_ <br />
+    The x-coordinates over which to calculate magnetization.
+
+    * **y** : _number, ndarray_ <br />
+    The y-coordinates over which to calculate magnetization.
+
+    * **z** : _number, ndarray, optional_ <br />
+    The z-coordinates over which to calculate magnetization. Note, if z is an
+    ndarray, it should have the same shape as x and y, rather than relying
+    on array broadcasting. <br />
+    Default is `z = 0`.
+
+    * **n** : _number, optional_ <br />
+    The winding number of the skyrmion. <br />
+    Default is `n = 1`. 
+
+    * **p** : _number, optional_ <br />
+    The polarity of the skyrmion. <br />
+    Default is `p = 1`. 
+
+    * **aa** : _number, optional_ <br />
+    The DW chirality at \(z=0\). <br />
+    Default is `aa = np.pi / 2`.
+
+    * **ba** : _number, optional_ <br />
+    Sets how rapidly the chirality varies in \(z\). The chirality is about halfway between 
+    its value at infinity and its value at zero when \(z = b / 2\). <br />
+    Default is `ba = 1`. 
+
+    * **ca** : _number, optional_ <br />
+    The DW chirality at \(z=\infty\). <br />
+    Default is `ca = np.pi`. 
+
+    * **aw** : _number, optional_ <br />
+    The DW width at \(z=0\). <br />
+    Default is `aw = 1/2`. 
+
+    * **bw** : _number, optional_ <br />
+    Sets how rapidly the DW width varies in \(z\). `bw` is the standard deviation of the 
+    gaussian that defines DW width. <br />
+    Default is `bw = 1`. 
+
+    * **cw** : _number, optional_ <br />
+    The DW width at \(z=\infty\). <br />
+    Default is `cw = 1/2`.
+
+    * **ak** : _number, optional_ <br />
+    The core width at \(z=0\). <br />
+    Default is `ak = 1`.
+
+    * **bk** : _number, optional_ <br />
+    Sets how rapidly the core width varies in \(z\). `bk` is the standard deviation of the 
+    gaussian that defines core width. <br />
+    Default is `bk = 1`. 
+
+    * **ck** : _number, optional_ <br />
+    The core width at \(z = \infty\). <br />
+    Default is `ck = 1`. 
+
+
+    **Returns**
+
+    * _ndarray_ <br />
+    The x-component of magnetization. Shape will be the same as x and y.
+
+    * _ndarray_ <br />
+    The y-component of magnetization. Shape will be the same as x and y.
+
+    * _ndarray_ <br />
+    The z-component of magnetization. Shape will be the same as x and y. 
+    """
+    p = {
+        'n': 1, 'pol': 1,
+        'aw': 1/2, 'bw': 1, 'cw': 1/2,
+        'ak': 1, 'bk': 1, 'ck': 1,
+        'aa': np.pi / 2, 'ba': 1, 'ca': np.pi
+    }
+    for key in kwargs.keys():
+        if not key in p.keys():
+            return("Error: {:} is not a kwarg.".format(key))
+    p.update(kwargs)
+
+    r, phi = np.sqrt(x**2+y**2), np.arctan2(y, x)
+
+    # k_z = core radius
+    # ak=k(0), bk=stdev, ck=k(inf)
+    k_z = (p['ak'] - p['ck']) * np.exp(-z**2 / (2 * p['bk']**2)) + p['ck']
+
+    # w_z \propto DW width
+    # aw=w_z(0), bw=stdev, cw=w_z(inf)
+    w_z = (p['aw'] - p['cw']) * np.exp(-z**2 / (2 * p['bw']**2)) + p['cw']
+
+    # alpha_z = DW chirality
+    # aa=alpha_z(0), ba = FWHM(?), ca=alpha_z(inf)
+    p['ca'] = p['ca'] % (2 * np.pi)
+    p['aa'] = p['aa'] % (2 * np.pi)
+    alpha_z = (p['ca'] - p['aa']) * np.tanh(z / p['ba']) + p['aa']
+    theta_rz = 2 * np.arctan2((r / k_z)**(1 / w_z), 1)
+    theta_rz += np.pi / 2 * (1 - p['pol'])
+
+    mx = np.cos(p['n']*phi + alpha_z + np.pi) * np.sin(theta_rz)
+    my = np.sin(p['n']*phi + alpha_z + np.pi) * np.sin(theta_rz)
+    mz = np.cos(theta_rz)
+    return(np.array([mx, my, mz]))
 
 # Miscellaneous
 def jchessmodel(x, y, z=0, **kwargs):

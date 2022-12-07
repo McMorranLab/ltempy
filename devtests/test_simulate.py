@@ -3,6 +3,27 @@ from ltempy import constants as _
 import numpy as np
 import matplotlib.pyplot as plt
 
+X = np.linspace(-2, 2, 256)
+x, z = np.meshgrid(X, X)
+n, pol = 1, 1
+for pol in [-1, 1]:
+    dsk = lp.dSk(x, 0, z, n=n, pol=pol, aa=np.pi / 2)
+
+    fig, [[ax]] = lp.subplots()
+    ax.set_title("n={}, p={}, aa={}".format(n, pol, np.pi / 2))
+    ax.imshow(dsk[1], cmap='coolwarm', colorbar=True)
+    ax.quiver(dsk[0]+1j*dsk[2], step=8)
+    plt.show()
+for pol in [-1, 1]:
+    for aa in [-np.pi / 2, np.pi / 2]:
+        dsk = lp.dSk(x, z, 0, n=n, pol=pol, aa=aa)
+
+        fig, [[ax]] = lp.subplots()
+        ax.set_title("n={}, p={}, aa={}".format(n, pol, aa))
+        ax.imshow(dsk[2], cmap='coolwarm', colorbar=True)
+        ax.quiver(dsk[0]+1j*dsk[1], step=8)
+        plt.show()
+
 X = np.linspace(-2e-6, 2e-6, 512)
 Y = np.linspace(-2e-6, 2e-6, 256)
 x, y = np.meshgrid(X, X)
