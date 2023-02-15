@@ -308,9 +308,9 @@ class singleAx():
     if self.ymax is None:
       self.ymax = self.y[-1]
     argxmin = np.argmin(np.abs(self.x - self.xmin))
-    argxmax = np.argmin(np.abs(self.x - self.xmax))
+    argxmax = np.argmin(np.abs(self.x - self.xmax))+1
     argymin = np.argmin(np.abs(self.y - self.ymin))
-    argymax = np.argmin(np.abs(self.y - self.ymax))
+    argymax = np.argmin(np.abs(self.y - self.ymax))+1
     dout = data[argymin:argymax:step, argxmin:argxmax:step]
     xout = self.x[argxmin:argxmax:step]
     yout = self.y[argymin:argymax:step]
@@ -931,9 +931,9 @@ plt.show()
     if self.ymax is None:
       self.ymax = self.y[-1]
     argxmin = np.argmin(np.abs(self.x - self.xmin))
-    argxmax = np.argmin(np.abs(self.x - self.xmax))
+    argxmax = np.argmin(np.abs(self.x - self.xmax))+1
     argymin = np.argmin(np.abs(self.y - self.ymin))
-    argymax = np.argmin(np.abs(self.y - self.ymax))
+    argymax = np.argmin(np.abs(self.y - self.ymax))+1
     dout = data[argymin:argymax:step, argxmin:argxmax:step]
     xout = self.x[argxmin:argxmax:step]
     yout = self.y[argymin:argymax:step]

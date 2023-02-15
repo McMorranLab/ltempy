@@ -2,6 +2,11 @@ import matplotlib.pyplot as plt
 import ltempy as lp
 import numpy as np
 
+X = np.random.random((4, 4))
+fig, [[ax]] = lp.subplots()
+ax.imshow(X)
+plt.show()
+
 # Testing example from docs
 import numpy
 import ltempy
