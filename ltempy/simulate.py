@@ -530,9 +530,9 @@ def dSk(x, y, z, **kwargs):
     The winding number of the skyrmion. <br />
     Default is `n = 1`. 
 
-    * **p** : _number, optional_ <br />
+    * **pol** : _number, optional_ <br />
     The polarity of the skyrmion. <br />
-    Default is `p = 1`. 
+    Default is `pol = 1`. 
 
     * **aa** : _number, optional_ <br />
     The DW chirality at \(z=0\). <br />
