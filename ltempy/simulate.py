@@ -188,6 +188,8 @@ def B_from_mag(mx, my, mz, dx = 1, dy = 1, z = 0, thickness = 60e-9):
     B_mn[1] = dzA_mn[0] - dxA_mn[2]
     B_mn[2] = dxA_mn[1] - dyA_mn[0]
     B = B_mn.shape[1] * B_mn.shape[2] * np.fft.ifft2(B_mn, axes=(1,2))
+    ### adjusting for "missing" constants in Eq (2) of Mansuripur
+    B = B * _.mu0 / 4 / np.pi 
     return(np.squeeze(B.real))
 
 def A_from_mag(mx, my, mz, dx = 1, dy = 1, z = 0, thickness = 60e-9):
@@ -244,6 +246,8 @@ def A_from_mag(mx, my, mz, dx = 1, dy = 1, z = 0, thickness = 60e-9):
                 mx.shape[0], mx.shape[1], z.shape[-1], selz_m, selz_z,
                 selz_p, s_mag, z, sigm, sigp, sig, M, thickness, z_hat)
     A = A_mn.shape[1] * A_mn.shape[2] * np.fft.ifft2(A_mn, axes=(1,2))
+    ### adjusting for "missing" constants in Eq (2) of Mansuripur
+    A = A * _.mu0 / 4 / np.pi 
     return(np.squeeze(A.real))
 
 def ind_from_mag(mx, my, mz, dx=1, dy=1, thickness=60e-9, p = np.array([0,0,1])):

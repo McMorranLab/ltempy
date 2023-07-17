@@ -28,6 +28,10 @@ def weights(M, s, s_mag, sig, z_hat, p, thickness):
     weights = 2 * _.e / _.hbar / _.c * 1j * thickness / s_mag * \
         Gp * np.einsum('i...,i...->...', sig_x_z, p_x_p_M)
     weights[:, 0, 0, :] = 0
+    ### adjusting for "missing" constants in Eq (2) of Mansuripur
+    weights = weights * _.mu0 / 4 / np.pi
+    ### adjusting for "extra" factor of c in Eq (12) of Mansuripur
+    weights = weights * _.c
     return(weights)
 
 
