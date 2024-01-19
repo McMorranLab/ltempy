@@ -4,8 +4,6 @@ fonttools==4.28.2
 importlib-metadata==4.8.2
 iniconfig==1.1.1
 kiwisolver==1.3.2
-# Editable Git install with no remote (ltempy==1.0.0)
--e /Users/wsp/Dropbox\ (University\ of\ Oregon)/wsp_research/tools/ltempy
 Mako==1.1.6
 Markdown==3.3.6
 MarkupSafe==2.0.1
@@ -38,7 +36,6 @@ importlib-metadata==4.8.2
 iniconfig==1.1.1
 keyring==23.3.0
 kiwisolver==1.3.2
--e git+https://github.com/McMorranLab/ltempy.git@b8659e62803e52b9b513f0e778cf96983c80baea#egg=ltempy
 Mako==1.1.6
 Markdown==3.3.6
 MarkupSafe==2.0.1

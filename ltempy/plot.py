@@ -242,9 +242,11 @@ class singleAx():
 
   def _pre_plot(self, data, step=1):
     if self.x is None:
-      self.x = np.linspace(0, 100, data.shape[1])
+        self.x = np.arange(0, data.shape[1])
+    #   self.x = np.linspace(0, 100, data.shape[1])
     if self.y is None:
-      self.y = np.linspace(0, 100, data.shape[0])
+        self.y = np.arange(0, data.shape[0])
+    #   self.y = np.linspace(0, 100, data.shape[0])
     if self.xmin is None:
       self.xmin = self.x[0]
     if self.xmax is None:

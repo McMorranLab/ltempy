@@ -1,3 +1,4 @@
+# %%
 import ltempy as lp
 import numpy as np
 import matplotlib.pyplot as plt
@@ -12,6 +13,7 @@ ax[0, 0].imshow(lp.rgba(z, cmap='viridis', brightness='uniform'))
 ax[0, 1].imshow(lp.rgba(z, cmap='viridis', brightness='uniform', shift=np.pi / 2))
 plt.show()
 
+# %%
 print("testing rgba()")
 opts = ['uniform', 'amplitude', 'intensity']
 for brightness in opts:
