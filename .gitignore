@@ -19,3 +19,5 @@ Pipfile
 Pipfile.lock
 .pytest_cache
 todo.md
+.pypirc
+

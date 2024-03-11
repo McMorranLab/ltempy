@@ -176,7 +176,6 @@ def B_from_mag(mx, my, mz, dx = 1, dy = 1, z = 0, thickness = 60e-9):
     dzA_mn[...,selz_m] = 2 * _.pi * s_mag * A_mn[...,selz_m]
     dzA_mn[...,selz_p] = -2 * _.pi * s_mag * A_mn[...,selz_p]
     dzA_mn[...,selz_z] = (2 * 1j / s_mag * np.cross((
-                        sig
                         - 0.5 * 2 * _.pi * s_mag * np.exp(2 * _.pi * s_mag * (z[...,selz_z] - thickness / 2)) * sigm
                         + 0.5 * 2 * _.pi * s_mag * np.exp(-2 * _.pi * s_mag * (z[...,selz_z] + thickness / 2)) * sigp
                         ), M, axisa=0, axisb=0, axisc=0))
