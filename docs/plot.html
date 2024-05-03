@@ -301,6 +301,8 @@ class singleAx():
     if self.y is None:
         self.y = np.arange(0, data.shape[0])
     #   self.y = np.linspace(0, 100, data.shape[0])
+    self.dx = self.x[1]-self.x[0]
+    self.dy = self.y[1]-self.y[0]
     if self.xmin is None:
       self.xmin = self.x[0]
     if self.xmax is None:
@@ -348,9 +350,9 @@ class singleAx():
     imshowargs.update(kwargs)
     x, y, d = self._pre_plot(data, step)
     if imshowargs[&#39;origin&#39;] == &#39;lower&#39;:
-      extent = [x[0], x[-1], y[0], y[-1]]
+      extent = [x[0]-self.dx/2, x[-1]+self.dx/2, y[0]-self.dy/2, y[-1]+self.dy/2]
     elif imshowargs[&#39;origin&#39;] == &#39;upper&#39;:
-      extent = [x[0], x[-1], y[-1], y[0]]
+      extent = [x[0]-self.dx/2, x[-1]+self.dx/2, y[-1]+self.dy/2, y[0]-self.dy/2]
     imshowargs.update({&#39;extent&#39;: extent})
     imshowargs.update(kwargs)
     im = self.ax.imshow(d, **imshowargs)
@@ -427,9 +429,11 @@ class singleAx():
     x, y, d = self._pre_plot(data, step)
     d = d.astype(complex)
     if imshowargs[&#39;origin&#39;] == &#39;lower&#39;:
-      extent = [x[0], x[-1], y[0], y[-1]]
+    #   extent = [x[0], x[-1], y[0], y[-1]]
+      extent = [x[0]-self.dx/2, x[-1]+self.dx/2, y[0]-self.dy/2, y[-1]+self.dy/2]
     elif imshowargs[&#39;origin&#39;] == &#39;upper&#39;:
-      extent = [x[0], x[-1], y[-1], y[0]]
+      extent = [x[0]-self.dx/2, x[-1]+self.dx/2, y[-1]+self.dy/2, y[0]-self.dy/2]
+    #   extent = [x[0], x[-1], y[-1], y[0]]
       d.imag = -1 * d.imag
     imshowargs.update({&#39;extent&#39;: extent})
     imshowargs.update(kwargs)
@@ -926,6 +930,8 @@ plt.show()
     if self.y is None:
         self.y = np.arange(0, data.shape[0])
     #   self.y = np.linspace(0, 100, data.shape[0])
+    self.dx = self.x[1]-self.x[0]
+    self.dy = self.y[1]-self.y[0]
     if self.xmin is None:
       self.xmin = self.x[0]
     if self.xmax is None:
@@ -973,9 +979,9 @@ plt.show()
     imshowargs.update(kwargs)
     x, y, d = self._pre_plot(data, step)
     if imshowargs[&#39;origin&#39;] == &#39;lower&#39;:
-      extent = [x[0], x[-1], y[0], y[-1]]
+      extent = [x[0]-self.dx/2, x[-1]+self.dx/2, y[0]-self.dy/2, y[-1]+self.dy/2]
     elif imshowargs[&#39;origin&#39;] == &#39;upper&#39;:
-      extent = [x[0], x[-1], y[-1], y[0]]
+      extent = [x[0]-self.dx/2, x[-1]+self.dx/2, y[-1]+self.dy/2, y[0]-self.dy/2]
     imshowargs.update({&#39;extent&#39;: extent})
     imshowargs.update(kwargs)
     im = self.ax.imshow(d, **imshowargs)
@@ -1052,9 +1058,11 @@ plt.show()
     x, y, d = self._pre_plot(data, step)
     d = d.astype(complex)
     if imshowargs[&#39;origin&#39;] == &#39;lower&#39;:
-      extent = [x[0], x[-1], y[0], y[-1]]
+    #   extent = [x[0], x[-1], y[0], y[-1]]
+      extent = [x[0]-self.dx/2, x[-1]+self.dx/2, y[0]-self.dy/2, y[-1]+self.dy/2]
     elif imshowargs[&#39;origin&#39;] == &#39;upper&#39;:
-      extent = [x[0], x[-1], y[-1], y[0]]
+      extent = [x[0]-self.dx/2, x[-1]+self.dx/2, y[-1]+self.dy/2, y[0]-self.dy/2]
+    #   extent = [x[0], x[-1], y[-1], y[0]]
       d.imag = -1 * d.imag
     imshowargs.update({&#39;extent&#39;: extent})
     imshowargs.update(kwargs)
@@ -1279,9 +1287,11 @@ Returns the 'AxesImage' returned by <code>matplotlib.axes.Axes.imshow()</code>.<
   x, y, d = self._pre_plot(data, step)
   d = d.astype(complex)
   if imshowargs[&#39;origin&#39;] == &#39;lower&#39;:
-    extent = [x[0], x[-1], y[0], y[-1]]
+  #   extent = [x[0], x[-1], y[0], y[-1]]
+    extent = [x[0]-self.dx/2, x[-1]+self.dx/2, y[0]-self.dy/2, y[-1]+self.dy/2]
   elif imshowargs[&#39;origin&#39;] == &#39;upper&#39;:
-    extent = [x[0], x[-1], y[-1], y[0]]
+    extent = [x[0]-self.dx/2, x[-1]+self.dx/2, y[-1]+self.dy/2, y[0]-self.dy/2]
+  #   extent = [x[0], x[-1], y[-1], y[0]]
     d.imag = -1 * d.imag
   imshowargs.update({&#39;extent&#39;: extent})
   imshowargs.update(kwargs)
@@ -1558,9 +1568,9 @@ Returns the 'AxesImage' returned by <code>matplotlib.axes.Axes.imshow()</code>.<
   imshowargs.update(kwargs)
   x, y, d = self._pre_plot(data, step)
   if imshowargs[&#39;origin&#39;] == &#39;lower&#39;:
-    extent = [x[0], x[-1], y[0], y[-1]]
+    extent = [x[0]-self.dx/2, x[-1]+self.dx/2, y[0]-self.dy/2, y[-1]+self.dy/2]
   elif imshowargs[&#39;origin&#39;] == &#39;upper&#39;:
-    extent = [x[0], x[-1], y[-1], y[0]]
+    extent = [x[0]-self.dx/2, x[-1]+self.dx/2, y[-1]+self.dy/2, y[0]-self.dy/2]
   imshowargs.update({&#39;extent&#39;: extent})
   imshowargs.update(kwargs)
   im = self.ax.imshow(d, **imshowargs)

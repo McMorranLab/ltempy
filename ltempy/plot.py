@@ -247,6 +247,8 @@ class singleAx():
     if self.y is None:
         self.y = np.arange(0, data.shape[0])
     #   self.y = np.linspace(0, 100, data.shape[0])
+    self.dx = self.x[1]-self.x[0]
+    self.dy = self.y[1]-self.y[0]
     if self.xmin is None:
       self.xmin = self.x[0]
     if self.xmax is None:
@@ -294,9 +296,9 @@ class singleAx():
     imshowargs.update(kwargs)
     x, y, d = self._pre_plot(data, step)
     if imshowargs['origin'] == 'lower':
-      extent = [x[0], x[-1], y[0], y[-1]]
+      extent = [x[0]-self.dx/2, x[-1]+self.dx/2, y[0]-self.dy/2, y[-1]+self.dy/2]
     elif imshowargs['origin'] == 'upper':
-      extent = [x[0], x[-1], y[-1], y[0]]
+      extent = [x[0]-self.dx/2, x[-1]+self.dx/2, y[-1]+self.dy/2, y[0]-self.dy/2]
     imshowargs.update({'extent': extent})
     imshowargs.update(kwargs)
     im = self.ax.imshow(d, **imshowargs)
@@ -373,9 +375,11 @@ class singleAx():
     x, y, d = self._pre_plot(data, step)
     d = d.astype(complex)
     if imshowargs['origin'] == 'lower':
-      extent = [x[0], x[-1], y[0], y[-1]]
+    #   extent = [x[0], x[-1], y[0], y[-1]]
+      extent = [x[0]-self.dx/2, x[-1]+self.dx/2, y[0]-self.dy/2, y[-1]+self.dy/2]
     elif imshowargs['origin'] == 'upper':
-      extent = [x[0], x[-1], y[-1], y[0]]
+      extent = [x[0]-self.dx/2, x[-1]+self.dx/2, y[-1]+self.dy/2, y[0]-self.dy/2]
+    #   extent = [x[0], x[-1], y[-1], y[0]]
       d.imag = -1 * d.imag
     imshowargs.update({'extent': extent})
     imshowargs.update(kwargs)

@@ -1,7 +1,19 @@
+# %%
 import matplotlib.pyplot as plt
 import ltempy as lp
 import numpy as np
 
+x = np.arange(4*4).reshape((4, 4))
+fig, [[ax]] = lp.subplots()
+ax.ax.set_xticks([0, 1, 2, 3])
+# ax.origin='upper'
+# ax.ax.set_yticks([0, 1, 2, 3])
+ax.imshow(x)
+ax.quiver(x + 1j * 3*x, pivot='mid')
+ax.colorwheel(scale=0.3)
+plt.show()
+
+# %%
 X = np.random.random((4, 4))
 fig, [[ax]] = lp.subplots()
 ax.imshow(X)
