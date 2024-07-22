@@ -10,3 +10,5 @@ echo "test_simulate.py"
 python test_simulate.py
 echo "test_sitie.py"
 python test_sitie.py
+echo "test_colorwheel_location.py"
+python "test_colorwheel_location.py"
